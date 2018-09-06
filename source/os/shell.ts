@@ -79,6 +79,12 @@ module TSOS {
                                   "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
 
+            // date
+            sc = new ShellCommand(this.shellDate, 
+                                  "date",
+                                  "- Gets the current datetime.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -258,6 +264,9 @@ module TSOS {
                     case "man":
                         _StdOut.putText("Inception.");
                         break;
+                    case "date":
+                        _StdOut.putText("Gets the current date");
+                        break;
                 default:
                     _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -305,6 +314,11 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
+        }
+
+        public shellDate(args) {
+            var d = new Date();
+            _StdOut.putText(d.toString());    
         }
 
     }
