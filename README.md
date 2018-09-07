@@ -1,3 +1,8 @@
+Project Grading Seperation
+==========================
+
+Projects will be developed in Master branch and seperated to individual branches for grading.
+
 Browser-based Operating System in TypeScript
 ============================================
 
