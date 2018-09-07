@@ -12,7 +12,7 @@ Setup TypeScript
 1. Run `npm install -g typescript` to get the TypeScript Compiler. (You may need to do this as root.)
 
 
-Workflow
+Workflown
 =============
 
 Some IDEs (e.g., Visual Studio, IntelliJ, others) natively support TypeScript-to-JavaScript compilation.

@@ -85,6 +85,12 @@ module TSOS {
                                   "- Gets the current datetime.");
             this.commandList[this.commandList.length] = sc;
 
+            // whereami
+            sc = new ShellCommand(this.shellWhereAmI, 
+                                  "whereami",
+                                  "- Gets current path location...or maybe a Yoda quote.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -265,7 +271,10 @@ module TSOS {
                         _StdOut.putText("Inception.");
                         break;
                     case "date":
-                        _StdOut.putText("Gets the current date");
+                        _StdOut.putText("Gets the current date.");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("Yoda knows all.");
                         break;
                 default:
                     _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -319,6 +328,10 @@ module TSOS {
         public shellDate(args) {
             var d = new Date();
             _StdOut.putText(d.toString());    
+        }
+
+        public shellWhereAmI(args) {
+            _StdOut.putText("In a dark place we find ourselves, and little more knowlege lights our way.");
         }
 
     }
