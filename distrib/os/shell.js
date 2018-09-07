@@ -52,6 +52,9 @@ var TSOS;
             // date
             sc = new TSOS.ShellCommand(this.shellDate, "date", "- Gets the current datetime.");
             this.commandList[this.commandList.length] = sc;
+            // whereami
+            sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Gets current path location...or maybe a Yoda quote.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -220,7 +223,10 @@ var TSOS;
                         _StdOut.putText("Inception.");
                         break;
                     case "date":
-                        _StdOut.putText("Gets the current date");
+                        _StdOut.putText("Gets the current date.");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("Yoda knows all.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -275,6 +281,9 @@ var TSOS;
         Shell.prototype.shellDate = function (args) {
             var d = new Date();
             _StdOut.putText(d.toString());
+        };
+        Shell.prototype.shellWhereAmI = function (args) {
+            _StdOut.putText("In a dark place we find ourselves, and little more knowlege lights our way.");
         };
         return Shell;
     }());
