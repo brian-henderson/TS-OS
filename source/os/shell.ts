@@ -91,6 +91,13 @@ module TSOS {
                                   "- Gets current path location...or maybe a Yoda quote.");
             this.commandList[this.commandList.length] = sc;
 
+            // whereami
+            sc = new ShellCommand(this.shellCoinFlip, 
+                "coinflip",
+                "- Flips a double sided coin.");
+            this.commandList[this.commandList.length] = sc;
+            
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -276,6 +283,9 @@ module TSOS {
                     case "whereami":
                         _StdOut.putText("Yoda knows all.");
                         break;
+                    case "coinflip":
+                        _StdOut.putText("Flips a standard double sided coin.. May the odds be ever in your favor.");
+                        break;
                 default:
                     _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -334,5 +344,16 @@ module TSOS {
             _StdOut.putText("In a dark place we find ourselves, and little more knowlege lights our way.");
         }
 
+        public shellCoinFlip(args) {
+            var randomNum = Math.floor(Math.random()*10);
+            if ((randomNum % 2) == 0)
+                _StdOut.putText("Heads");
+            else   
+                _StdOut.putText("Tails");
+        }   
+        
+
     }
 }
+
+
