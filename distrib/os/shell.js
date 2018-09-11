@@ -55,7 +55,7 @@ var TSOS;
             // whereami
             sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Gets current path location...or maybe a Yoda quote.");
             this.commandList[this.commandList.length] = sc;
-            // whereami
+            // coinflip
             sc = new TSOS.ShellCommand(this.shellCoinFlip, "coinflip", "- Flips a double sided coin.");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
