@@ -91,7 +91,7 @@ module TSOS {
                                   "- Gets current path location...or maybe a Yoda quote.");
             this.commandList[this.commandList.length] = sc;
 
-            // whereami
+            // coinflip
             sc = new ShellCommand(this.shellCoinFlip, 
                 "coinflip",
                 "- Flips a double sided coin.");

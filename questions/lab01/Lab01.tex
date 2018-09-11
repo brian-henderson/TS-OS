@@ -1,0 +1,22 @@
+\documentclass[12pt]{article}
+\usepackage[margin=.75in]{geometry}
+ 
+\begin{document}
+ 
+\title{LAB 01	}
+\author{Brian Henderson \\ 
+		CMPT 424: Operating Systems}
+\maketitle
+
+\subsection*{What are the advantages and disadvantages of using the same system call interface for manipulating both files and devices?}
+
+There are multiple advantages to using the same system call interface for manipulating files and devices. This allows the system to treat devices as files in the file system, which can be utilized for when adding a new device driver for the hardware specialized code to support the interface. This helps the development of both user program code and device driver code to be accessed in an bi-directional matter.
+
+
+\subsection*{Would it be possible for the user to develop a new command interpreter using the system call interface provide by the operating system? How?}
+
+Using system calls, it is possible to develop a new command interpreter as the fundamentals of the command interpreter is to allow the user to manage and create processes, as well as decide how they should communicate with each other. All of this can be done by a user level program.
+
+
+ 
+\end{document}
