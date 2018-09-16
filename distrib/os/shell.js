@@ -58,6 +58,9 @@ var TSOS;
             // coinflip
             sc = new TSOS.ShellCommand(this.shellCoinFlip, "coinflip", "- Flips a double sided coin.");
             this.commandList[this.commandList.length] = sc;
+            // status
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the status in the status bar.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -234,6 +237,9 @@ var TSOS;
                     case "coinflip":
                         _StdOut.putText("Flips a standard double sided coin.. May the odds be ever in your favor.");
                         break;
+                    case "status":
+                        _StdOut.putText("Sets the status in the status bar.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -297,6 +303,13 @@ var TSOS;
                 _StdOut.putText("Heads");
             else
                 _StdOut.putText("Tails");
+        };
+        Shell.prototype.shellStatus = function (args) {
+            var status = '';
+            for (var i = 0; i < args.length; i++) {
+                status = status + '' + args[i];
+            }
+            document.getElementById('statusDisplay').innerHTML = "Status: " + status;
         };
         return Shell;
     }());

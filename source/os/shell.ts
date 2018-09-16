@@ -97,6 +97,11 @@ module TSOS {
                 "- Flips a double sided coin.");
             this.commandList[this.commandList.length] = sc;
             
+            // status
+            sc = new ShellCommand(this.shellStatus, 
+                "status",
+                "<string> - Sets the status in the status bar.");
+            this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -286,6 +291,9 @@ module TSOS {
                     case "coinflip":
                         _StdOut.putText("Flips a standard double sided coin.. May the odds be ever in your favor.");
                         break;
+                    case "status":
+                        _StdOut.putText("Sets the status in the status bar.");
+                        break;
                 default:
                     _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -351,6 +359,15 @@ module TSOS {
             else   
                 _StdOut.putText("Tails");
         }   
+
+        public shellStatus(args) {
+            var status = '';
+            for (var i = 0; i < args.length; i++)
+            {
+                status = status + '' + args[i];
+            }
+            document.getElementById('statusDisplay').innerHTML = "Status: " + status;
+        }
         
 
     }
