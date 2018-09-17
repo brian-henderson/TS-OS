@@ -57,6 +57,7 @@ var TSOS;
                     // Backspace
                 }
                 else if (chr == String.fromCharCode(8)) {
+                    console.log("Key pressed - BACKSPACE");
                     if (this.backspaceCount != 0) {
                         _DrawingContext.putImageData(this.backspaceImageData.pop(), 0, 0);
                         this.currentXPosition = this.lastXPosition.pop();
@@ -66,6 +67,7 @@ var TSOS;
                     // Tab - cmd completion
                 }
                 else if (chr == String.fromCharCode(9)) {
+                    console.log("Key pressed - TAB");
                     var highestMatchIndex = 0;
                     var charCount = 0;
                     for (var i = 0; i < _commandList.length; i++) {
@@ -92,18 +94,35 @@ var TSOS;
                     // Up/Down
                 }
                 else if (chr == String.fromCharCode(38) || chr == String.fromCharCode(40)) {
+                    console.log("Key UP/DOWN pressed");
                     var cmd;
                     var cmdIndex = this.commandHistory.length - 1;
                     // Up
                     if (chr == String.fromCharCode(38)) {
                         cmd = this.commandHistory[cmdIndex];
                         cmdIndex -= 1;
+                        console.log("Up pressed --- cmd index-" + cmdIndex + " . cmd- " + cmd);
+                        if (cmdIndex != this.commandHistory.length - 1) {
+                            if (0 > (cmdIndex - 1)) {
+                                cmd = this.commandHistory[cmdIndex];
+                                cmdIndex = 0;
+                            }
+                            else {
+                                cmd = this.commandHistory[cmdIndex];
+                                cmdIndex -= 1;
+                            }
+                        }
+                        else {
+                            cmd = this.commandHistory[cmdIndex];
+                            cmdIndex -= 1;
+                        }
                         // Down
                     }
                     else {
                         if (cmdIndex != this.commandHistory.length - 1) {
                             cmdIndex += 1;
                             cmd = this.commandHistory[cmdIndex];
+                            console.log("Down pressed --- cmd index-" + cmdIndex + " . cmd- " + cmd);
                         }
                     }
                     if (this.buffer != "") {
@@ -123,6 +142,7 @@ var TSOS;
                     }
                 }
                 else {
+                    console.log("Key pressed - Normal char");
                     // This is a "normal" character, so ...
                     // ... get the Image Data from the canvas so it can be referenced for backspacing purposes
                     this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, 500, 500));
