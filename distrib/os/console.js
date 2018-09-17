@@ -10,7 +10,7 @@
 var TSOS;
 (function (TSOS) {
     var Console = /** @class */ (function () {
-        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, backspaceImageData, lastXPosition, backspaceCount) {
+        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, backspaceImageData, lastXPosition, backspaceCount, commandHistory) {
             if (currentFont === void 0) { currentFont = _DefaultFontFamily; }
             if (currentFontSize === void 0) { currentFontSize = _DefaultFontSize; }
             if (currentXPosition === void 0) { currentXPosition = 0; }
@@ -19,6 +19,7 @@ var TSOS;
             if (backspaceImageData === void 0) { backspaceImageData = []; }
             if (lastXPosition === void 0) { lastXPosition = [0]; }
             if (backspaceCount === void 0) { backspaceCount = 0; }
+            if (commandHistory === void 0) { commandHistory = []; }
             this.currentFont = currentFont;
             this.currentFontSize = currentFontSize;
             this.currentXPosition = currentXPosition;
@@ -27,6 +28,7 @@ var TSOS;
             this.backspaceImageData = backspaceImageData;
             this.lastXPosition = lastXPosition;
             this.backspaceCount = backspaceCount;
+            this.commandHistory = commandHistory;
         }
         Console.prototype.init = function () {
             this.clearScreen();
@@ -48,7 +50,8 @@ var TSOS;
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
-                    this.buffer;
+                    // adding local cache of command history
+                    this.commandHistory.push(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
                     // Backspace
@@ -86,6 +89,38 @@ var TSOS;
                             this.buffer += toBePrinted.charAt(i);
                         }
                     }
+                    // Up/Down
+                }
+                else if (chr == String.fromCharCode(38) || chr == String.fromCharCode(40)) {
+                    var cmd;
+                    var cmdIndex = this.commandHistory.length - 1;
+                    // Up
+                    if (chr == String.fromCharCode(38)) {
+                        cmd = this.commandHistory[cmdIndex];
+                        cmdIndex -= 1;
+                        // Down
+                    }
+                    else {
+                        if (cmdIndex != this.commandHistory.length - 1) {
+                            cmdIndex += 1;
+                            cmd = this.commandHistory[cmdIndex];
+                        }
+                    }
+                    if (this.buffer != "") {
+                        for (var i = this.buffer.length; i > 0; i--) {
+                            this.backspaceImageData.pop();
+                        }
+                        _DrawingContext.putImageData(this.backspaceImageData.pop(), 0, 0);
+                        this.buffer = "";
+                        // resetting X position to 2 since that's where the commands start
+                        this.currentXPosition = this.lastXPosition[2];
+                    }
+                    // output the next cmd in the history to the canvas
+                    for (var i = 0; i < cmd.length; i++) {
+                        this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, 500, 500));
+                        this.putText(cmd.charAt(i));
+                        this.buffer += cmd.charAt(i);
+                    }
                 }
                 else {
                     // This is a "normal" character, so ...
@@ -113,6 +148,7 @@ var TSOS;
             if (text !== "") {
                 // Draw the text at the current X and Y coordinates.
                 _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                this.lastXPosition.push(this.currentXPosition);
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
                 this.currentXPosition = this.currentXPosition + offset;

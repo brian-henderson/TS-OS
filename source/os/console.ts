@@ -21,7 +21,8 @@ module TSOS {
                     public buffer = "",
                     public backspaceImageData = [],
                     public lastXPosition = [0],
-                    public backspaceCount = 0 ) {
+                    public backspaceCount = 0,
+                    public commandHistory = [] ) {
         }
 
         public init(): void {
@@ -47,7 +48,8 @@ module TSOS {
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
-                    this.buffer
+                    // adding local cache of command history
+                    this.commandHistory.push(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
 
@@ -88,8 +90,41 @@ module TSOS {
                             this.buffer += toBePrinted.charAt(i);
                         }
                     }
-                    
                 
+                // Up/Down
+                } else if (chr == String.fromCharCode(38) || chr == String.fromCharCode(40)) {
+                   var cmd;
+                   var cmdIndex = this.commandHistory.length-1;
+                    // Up
+                    if (chr == String.fromCharCode(38)) {
+                        cmd = this.commandHistory[cmdIndex]
+                        cmdIndex -= 1;
+                    // Down
+                    } else {
+                        if (cmdIndex != this.commandHistory.length-1) {
+                            cmdIndex += 1;
+                            cmd = this.commandHistory[cmdIndex];
+                        }
+                    }
+
+                    if (this.buffer != "") {
+                        for (var i = this.buffer.length; i > 0; i-- ) {
+                            this.backspaceImageData.pop();
+                        }
+                        _DrawingContext.putImageData(this.backspaceImageData.pop(),0,0);
+                        this.buffer = "";
+                        // resetting X position to 2 since that's where the commands start
+                        this.currentXPosition = this.lastXPosition[2]; 
+                    }
+
+                    // output the next cmd in the history to the canvas
+                    for (var i = 0; i < cmd.length; i++) {
+                        this.backspaceImageData.push(_DrawingContext.getImageData(0,0,500,500));
+                        this.putText(cmd.charAt(i));
+                        this.buffer += cmd.charAt(i);
+                    }
+
+
                     
                 } else {
                     // This is a "normal" character, so ...
@@ -118,6 +153,7 @@ module TSOS {
             if (text !== "") {
                 // Draw the text at the current X and Y coordinates.
                 _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                this.lastXPosition.push(this.currentXPosition);
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
                 this.currentXPosition = this.currentXPosition + offset;
