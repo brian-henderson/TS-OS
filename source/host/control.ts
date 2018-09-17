@@ -55,6 +55,31 @@ module TSOS {
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
             }
+
+            function formatTime(t)
+            {
+                if (t < 10)
+                {
+                    t = "0" + t;
+                }
+                return t;
+            }
+            
+            function displayTime()
+            {
+                var now = new Date();
+                var y = now.getFullYear();
+                var mo = formatTime(now.getMonth());
+                var d = formatTime(now.getDate());
+                var h = now.getHours();
+                var m = formatTime(now.getMinutes());
+                var s = formatTime(now.getSeconds());
+                document.getElementById('timeDisplay').innerHTML = y + "-" + mo + "-" + d + " " + h + ":" + m + ":" + s ;
+                var timeout = setTimeout(displayTime, 500);
+            }
+            
+            displayTime();
+
         }
 
         public static hostLog(msg: string, source: string = "?"): void {
