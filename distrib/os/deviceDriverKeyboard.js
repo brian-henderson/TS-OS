@@ -61,9 +61,51 @@ var TSOS;
                 _KernelInputQueue.enqueue(chr);
             }
             else if (((keyCode >= 48) && (keyCode <= 57)) || // digits
-                (keyCode == 32) || // space
-                (keyCode == 13)) { // enter
-                chr = String.fromCharCode(keyCode);
+                (keyCode == 32) || (keyCode == 8) || // space || backspace
+                (keyCode == 13) || (keyCode == 9) || // enter || tab 
+                (keyCode == 222)) { // single quote 
+                if (keyCode == 32) {
+                    chr = ' ';
+                }
+                else if (keyCode == 49 && isShifted) {
+                    chr = '!';
+                }
+                else if (keyCode == 50 && isShifted) {
+                    chr = '@';
+                }
+                else if (keyCode == 51 && isShifted) {
+                    chr = '#';
+                }
+                else if (keyCode == 52 && isShifted) {
+                    chr = '$';
+                }
+                else if (keyCode == 53 && isShifted) {
+                    chr = '%';
+                }
+                else if (keyCode == 54 && isShifted) {
+                    chr = '^';
+                }
+                else if (keyCode == 55 && isShifted) {
+                    chr = '&';
+                }
+                else if (keyCode == 56 && isShifted) {
+                    chr = '*';
+                }
+                else if (keyCode == 57 && isShifted) {
+                    chr = '(';
+                }
+                else if (keyCode == 48 && isShifted) {
+                    chr = ')';
+                }
+                else if (keyCode == 222 && isShifted) {
+                    chr = "\"";
+                }
+                else if (keyCode == 222) {
+                    chr = "'";
+                }
+                else {
+                    chr = String.fromCharCode(keyCode);
+                }
                 _KernelInputQueue.enqueue(chr);
             }
         };
