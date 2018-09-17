@@ -53,4 +53,5 @@ var _GLaDOS = null; // If the above is linked in, this is the instantiated insta
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };
+// List of commands 
 var _commandList = new Array();

@@ -10,7 +10,7 @@
 var TSOS;
 (function (TSOS) {
     var Console = /** @class */ (function () {
-        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, backspaceImageData, lastXPosition, backspaceCount, commandHistory) {
+        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, backspaceImageData, lastXPosition, backspaceCount, commandHistory, cmdIndex, scrollingImageData, scrollingImageDataIndex) {
             if (currentFont === void 0) { currentFont = _DefaultFontFamily; }
             if (currentFontSize === void 0) { currentFontSize = _DefaultFontSize; }
             if (currentXPosition === void 0) { currentXPosition = 0; }
@@ -20,6 +20,9 @@ var TSOS;
             if (lastXPosition === void 0) { lastXPosition = [0]; }
             if (backspaceCount === void 0) { backspaceCount = 0; }
             if (commandHistory === void 0) { commandHistory = []; }
+            if (cmdIndex === void 0) { cmdIndex = 0; }
+            if (scrollingImageData === void 0) { scrollingImageData = []; }
+            if (scrollingImageDataIndex === void 0) { scrollingImageDataIndex = 0; }
             this.currentFont = currentFont;
             this.currentFontSize = currentFontSize;
             this.currentXPosition = currentXPosition;
@@ -29,6 +32,9 @@ var TSOS;
             this.lastXPosition = lastXPosition;
             this.backspaceCount = backspaceCount;
             this.commandHistory = commandHistory;
+            this.cmdIndex = cmdIndex;
+            this.scrollingImageData = scrollingImageData;
+            this.scrollingImageDataIndex = scrollingImageDataIndex;
         }
         Console.prototype.init = function () {
             this.clearScreen();
@@ -52,6 +58,8 @@ var TSOS;
                     _OsShell.handleInput(this.buffer);
                     // adding local cache of command history
                     this.commandHistory.push(this.buffer);
+                    // updating the cmd index here
+                    this.cmdIndex = this.commandHistory.length - 1;
                     // ... and reset our buffer.
                     this.buffer = "";
                     // Backspace
@@ -96,33 +104,32 @@ var TSOS;
                 else if (chr == String.fromCharCode(38) || chr == String.fromCharCode(40)) {
                     console.log("Key UP/DOWN pressed");
                     var cmd;
-                    var cmdIndex = this.commandHistory.length - 1;
                     // Up
                     if (chr == String.fromCharCode(38)) {
-                        cmd = this.commandHistory[cmdIndex];
-                        cmdIndex -= 1;
-                        console.log("Up pressed --- cmd index-" + cmdIndex + " . cmd- " + cmd);
-                        if (cmdIndex != this.commandHistory.length - 1) {
-                            if (0 > (cmdIndex - 1)) {
-                                cmd = this.commandHistory[cmdIndex];
-                                cmdIndex = 0;
+                        cmd = this.commandHistory[this.cmdIndex];
+                        this.cmdIndex -= 1;
+                        console.log("Up pressed --- cmd index-" + this.cmdIndex + " . cmd- " + cmd);
+                        if (this.cmdIndex != this.commandHistory.length - 1) {
+                            if (0 > (this.cmdIndex - 1)) {
+                                cmd = this.commandHistory[this.cmdIndex];
+                                this.cmdIndex = 0;
                             }
                             else {
-                                cmd = this.commandHistory[cmdIndex];
-                                cmdIndex -= 1;
+                                cmd = this.commandHistory[this.cmdIndex];
+                                this.cmdIndex -= 1;
                             }
                         }
                         else {
-                            cmd = this.commandHistory[cmdIndex];
-                            cmdIndex -= 1;
+                            cmd = this.commandHistory[this.cmdIndex];
+                            this.cmdIndex -= 1;
                         }
                         // Down
                     }
                     else {
-                        if (cmdIndex != this.commandHistory.length - 1) {
-                            cmdIndex += 1;
-                            cmd = this.commandHistory[cmdIndex];
-                            console.log("Down pressed --- cmd index-" + cmdIndex + " . cmd- " + cmd);
+                        if (this.cmdIndex != this.commandHistory.length - 1) {
+                            this.cmdIndex += 1;
+                            cmd = this.commandHistory[this.cmdIndex];
+                            console.log("Down pressed --- cmd index-" + this.cmdIndex + " . cmd- " + cmd);
                         }
                     }
                     if (this.buffer != "") {
@@ -185,6 +192,12 @@ var TSOS;
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin;
             // TODO: Handle scrolling. (iProject 1)
+            if ((this.currentYPosition + _DefaultFontSize) > 500) {
+                this.scrollingImageData.push(_DrawingContext.getImageData(0, 0, 500, 500));
+                this.clearScreen();
+                _DrawingContext.putImageData(this.scrollingImageData[this.scrollingImageDataIndex], 0, -_DefaultFontSize);
+                this.scrollingImageDataIndex += 1;
+            }
         };
         return Console;
     }());
