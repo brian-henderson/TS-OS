@@ -102,6 +102,12 @@ module TSOS {
                 "status",
                 "<string> - Sets the status in the status bar.");
             this.commandList[this.commandList.length] = sc;
+        
+            // nuke
+            sc = new ShellCommand(this.shellNuke, 
+                "nuke",
+                "- Thermo-nuclear BSOD warefare enabled. ");
+            this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -300,6 +306,9 @@ module TSOS {
                     case "status":
                         _StdOut.putText("Sets the status in the status bar.");
                         break;
+                    case "nuke":
+                        _StdOut.putText("BSOD testing command.");
+                        break;
                 default:
                     _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -374,7 +383,10 @@ module TSOS {
             }
             document.getElementById('statusDisplay').innerHTML = "Status: " + status;
         }
-        
+
+        public shellNuke(args) {
+            _Kernel.krnTrapError("User has engaged thermo-nuclear detonation...aka BSOD");
+        }
 
     }
 }

@@ -37,6 +37,11 @@ module TSOS {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         }
 
+        public enableBSOD(): void {
+            this.clearScreen();
+            document.getElementById("display").style.background = 'blue';
+        }
+
         private resetXY(): void {
             this.currentXPosition = 0;
             this.currentYPosition = this.currentFontSize;
@@ -208,5 +213,7 @@ module TSOS {
                 this.currentYPosition += printedArea;
             }
         }
+
+        public 
     }
  }

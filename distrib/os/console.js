@@ -43,6 +43,10 @@ var TSOS;
         Console.prototype.clearScreen = function () {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         };
+        Console.prototype.enableBSOD = function () {
+            this.clearScreen();
+            document.getElementById("display").style.background = 'blue';
+        };
         Console.prototype.resetXY = function () {
             this.currentXPosition = 0;
             this.currentYPosition = this.currentFontSize;
