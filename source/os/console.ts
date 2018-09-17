@@ -62,7 +62,33 @@ module TSOS {
 
                 // Tab - cmd completion
                 } else if (chr == String.fromCharCode(9)) {
+                    var highestMatchIndex = 0;
+                    var charCount = 0;
+                    
+                    for (var i=0; i < _commandList.length; i++) {
+                        var tempCharCount = 0;
+                        for (var j=0; j < this.buffer.length; j++) {
+                            if (this.buffer.charAt(j) == _commandList[i].charAt(j))
+                                tempCharCount++;
+                            else   
+                                break;
+                        }
 
+                        if (tempCharCount > charCount) {
+                            highestMatchIndex = i;
+                            charCount = tempCharCount;
+                        }
+                    }
+
+                    if (charCount != 0) {
+                        var toBePrinted = _commandList[highestMatchIndex].substring(charCount);
+                        for (var i = 0; i < toBePrinted.length; i++) {
+                            this.backspaceImageData.push(_DrawingContext.getImageData(0,0,500,500));
+                            this.putText(toBePrinted.charAt(i));
+                            this.buffer += toBePrinted.charAt(i);
+                        }
+                    }
+                    
                 
                     
                 } else {
