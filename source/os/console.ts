@@ -17,7 +17,10 @@ module TSOS {
                     public currentFontSize = _DefaultFontSize,
                     public currentXPosition = 0,
                     public currentYPosition = _DefaultFontSize,
-                    public buffer = "") {
+                    public buffer = "",
+                    public backspaceImageData = [],
+                    public lastXPosition = [0],
+                    public backspaceCount = 0 ) {
         }
 
         public init(): void {
@@ -43,14 +46,28 @@ module TSOS {
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
+                    this.buffer
                     // ... and reset our buffer.
                     this.buffer = "";
+
+                } else if (chr == String.fromCharCode(8)) {
+                    if (this.backspaceCount != 0) {
+                        _DrawingContext.putImageData(this.backspaceImageData.pop(),0,0);
+                        this.currentXPosition = this.lastXPosition.pop();
+                        this.backspaceCount -= 1;
+                    }
+                    this.buffer = this.buffer.substring(0, this.buffer.length - 1);
+                    
                 } else {
                     // This is a "normal" character, so ...
+                    // ... get the Image Data from the canvas so it can be referenced for backspacing purposes
+                    this.backspaceImageData.push(_DrawingContext.getImageData(0,0,500,500));
                     // ... draw it on the screen...
                     this.putText(chr);
                     // ... and add it to our buffer.
                     this.buffer += chr;
+                    // ... update backspace count 
+                    this.backspaceCount++;
                 }
                 // TODO: Write a case for Ctrl-C.
             }
