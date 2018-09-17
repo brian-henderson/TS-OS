@@ -15,7 +15,7 @@ const APP_NAME: string    = "HidalgOS";   // Popular sandwich at Campus Deli: Op
                                           // fries, mozz sticks, hot sauce, ranch dressing, chipolote mayo.
                                           // Also spanish for "gentlemen" as I am a gentlemen.
 
-const APP_VERSION: string = "0.01";   // lab 01
+const APP_VERSION: string = "0.1";   // lab 01
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 

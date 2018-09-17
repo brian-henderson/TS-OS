@@ -36,12 +36,14 @@ module TSOS {
         private clearScreen(): void {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         }
-
+/*
         public enableBSOD(): void {
             this.clearScreen();
             document.getElementById("display").style.background = 'blue';
+            _OsShell.promptStr = '';
+            this.putText("")
         }
-
+*/
         private resetXY(): void {
             this.currentXPosition = 0;
             this.currentYPosition = this.currentFontSize;
