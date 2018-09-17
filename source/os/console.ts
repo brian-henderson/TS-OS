@@ -22,7 +22,10 @@ module TSOS {
                     public backspaceImageData = [],
                     public lastXPosition = [0],
                     public backspaceCount = 0,
-                    public commandHistory = [] ) {
+                    public commandHistory = [],
+                    public cmdIndex = 0,
+                    public scrollingImageData = [],
+                    public scrollingImageDataIndex = 0 ) {
         }
 
         public init(): void {
@@ -50,6 +53,8 @@ module TSOS {
                     _OsShell.handleInput(this.buffer);
                     // adding local cache of command history
                     this.commandHistory.push(this.buffer);
+                    // updating the cmd index here
+                    this.cmdIndex = this.commandHistory.length-1;
                     // ... and reset our buffer.
                     this.buffer = "";
 
@@ -97,30 +102,29 @@ module TSOS {
                 } else if (chr == String.fromCharCode(38) || chr == String.fromCharCode(40)) {
                    console.log("Key UP/DOWN pressed");
                    var cmd;
-                   var cmdIndex = this.commandHistory.length-1;
                     // Up
                     if (chr == String.fromCharCode(38)) {
-                        cmd = this.commandHistory[cmdIndex]
-                        cmdIndex -= 1;
-                        console.log("Up pressed --- cmd index-" + cmdIndex + " . cmd- " + cmd);
-                        if (cmdIndex != this.commandHistory.length-1) {
-                            if ( 0 > (cmdIndex - 1)) {
-                                cmd = this.commandHistory[cmdIndex];
-                                cmdIndex = 0;
+                        cmd = this.commandHistory[this.cmdIndex]
+                        this.cmdIndex -= 1;
+                        console.log("Up pressed --- cmd index-" + this.cmdIndex + " . cmd- " + cmd);
+                        if (this.cmdIndex != this.commandHistory.length-1) {
+                            if ( 0 > (this.cmdIndex - 1)) {
+                                cmd = this.commandHistory[this.cmdIndex];
+                                this.cmdIndex = 0;
                             } else {
-                                cmd = this.commandHistory[cmdIndex];
-                                cmdIndex -= 1;
+                                cmd = this.commandHistory[this.cmdIndex];
+                                this.cmdIndex -= 1;
                             }
                         } else {
-                            cmd = this.commandHistory[cmdIndex];
-                            cmdIndex -= 1;
+                            cmd = this.commandHistory[this.cmdIndex];
+                            this.cmdIndex -= 1;
                         }
                     // Down
                     } else {
-                        if (cmdIndex != this.commandHistory.length-1) {
-                            cmdIndex += 1;
-                            cmd = this.commandHistory[cmdIndex];
-                            console.log("Down pressed --- cmd index-" + cmdIndex + " . cmd- " + cmd);
+                        if (this.cmdIndex != this.commandHistory.length-1) {
+                            this.cmdIndex += 1;
+                            cmd = this.commandHistory[this.cmdIndex];
+                            console.log("Down pressed --- cmd index-" + this.cmdIndex + " . cmd- " + cmd);
                         }
                     }
 
@@ -190,6 +194,12 @@ module TSOS {
                                      _FontHeightMargin;
 
             // TODO: Handle scrolling. (iProject 1)
+            if ((this.currentYPosition + _DefaultFontSize) > 500) {
+                this.scrollingImageData.push(_DrawingContext.getImageData(0,0,500,500))
+                this.clearScreen();
+                _DrawingContext.putImageData(this.scrollingImageData[this.scrollingImageDataIndex],0,-_DefaultFontSize);
+                this.scrollingImageDataIndex += 1;
+            }
         }
     }
  }

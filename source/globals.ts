@@ -72,4 +72,5 @@ var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };
 
+// List of commands 
 var _commandList: string[] = new Array();  
