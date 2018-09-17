@@ -51,6 +51,7 @@ var TSOS;
                     this.buffer;
                     // ... and reset our buffer.
                     this.buffer = "";
+                    // Backspace
                 }
                 else if (chr == String.fromCharCode(8)) {
                     if (this.backspaceCount != 0) {
@@ -59,6 +60,9 @@ var TSOS;
                         this.backspaceCount -= 1;
                     }
                     this.buffer = this.buffer.substring(0, this.buffer.length - 1);
+                    // Tab - cmd completion
+                }
+                else if (chr == String.fromCharCode(9)) {
                 }
                 else {
                     // This is a "normal" character, so ...

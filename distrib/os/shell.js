@@ -63,6 +63,12 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
+            for (var i = 0; i < this.commandList.length; i++) {
+                _commandList[i] = this.commandList[i].command;
+            }
+            _commandList.forEach(function (e) {
+                console.log(e);
+            });
             //
             // Display the initial prompt.
             this.putPrompt();

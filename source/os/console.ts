@@ -11,6 +11,7 @@
 
 module TSOS {
 
+
     export class Console {
 
         constructor(public currentFont = _DefaultFontFamily,
@@ -50,6 +51,7 @@ module TSOS {
                     // ... and reset our buffer.
                     this.buffer = "";
 
+                // Backspace
                 } else if (chr == String.fromCharCode(8)) {
                     if (this.backspaceCount != 0) {
                         _DrawingContext.putImageData(this.backspaceImageData.pop(),0,0);
@@ -57,6 +59,11 @@ module TSOS {
                         this.backspaceCount -= 1;
                     }
                     this.buffer = this.buffer.substring(0, this.buffer.length - 1);
+
+                // Tab - cmd completion
+                } else if (chr == String.fromCharCode(9)) {
+
+                
                     
                 } else {
                     // This is a "normal" character, so ...

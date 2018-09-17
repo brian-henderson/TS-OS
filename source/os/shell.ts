@@ -106,6 +106,12 @@ module TSOS {
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
+
+            // This adds all the shell commands to a globals list to be accessed in console
+            for (var i=0; i < this.commandList.length; i++) {
+                _commandList[i] = this.commandList[i].command;
+            }
+
             //
             // Display the initial prompt.
             this.putPrompt();
