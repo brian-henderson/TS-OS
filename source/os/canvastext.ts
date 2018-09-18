@@ -197,5 +197,7 @@ module TSOS {
                 return CanvasTextFunctions.draw( ctx, font,size,x-w/2,y,text);
             };
         }
+
+        
     }
 }

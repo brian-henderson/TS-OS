@@ -71,6 +71,7 @@ module TSOS {
             // More?
             //
             this.krnTrace("end shutdown OS");
+            _OsShell.promptStr = '';
         }
 
 
@@ -183,7 +184,6 @@ module TSOS {
             _StdOut.clearScreen();
             _StdOut.resetXY();
             document.getElementById("display").style.background = 'blue';
-            _OsShell.promptStr = '';
         }
     }
 }

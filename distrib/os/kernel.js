@@ -62,6 +62,7 @@ var TSOS;
             // More?
             //
             this.krnTrace("end shutdown OS");
+            _OsShell.promptStr = '';
         };
         Kernel.prototype.krnOnCPUClockPulse = function () {
             /* This gets called from the host hardware simulation every time there is a hardware clock pulse.
@@ -163,7 +164,6 @@ var TSOS;
             _StdOut.clearScreen();
             _StdOut.resetXY();
             document.getElementById("display").style.background = 'blue';
-            _OsShell.promptStr = '';
         };
         return Kernel;
     }());
