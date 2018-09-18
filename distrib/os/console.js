@@ -102,7 +102,7 @@ var TSOS;
                     if (charCount != 0) {
                         var toBePrinted = _commandList[highestMatchIndex].substring(charCount);
                         for (var i = 0; i < toBePrinted.length; i++) {
-                            this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, 500, 500));
+                            this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height));
                             this.putText(toBePrinted.charAt(i));
                             this.buffer += toBePrinted.charAt(i);
                         }
@@ -151,7 +151,7 @@ var TSOS;
                     }
                     // output the next cmd in the history to the canvas
                     for (var i = 0; i < cmd.length; i++) {
-                        this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, 500, 500));
+                        this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height));
                         this.putText(cmd.charAt(i));
                         this.buffer += cmd.charAt(i);
                     }
@@ -160,7 +160,7 @@ var TSOS;
                     console.log("Key pressed - Normal char");
                     // This is a "normal" character, so ...
                     // ... get the Image Data from the canvas so it can be referenced for backspacing purposes
-                    this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, 500, 500));
+                    this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height));
                     // ... draw it on the screen...
                     this.putText(chr);
                     // ... and add it to our buffer.
@@ -196,15 +196,11 @@ var TSOS;
              * Font descent measures from the baseline to the lowest point in the font.
              * Font height margin is extra spacing between the lines.
              */
-            //    this.currentYPosition += _DefaultFontSize + 
-            //                             _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
-            //                             _FontHeightMargin;
             var printedArea = _DefaultFontSize +
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin;
-            // TODO: Handle scrolling. (iProject 1)
-            if ((this.currentYPosition + printedArea) > 500) {
-                this.scrollingImageData.push(_DrawingContext.getImageData(0, 0, 500, 500));
+            if ((this.currentYPosition + printedArea) > _Canvas.height) {
+                this.scrollingImageData.push(_DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height));
                 this.clearScreen();
                 _DrawingContext.putImageData(this.scrollingImageData[this.scrollingImageDataIndex], 0, -printedArea);
                 this.scrollingImageDataIndex += 1;

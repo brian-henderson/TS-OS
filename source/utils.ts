@@ -43,5 +43,15 @@ module TSOS {
             }
             return retVal;
         }
+
+        public static isValidHex(c: number): boolean {
+            //    ** NUMBERS **          ** L.CASE LETTERS **        ** U.CASE LETTERS **         ** SPACE **
+            if ( (c >= 48 && 57 >= c) || (c >= 65 && 70 >= c) || (c >= 97 && 102 >= c) || (c == 32) ){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
     }
 }

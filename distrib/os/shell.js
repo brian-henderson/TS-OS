@@ -64,6 +64,12 @@ var TSOS;
             // nuke
             sc = new TSOS.ShellCommand(this.shellNuke, "nuke", "- Thermo-nuclear BSOD warefare enabled. ");
             this.commandList[this.commandList.length] = sc;
+            // load
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Used to validate HTML code in taProgramInput. ");
+            this.commandList[this.commandList.length] = sc;
+            // load
+            sc = new TSOS.ShellCommand(this.shellIsHex, "isHex", "- Used to validate HTML code in taProgramInput. ");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // This adds all the shell commands to a globals list to be accessed in console
@@ -323,6 +329,27 @@ var TSOS;
         };
         Shell.prototype.shellNuke = function (args) {
             _Kernel.krnTrapError("User has engaged thermo-nuclear detonation...aka BSOD");
+        };
+        Shell.prototype.shellLoad = function (args) {
+            var programInput = document.getElementById("taProgramInput").value;
+            var isValid = true;
+            for (var i = 0; i < programInput.length; i++) {
+                var c = programInput.charCodeAt(i);
+                if (!TSOS.Utils.isValidHex(c)) {
+                    _StdOut.putText("Invalid Program Input at index: " + i);
+                    isValid = false;
+                    break;
+                }
+            }
+            if (isValid) {
+                _StdOut.putText("Valid Program Input");
+            }
+        };
+        Shell.prototype.shellIsHex = function (args) {
+            if (TSOS.Utils.isValidHex(args[0].charCodeAt(0)))
+                _StdOut("Valid");
+            else
+                _StdOut("Not Valid");
         };
         return Shell;
     }());
