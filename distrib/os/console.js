@@ -132,10 +132,32 @@ var TSOS;
                             this.cmdIndex++;
                             output = this.commandHistory[this.cmdIndex];
                         }
+                        else if (this.cmdIndex == this.commandHistory.length - 1) {
+                            output = this.commandHistory[this.commandHistory.length - 1];
+                            this.cmdIndex--;
+                        }
                     }
                     console.log(this.commandHistory);
                     console.log("out - " + output);
                     console.log("cmdIndex - " + this.cmdIndex);
+                    if (this.buffer.length > 0) {
+                        for (var i = 0; i < this.buffer.length; i++) {
+                            _DrawingContext.putImageData(this.backspaceImageData.pop(), 0, 0);
+                            this.currentXPosition = this.lastXPosition.pop();
+                            this.backspaceCount -= 1;
+                        }
+                        this.buffer = "";
+                    }
+                    for (var i = 0; i < output.length; i++) {
+                        // ... get the Image Data from the canvas so it can be referenced for backspacing purposes
+                        this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height));
+                        // ... draw it on the screen...
+                        this.putText(output.charAt(i));
+                        // ... and add it to our buffer.
+                        this.buffer += output.charAt(i);
+                        // ... update backspace count 
+                        this.backspaceCount++;
+                    }
                 }
                 else {
                     console.log("Key pressed - Normal char");
@@ -167,13 +189,7 @@ var TSOS;
                 this.lastXPosition.push(this.currentXPosition);
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                if ((this.currentXPosition + offset) >= _Canvas.width) {
-                    this.currentXPosition = 0;
-                    this.advanceLine();
-                }
-                else {
-                    this.currentXPosition = this.currentXPosition + offset;
-                }
+                this.currentXPosition = this.currentXPosition + offset;
             }
         };
         Console.prototype.advanceLine = function () {
