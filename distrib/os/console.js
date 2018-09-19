@@ -43,14 +43,6 @@ var TSOS;
         Console.prototype.clearScreen = function () {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         };
-        /*
-                public enableBSOD(): void {
-                    this.clearScreen();
-                    document.getElementById("display").style.background = 'blue';
-                    _OsShell.promptStr = '';
-                    this.putText("")
-                }
-        */
         Console.prototype.resetXY = function () {
             this.currentXPosition = 0;
             this.currentYPosition = this.currentFontSize;
@@ -74,9 +66,13 @@ var TSOS;
                 }
                 else if (chr == String.fromCharCode(8)) {
                     console.log("Key pressed - BACKSPACE");
+                    // as long as the backspace count is over 0, begin backspacing procedure
                     if (this.backspaceCount != 0) {
+                        // reverting to the last imageData obtained before last char/text was written
                         _DrawingContext.putImageData(this.backspaceImageData.pop(), 0, 0);
+                        // going back an x coordinate
                         this.currentXPosition = this.lastXPosition.pop();
+                        // update the backspace count 
                         this.backspaceCount -= 1;
                     }
                     this.buffer = this.buffer.substring(0, this.buffer.length - 1);
@@ -111,11 +107,14 @@ var TSOS;
                 }
                 else if (chr == String.fromCharCode(38) || chr == String.fromCharCode(40)) {
                     var output;
+                    // first check UP
                     if (chr == String.fromCharCode(38)) {
                         if (this.cmdIndex != this.commandHistory.length - 1) {
+                            // if the cmdIndex -1 is less than zero
                             if (this.cmdIndex - 1 < 0) {
                                 output = this.commandHistory[this.cmdIndex];
                                 this.cmdIndex = 0;
+                                // all other possibilites will provide no errors
                             }
                             else {
                                 output = this.commandHistory[this.cmdIndex];
@@ -126,6 +125,7 @@ var TSOS;
                             output = this.commandHistory[this.cmdIndex];
                             this.cmdIndex--;
                         }
+                        // now check DOWN
                     }
                     else if (chr == String.fromCharCode(40)) {
                         if (this.commandHistory.length - 1 != this.cmdIndex) {
@@ -137,9 +137,11 @@ var TSOS;
                             this.cmdIndex--;
                         }
                     }
+                    // used for debugging and testing 
                     console.log(this.commandHistory);
                     console.log("out - " + output);
                     console.log("cmdIndex - " + this.cmdIndex);
+                    // if the buffer is not blank, delete the characters on the canvas from the buffer
                     if (this.buffer.length > 0) {
                         for (var i = 0; i < this.buffer.length; i++) {
                             _DrawingContext.putImageData(this.backspaceImageData.pop(), 0, 0);
@@ -148,6 +150,7 @@ var TSOS;
                         }
                         this.buffer = "";
                     }
+                    // print out the output and update the buffer and backspace count
                     for (var i = 0; i < output.length; i++) {
                         // ... get the Image Data from the canvas so it can be referenced for backspacing purposes
                         this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height));
@@ -199,12 +202,16 @@ var TSOS;
              * Font descent measures from the baseline to the lowest point in the font.
              * Font height margin is extra spacing between the lines.
              */
+            // tracks the area printed to determine values such as next Y postion and compare against canvas height
             var printedArea = _DefaultFontSize +
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin;
+            // if the current Y and printed area are greater than canvas height, begin scrolling down
             if ((this.currentYPosition + printedArea) > _Canvas.height) {
+                // get the current canvas image data and then clear screen
                 this.scrollingImageData.push(_DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height));
                 this.clearScreen();
+                // usie the image data to update the canvas with the accounted printed area and upate index
                 _DrawingContext.putImageData(this.scrollingImageData[this.scrollingImageDataIndex], 0, -printedArea);
                 this.scrollingImageDataIndex += 1;
             }

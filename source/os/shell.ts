@@ -265,7 +265,6 @@ module TSOS {
              _StdOut.putText("Shutting down...");
              // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
-            // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
         }
 
         public shellCls(args) {
@@ -399,20 +398,23 @@ module TSOS {
         }
 
         public shellLoad(args) {
+            // grab the input value from well the...input
             var programInput = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
+            // setting flag to true, only gets changed if set to false
             var isValid = true;
-
+            
             for (var i=0; i < programInput.length; i++ ) {
+                // ignore new line breaks
                 if (! (programInput.charAt(i) == '\n')){
+                    // grab the char code and use that in custom utils function, if not valid then the flag changes and breaks out
                     var c = programInput.charCodeAt(i);
-                    if (! Utils.isValidHex(c)) {
+                    if (! Utils.isCharCodeValidHex(c)) {
                         _StdOut.putText("Invalid Program Input at index: " + i);
                         isValid = false;
                         break;
                     }
                 }
             }
-
             if (isValid) {
                 _StdOut.putText("Valid Program Input");
             }

@@ -71,6 +71,7 @@ module TSOS {
             // More?
             //
             this.krnTrace("end shutdown OS");
+            // setting the prompt to be blank...ocd for the win
             _OsShell.promptStr = '';
         }
 
@@ -174,12 +175,12 @@ module TSOS {
 
         public krnTrapError(msg) {
             Control.hostLog("OS ERROR - TRAP: " + msg);
-            // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
             this.enableBSOD();
             _StdOut.putText(msg);
             this.krnShutdown();
         }
 
+        // used to set the canvas to be BSOD, simply clears the screen, resets the cursor, and styles it blue
         public enableBSOD(): void {
             _StdOut.clearScreen();
             _StdOut.resetXY();
