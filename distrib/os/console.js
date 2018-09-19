@@ -107,54 +107,35 @@ var TSOS;
                             this.buffer += toBePrinted.charAt(i);
                         }
                     }
-                    // Up/Down
+                    // up/down
                 }
                 else if (chr == String.fromCharCode(38) || chr == String.fromCharCode(40)) {
-                    console.log("Key UP/DOWN pressed");
-                    var cmd;
-                    // Up
+                    var output;
                     if (chr == String.fromCharCode(38)) {
-                        cmd = this.commandHistory[this.cmdIndex];
-                        this.cmdIndex -= 1;
-                        console.log("Up pressed --- cmd index-" + this.cmdIndex + " . cmd- " + cmd);
                         if (this.cmdIndex != this.commandHistory.length - 1) {
-                            if (0 > (this.cmdIndex - 1)) {
-                                cmd = this.commandHistory[this.cmdIndex];
+                            if (this.cmdIndex - 1 < 0) {
+                                output = this.commandHistory[this.cmdIndex];
                                 this.cmdIndex = 0;
                             }
                             else {
-                                cmd = this.commandHistory[this.cmdIndex];
-                                this.cmdIndex -= 1;
+                                output = this.commandHistory[this.cmdIndex];
+                                this.cmdIndex--;
                             }
                         }
                         else {
-                            cmd = this.commandHistory[this.cmdIndex];
-                            this.cmdIndex -= 1;
-                        }
-                        // Down
-                    }
-                    else {
-                        if (this.cmdIndex != this.commandHistory.length - 1) {
-                            this.cmdIndex += 1;
-                            cmd = this.commandHistory[this.cmdIndex];
-                            console.log("Down pressed --- cmd index-" + this.cmdIndex + " . cmd- " + cmd);
+                            output = this.commandHistory[this.cmdIndex];
+                            this.cmdIndex--;
                         }
                     }
-                    if (this.buffer != "") {
-                        for (var i = this.buffer.length; i > 0; i--) {
-                            this.backspaceImageData.pop();
+                    else if (chr == String.fromCharCode(40)) {
+                        if (this.commandHistory.length - 1 != this.cmdIndex) {
+                            this.cmdIndex++;
+                            output = this.commandHistory[this.cmdIndex];
                         }
-                        _DrawingContext.putImageData(this.backspaceImageData.pop(), 0, 0);
-                        this.buffer = "";
-                        // resetting X position to 2 since that's where the commands start
-                        this.currentXPosition = this.lastXPosition[2];
                     }
-                    // output the next cmd in the history to the canvas
-                    for (var i = 0; i < cmd.length; i++) {
-                        this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height));
-                        this.putText(cmd.charAt(i));
-                        this.buffer += cmd.charAt(i);
-                    }
+                    console.log(this.commandHistory);
+                    console.log("out - " + output);
+                    console.log("cmdIndex - " + this.cmdIndex);
                 }
                 else {
                     console.log("Key pressed - Normal char");
@@ -186,7 +167,13 @@ var TSOS;
                 this.lastXPosition.push(this.currentXPosition);
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                this.currentXPosition = this.currentXPosition + offset;
+                if ((this.currentXPosition + offset) >= _Canvas.width) {
+                    this.currentXPosition = 0;
+                    this.advanceLine();
+                }
+                else {
+                    this.currentXPosition = this.currentXPosition + offset;
+                }
             }
         };
         Console.prototype.advanceLine = function () {
