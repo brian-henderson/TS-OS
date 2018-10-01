@@ -415,8 +415,12 @@ module TSOS {
                     }
                 }
             }
+            
+            let inputArray = programInput.split(" ");
+
             if (isValid) {
-                _StdOut.putText("Valid Program Input");
+                // THIS IS WHERE WE ARE GOING TO CREATE A PROCESS
+
             }
         }
 
