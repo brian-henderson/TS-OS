@@ -10,12 +10,13 @@
      module TSOS {
 
         export class Memory{
-            public memoryStorage = [];
+            public memoryStorage: Array<String>;
             public init(): void {
-                this.memoryStorage = new Array(768);
+                this.memoryStorage = new Array(256);
                 this.memoryStorage.forEach(i => {
                     i = "00";
                 });
             }
 
-     }
+        }
+    }

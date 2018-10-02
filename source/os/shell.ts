@@ -419,7 +419,7 @@ module TSOS {
             let inputArray = programInput.split(" ");
 
             if (isValid) {
-                // THIS IS WHERE WE ARE GOING TO CREATE A PROCESS
+                _MemoryManager.createProcess(inputArray);
 
             }
         }

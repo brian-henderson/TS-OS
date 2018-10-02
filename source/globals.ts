@@ -74,3 +74,9 @@ var onDocumentLoad = function() {
 
 // List of commands 
 var _commandList: string[] = new Array();  
+
+
+var _Memory: TSOS.Memory;
+var _MemoryManager: TSOS.MemoryManager;
+
+var _PID: number = 0;
