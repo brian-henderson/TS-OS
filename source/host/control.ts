@@ -1,5 +1,7 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../os/canvastext.ts" />
+///<reference path="memory.ts" />
+///<reference path="../os/memoryManager.ts" />
 
 /* ------------
      Control.ts
@@ -123,6 +125,9 @@ module TSOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
+
+            _Memory = new Memory();
+            _Memory.init();
         }
 
         public static hostBtnHaltOS_click(btn): void {

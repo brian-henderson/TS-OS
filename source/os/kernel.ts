@@ -1,4 +1,6 @@
 ///<reference path="../globals.ts" />
+///<reference path="../host/control.ts" />
+///<reference path="../host/devices.ts" />
 ///<reference path="queue.ts" />
 
 /* ------------
@@ -34,6 +36,18 @@ module TSOS {
             // Initialize standard input and output to the _Console.
             _StdIn  = _Console;
             _StdOut = _Console;
+
+            // Initialize memory
+            _Memory = new Memory();
+            _Memory.init();
+
+            _MemoryManager = new MemoryManager();
+    
+
+            // initilize process manager
+           // _ProcessManager = new ProcessManager();
+            
+
 
             // Load the Keyboard Device Driver
             this.krnTrace("Loading the keyboard device driver.");

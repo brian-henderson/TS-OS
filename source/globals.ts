@@ -15,7 +15,7 @@ const APP_NAME: string    = "HidalgOS";   // Popular sandwich at Campus Deli: Op
                                           // fries, mozz sticks, hot sauce, ranch dressing, chipolote mayo.
                                           // Also spanish for "gentlemen" as I am a gentlemen.
 
-const APP_VERSION: string = "0.1";   // lab 01
+const APP_VERSION: string = "2.0";   // lab 01
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
@@ -68,15 +68,16 @@ var _hardwareClockID: number = null;
 var Glados: any = null;  // This is the function Glados() in glados.js on Labouseur.com.
 var _GLaDOS: any = null; // If the above is linked in, this is the instantiated instance of Glados.
 
-var onDocumentLoad = function() {
-	TSOS.Control.hostInit();
-};
-
 // List of commands 
 var _commandList: string[] = new Array();  
 
 
 var _Memory: TSOS.Memory;
 var _MemoryManager: TSOS.MemoryManager;
+var _ProcessManager: TSOS.ProcessManager;
 
 var _PID: number = 0;
+
+var onDocumentLoad = function() {
+	TSOS.Control.hostInit();
+};

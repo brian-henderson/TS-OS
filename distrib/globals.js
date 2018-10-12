@@ -13,7 +13,7 @@
 var APP_NAME = "HidalgOS"; // Popular sandwich at Campus Deli: Open faced sub w/chicken cutlet, american cheese,
 // fries, mozz sticks, hot sauce, ranch dressing, chipolote mayo.
 // Also spanish for "gentlemen" as I am a gentlemen.
-var APP_VERSION = "0.1"; // lab 01
+var APP_VERSION = "2.0"; // lab 01
 var CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 second.
 var TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
@@ -50,8 +50,12 @@ var _hardwareClockID = null;
 // For testing (and enrichment)...
 var Glados = null; // This is the function Glados() in glados.js on Labouseur.com.
 var _GLaDOS = null; // If the above is linked in, this is the instantiated instance of Glados.
+// List of commands 
+var _commandList = new Array();
+var _Memory;
+var _MemoryManager;
+var _ProcessManager;
+var _PID = 0;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };
-// List of commands 
-var _commandList = new Array();

@@ -2,6 +2,9 @@
 ///<reference path="../utils.ts" />
 ///<reference path="shellCommand.ts" />
 ///<reference path="userCommand.ts" />
+///<reference path="memoryManager.ts" />
+///<reference path="processControlBlock.ts" />
+///<reference path="processManager.ts" />
 /* ------------
    Shell.ts
 
@@ -346,8 +349,10 @@ var TSOS;
                     }
                 }
             }
+            var inputArray = programInput.split(" ");
             if (isValid) {
-                _StdOut.putText("Valid Program Input");
+                _MemoryManager.createProcess(inputArray);
+                console.log("Valid..");
             }
         };
         return Shell;

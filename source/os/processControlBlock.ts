@@ -1,3 +1,4 @@
+///<reference path="../globals.ts" />
 
     module TSOS {
         export class ProcessControlBlock { 
@@ -10,6 +11,9 @@
                 return this.pid;
             }
 
+            public returnOne(): string {
+                return "hello";
+            }
 
         }
 

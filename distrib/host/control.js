@@ -1,5 +1,7 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../os/canvastext.ts" />
+///<reference path="memory.ts" />
+///<reference path="../os/memoryManager.ts" />
 /* ------------
      Control.ts
 
@@ -99,6 +101,8 @@ var TSOS;
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
+            _Memory = new TSOS.Memory();
+            _Memory.init();
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");

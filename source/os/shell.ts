@@ -2,6 +2,9 @@
 ///<reference path="../utils.ts" />
 ///<reference path="shellCommand.ts" />
 ///<reference path="userCommand.ts" />
+///<reference path="memoryManager.ts" />
+///<reference path="processControlBlock.ts" />
+///<reference path="processManager.ts" />
 
 
 /* ------------
@@ -416,11 +419,11 @@ module TSOS {
                 }
             }
             
-            let inputArray = programInput.split(" ");
+            var inputArray = programInput.split(" ");
 
             if (isValid) {
                 _MemoryManager.createProcess(inputArray);
-
+                console.log("Valid..");
             }
         }
 
