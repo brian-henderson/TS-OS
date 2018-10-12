@@ -11,7 +11,7 @@ var TSOS;
         function Memory() {
         }
         Memory.prototype.init = function () {
-            this.memoryStorage = new Array(256);
+            this.memoryStorage = new Array(_MemorySize);
             this.memoryStorage.forEach(function (i) {
                 i = "00";
             });

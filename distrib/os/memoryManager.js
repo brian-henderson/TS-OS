@@ -12,6 +12,7 @@ var TSOS;
         };
         MemoryManager.prototype.createProcess = function (program) {
             if (_MemoryManager.checkMemorySpace(program.length)) {
+                // update to new Process ID 
                 _PID++;
                 // new process control block
                 var pcb = new TSOS.ProcessControlBlock(_PID);

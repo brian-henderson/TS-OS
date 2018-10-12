@@ -14,6 +14,7 @@
 
             public createProcess(program: Array<string>): void {
                 if (_MemoryManager.checkMemorySpace(program.length)) {
+                    // update to new Process ID 
                     _PID++;
                     // new process control block
                     let pcb = new ProcessControlBlock(_PID);

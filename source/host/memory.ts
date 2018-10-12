@@ -13,7 +13,7 @@
             public memoryStorage: Array<string>;
             
             public init(): void {
-                this.memoryStorage = new Array(256);
+                this.memoryStorage = new Array(_MemorySize);
                 this.memoryStorage.forEach(i => {
                     i = "00";
                 });

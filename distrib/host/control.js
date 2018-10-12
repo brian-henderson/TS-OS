@@ -68,6 +68,7 @@ var TSOS;
                 var timeout = setTimeout(displayTime, 500);
             }
             displayTime();
+            console.log("init now");
         };
         Control.hostLog = function (msg, source) {
             if (source === void 0) { source = "?"; }
@@ -101,8 +102,8 @@ var TSOS;
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
-            _Memory = new TSOS.Memory();
-            _Memory.init();
+            console.log("memory please be populated");
+            this.initMemoryDisplay();
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");
@@ -119,6 +120,23 @@ var TSOS;
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        };
+        Control.initMemoryDisplay = function () {
+            var table = document.getElementById("tableMemoryDisplay");
+            table.deleteRow(0);
+            // memory is in 8 bits, get total memory size and divide by 8
+            var noOfRows = _MemorySize / 8;
+            // row index starts at 0 and increments every interation of loop
+            var rowIndex = 0;
+            // populate table using i as hex decimal converter/counter
+            for (var i = 0; i < noOfRows; i += 8) {
+                var memoryLocation = "0x" + i.toString(16);
+                var row = table.insertRow(rowIndex);
+                row.insertCell(0).innerHTML = memoryLocation;
+                for (var j = 1; j < 9; j++) {
+                    row.insertCell(j).innerHTML = "00";
+                }
+            }
         };
         Control.prototype.addToPcbDisplay = function (pcb) {
             console.log("Updating pcb display...");

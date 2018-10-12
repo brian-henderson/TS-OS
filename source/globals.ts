@@ -83,3 +83,5 @@ var _PID: number = -1;
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };
+
+var _MemorySize = 256;

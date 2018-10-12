@@ -82,6 +82,9 @@ module TSOS {
             
             displayTime();
 
+            console.log("init now");
+
+
         }
 
         public static hostLog(msg: string, source: string = "?"): void {
@@ -126,8 +129,9 @@ module TSOS {
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
-            _Memory = new Memory();
-            _Memory.init();
+            console.log("memory please be populated");
+            this.initMemoryDisplay();
+
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -147,6 +151,29 @@ module TSOS {
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
+
+        public static initMemoryDisplay(): void {
+
+            let table = (<HTMLTableElement>document.getElementById("tableMemoryDisplay"));
+            table.deleteRow(0);
+
+            // memory is in 8 bits, get total memory size and divide by 8
+            let noOfRows = _MemorySize / 8;
+            // row index starts at 0 and increments every interation of loop
+            let rowIndex = 0;
+            // populate table using i as hex decimal converter/counter
+            for (let i = 0; i < noOfRows; i+=8) {
+                let memoryLocation = "0x" + i.toString(16);
+                let row = table.insertRow(rowIndex);
+                row.insertCell(0).innerHTML = memoryLocation;
+                for (let j = 1; j < 9; j++) {
+                    row.insertCell(j).innerHTML = "00";
+                }
+
+            }
+
+        }
+
 
         public addToPcbDisplay(pcb: ProcessControlBlock): void {
             console.log("Updating pcb display...");
