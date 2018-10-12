@@ -46,3 +46,10 @@ h3 {
   font-size: 8pt;
   text-align: center;
 }
+
+table, th, td {
+  border: 1px solid black;
+  background-color: white;
+  padding: 5px;
+
+}
