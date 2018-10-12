@@ -120,6 +120,34 @@ var TSOS;
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         };
+        Control.prototype.addToPcbDisplay = function (pcb) {
+            console.log("Updating pcb display...");
+            var table = document.getElementById("tablePcbDisplay");
+            if (_PID == 0) {
+                table.deleteRow(1);
+            }
+            var row = table.insertRow();
+            //pid
+            row.insertCell(0).innerHTML = pcb.pid.toString();
+            // priority
+            row.insertCell(1).innerHTML = pcb.priority.toString();
+            // state
+            row.insertCell(2).innerHTML = "YASS QUEEN"; //pcb.state;
+            // pc
+            row.insertCell(3).innerHTML = pcb.programCounter.toString();
+            // ir
+            row.insertCell(4).innerHTML = pcb.instructionReg;
+            // acc
+            row.insertCell(5).innerHTML = pcb.accumulator.toString();
+            // x
+            row.insertCell(6).innerHTML = pcb.X.toString();
+            // y
+            row.insertCell(7).innerHTML = pcb.Y.toString();
+            // z
+            row.insertCell(8).innerHTML = pcb.Z.toString();
+            // location
+            row.insertCell(9).innerHTML = pcb.location;
+        };
         return Control;
     }());
     TSOS.Control = Control;

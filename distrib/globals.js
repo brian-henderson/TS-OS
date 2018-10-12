@@ -55,7 +55,8 @@ var _commandList = new Array();
 var _Memory;
 var _MemoryManager;
 var _ProcessManager;
-var _PID = 0;
+var _Control;
+var _PID = -1;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };

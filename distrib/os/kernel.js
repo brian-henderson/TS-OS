@@ -36,9 +36,12 @@ var TSOS;
             // Initialize memory
             _Memory = new TSOS.Memory();
             _Memory.init();
+            // Initialize Memory Manager Unit
             _MemoryManager = new TSOS.MemoryManager();
+            // Initialize control
+            _Control = new TSOS.Control();
             // initilize process manager
-            // _ProcessManager = new ProcessManager();
+            _ProcessManager = new TSOS.ProcessManager();
             // Load the Keyboard Device Driver
             this.krnTrace("Loading the keyboard device driver.");
             _krnKeyboardDriver = new TSOS.DeviceDriverKeyboard(); // Construct it.

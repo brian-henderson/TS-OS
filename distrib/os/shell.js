@@ -70,6 +70,9 @@ var TSOS;
             // load
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Used to validate HTML code in User Program Input ");
             this.commandList[this.commandList.length] = sc;
+            // run
+            sc = new TSOS.ShellCommand(this.shellRun, "run", "<PID> - Used to run the loaded process given a PID");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // This adds all the shell commands to a globals list to be accessed in console
@@ -258,6 +261,9 @@ var TSOS;
                     case "load":
                         _StdOut.putText("Validates user program code is well...valid");
                         break;
+                    case "run":
+                        _StdOut.putText("<PID> - Used to run the loaded process given a PID");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -353,6 +359,15 @@ var TSOS;
             if (isValid) {
                 _MemoryManager.createProcess(inputArray);
                 console.log("Valid..");
+            }
+        };
+        Shell.prototype.shellRun = function (args) {
+            if (args.length > 0) {
+                var pid = args[0];
+                _ProcessManager.runProcess(pid);
+            }
+            else {
+                _StdOut.putText("Please supply PID");
             }
         };
         return Shell;

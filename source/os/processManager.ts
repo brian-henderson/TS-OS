@@ -15,18 +15,15 @@
 
         export class ProcessManager {
 
+            constructor(
+                public processList: ProcessControlBlock[] = []
+            ) {}
 
-            public createProcess(program: Array<string>): void {
-                if (_MemoryManager.checkMemorySpace(program.length)) {
-                    let pcb = new ProcessControlBlock(_PID);
-                    _MemoryManager.loadProgram(program.length);
-                    _StdOut.putText("Program loaded to memory with PID " + pcb.getPID);
-                    _PID++;
-                }
-                else {
-                    _StdOut.putText("Program not loaded to memory, too big");
-                }
+            public runProcess(pcb: ProcessControlBlock): void {
+
             }
+
+        
 
         }
 

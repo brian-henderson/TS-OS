@@ -3,40 +3,17 @@ var TSOS;
 (function (TSOS) {
     var ProcessControlBlock = /** @class */ (function () {
         function ProcessControlBlock(p) {
+            this.state = "New";
+            this.priority = 0;
+            this.programCounter = 0;
+            this.instructionReg = null;
+            this.accumulator = 0;
+            this.X = 0;
+            this.Y = 0;
+            this.Z = 0;
+            this.location = null;
             this.pid = p;
         }
-        ;
-        ProcessControlBlock.prototype.getPID = function () {
-            return this.pid;
-        };
-        ;
-        ProcessControlBlock.prototype.getState = function () {
-            return this.state;
-        };
-        ;
-        ProcessControlBlock.prototype.getProgramCounter = function () {
-            return this.programCounter;
-        };
-        ;
-        ProcessControlBlock.prototype.getInstructionReg = function () {
-            return this.instructionReg;
-        };
-        ;
-        ProcessControlBlock.prototype.getAccumulator = function () {
-            return this.accumulator;
-        };
-        ;
-        ProcessControlBlock.prototype.getX = function () {
-            return this.X;
-        };
-        ;
-        ProcessControlBlock.prototype.getY = function () {
-            return this.Y;
-        };
-        ;
-        ProcessControlBlock.prototype.getZ = function () {
-            return this.Z;
-        };
         ;
         return ProcessControlBlock;
     }());

@@ -41,11 +41,15 @@ module TSOS {
             _Memory = new Memory();
             _Memory.init();
 
+            // Initialize Memory Manager Unit
             _MemoryManager = new MemoryManager();
+
+            // Initialize control
+            _Control = new Control();
     
 
             // initilize process manager
-           // _ProcessManager = new ProcessManager();
+            _ProcessManager = new ProcessManager();
             
 
 

@@ -76,7 +76,9 @@ var _Memory: TSOS.Memory;
 var _MemoryManager: TSOS.MemoryManager;
 var _ProcessManager: TSOS.ProcessManager;
 
-var _PID: number = 0;
+var _Control: TSOS.Control;
+
+var _PID: number = -1;
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

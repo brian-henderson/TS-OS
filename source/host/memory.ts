@@ -10,7 +10,8 @@
      module TSOS {
 
         export class Memory{
-            public memoryStorage: Array<String>;
+            public memoryStorage: Array<string>;
+            
             public init(): void {
                 this.memoryStorage = new Array(256);
                 this.memoryStorage.forEach(i => {
@@ -18,17 +19,17 @@
                 });
             }
 
-            public createProcess(program: Array<string>): void {
-                if (_MemoryManager.checkMemorySpace(program.length)) {
-                    let pcb = new ProcessControlBlock(_PID);
-                    _MemoryManager.loadProgram(program);
-                    _StdOut.putText("Program loaded to memory with PID " + pcb.getPID);
-                    _PID++;
+            public readMemory(PC: number): string {
+                return this.memoryStorage[PC];
+            };
+
+            public writeMemory(program) {
+                for (let i = 0; i < program.length; i++) {
+                    this.memoryStorage[i] = program[i];
+                    console.log(this.memoryStorage[i]);
                 }
-                else {
-                    _StdOut.putText("Program not loaded to memory, too big");
-                }
-            }
+                // update display
+            };
 
         }
     }

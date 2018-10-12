@@ -13,18 +13,11 @@
 var TSOS;
 (function (TSOS) {
     var ProcessManager = /** @class */ (function () {
-        function ProcessManager() {
+        function ProcessManager(processList) {
+            if (processList === void 0) { processList = []; }
+            this.processList = processList;
         }
-        ProcessManager.prototype.createProcess = function (program) {
-            if (_MemoryManager.checkMemorySpace(program.length)) {
-                var pcb = new TSOS.ProcessControlBlock(_PID);
-                _MemoryManager.loadProgram(program.length);
-                _StdOut.putText("Program loaded to memory with PID " + pcb.getPID);
-                _PID++;
-            }
-            else {
-                _StdOut.putText("Program not loaded to memory, too big");
-            }
+        ProcessManager.prototype.runProcess = function (pcb) {
         };
         return ProcessManager;
     }());

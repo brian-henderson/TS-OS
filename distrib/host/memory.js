@@ -16,17 +16,18 @@ var TSOS;
                 i = "00";
             });
         };
-        Memory.prototype.createProcess = function (program) {
-            if (_MemoryManager.checkMemorySpace(program.length)) {
-                var pcb = new TSOS.ProcessControlBlock(_PID);
-                _MemoryManager.loadProgram(program);
-                _StdOut.putText("Program loaded to memory with PID " + pcb.getPID);
-                _PID++;
-            }
-            else {
-                _StdOut.putText("Program not loaded to memory, too big");
-            }
+        Memory.prototype.readMemory = function (PC) {
+            return this.memoryStorage[PC];
         };
+        ;
+        Memory.prototype.writeMemory = function (program) {
+            for (var i = 0; i < program.length; i++) {
+                this.memoryStorage[i] = program[i];
+                console.log(this.memoryStorage[i]);
+            }
+            // update display
+        };
+        ;
         return Memory;
     }());
     TSOS.Memory = Memory;
