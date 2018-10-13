@@ -84,4 +84,5 @@ var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };
 
+// Adding Memory size here to be global and easy to change
 var _MemorySize = 256;

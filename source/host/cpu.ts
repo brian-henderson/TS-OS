@@ -24,8 +24,9 @@ module TSOS {
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Zflag: number = 0,
-                    public isExecuting: boolean = false) {
-
+                    public isExecuting: boolean = false,
+                    public currentInstruction: string = ""
+                ){
         }
 
         public init(): void {
@@ -35,6 +36,7 @@ module TSOS {
             this.Yreg = 0;
             this.Zflag = 0;
             this.isExecuting = false;
+            this.currentInstruction = "";
         }
 
         public cycle(): void {
@@ -42,6 +44,55 @@ module TSOS {
             _Control.updateCpuDisplay();
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
+        }
+
+        public executeProgram(pcb: ProcessControlBlock) {
+            this.currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
+
+            switch(this.currentInstruction) {
+                case "A9":
+                    // Load the constant into the accumulator
+                    break;
+                case "AD":
+                    // Store the accumulator into memory
+                    break;
+                case "A2":
+                    // Load a constant into the X register
+                    break;
+                case "A0":
+                    // Load a constant into the Y register
+                    break;
+                case "8D":
+                    // tbd
+                    break;
+                case "8E":
+                    // Load the X Register from memory
+                    break;
+                case "AC":
+                    // Load the Y Register from memory
+                    break;
+                case "6D":
+                    // Add address contents to accumulator
+                    break;
+                case "EC":
+                    // compare memory to X register
+                    break;
+                case "D0":
+                    // tbd
+                    break;
+                case "FF":
+                    // System call
+                    break;
+                case "EE":
+                    // increment byte value
+                    break;
+                case "00":
+                    // new 
+                    break;
+                default:
+                    // invalid op code
+
+            }
         }
 
     }
