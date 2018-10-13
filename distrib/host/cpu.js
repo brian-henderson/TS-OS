@@ -16,19 +16,21 @@
 var TSOS;
 (function (TSOS) {
     var Cpu = /** @class */ (function () {
-        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting) {
+        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, currentInstruction) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
             if (Yreg === void 0) { Yreg = 0; }
             if (Zflag === void 0) { Zflag = 0; }
             if (isExecuting === void 0) { isExecuting = false; }
+            if (currentInstruction === void 0) { currentInstruction = ""; }
             this.PC = PC;
             this.Acc = Acc;
             this.Xreg = Xreg;
             this.Yreg = Yreg;
             this.Zflag = Zflag;
             this.isExecuting = isExecuting;
+            this.currentInstruction = currentInstruction;
         }
         Cpu.prototype.init = function () {
             this.PC = 0;
@@ -37,12 +39,59 @@ var TSOS;
             this.Yreg = 0;
             this.Zflag = 0;
             this.isExecuting = false;
+            this.currentInstruction = "";
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
             _Control.updateCpuDisplay();
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
+        };
+        Cpu.prototype.executeProgram = function (pcb) {
+            this.currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
+            switch (this.currentInstruction) {
+                case "A9":
+                    // Load the constant into the accumulator
+                    break;
+                case "AD":
+                    // Store the accumulator into memory
+                    break;
+                case "A2":
+                    // Load a constant into the X register
+                    break;
+                case "A0":
+                    // Load a constant into the Y register
+                    break;
+                case "8D":
+                    // tbd
+                    break;
+                case "8E":
+                    // Load the X Register from memory
+                    break;
+                case "AC":
+                    // Load the Y Register from memory
+                    break;
+                case "6D":
+                    // Add address contents to accumulator
+                    break;
+                case "EC":
+                    // compare memory to X register
+                    break;
+                case "D0":
+                    // tbd
+                    break;
+                case "FF":
+                    // System call
+                    break;
+                case "EE":
+                    // increment byte value
+                    break;
+                case "00":
+                    // new 
+                    break;
+                default:
+                // invalid op code
+            }
         };
         return Cpu;
     }());
