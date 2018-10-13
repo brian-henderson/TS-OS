@@ -17,6 +17,7 @@
                 this.memoryStorage.forEach(i => {
                     i = "00";
                 });
+                console.log(this.memoryStorage);
             }
 
             public readMemory(PC: number): string {
@@ -28,7 +29,7 @@
                     this.memoryStorage[i] = program[i];
                     console.log(this.memoryStorage[i]);
                 }
-                // update display
+                _Control.updateMemoryDisplay();
             };
 
         }

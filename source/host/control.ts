@@ -157,23 +157,51 @@ module TSOS {
             let table = (<HTMLTableElement>document.getElementById("tableMemoryDisplay"));
             table.deleteRow(0);
 
-            // memory is in 8 bits, get total memory size and divide by 8
-            let noOfRows = _MemorySize / 8;
-            // row index starts at 0 and increments every interation of loop
-            let rowIndex = 0;
             // populate table using i as hex decimal converter/counter
-            for (let i = 0; i < noOfRows; i+=8) {
-                let memoryLocation = "0x" + i.toString(16);
-                let row = table.insertRow(rowIndex);
-                row.insertCell(0).innerHTML = memoryLocation;
+            for (let i = 0; i < _MemorySize; i+=8) {
+                
+                let memHexLoc = i.toString(16);
+                if (memHexLoc.length == 1) {
+                    memHexLoc = "0" + memHexLoc;
+                }
+                if (memHexLoc.length == 2) {
+                    memHexLoc = "00" + memHexLoc;
+                }
+                // dividing by 8 to get back to base 1
+                let row = table.insertRow(i/8);
+                row.insertCell(0).innerHTML = "0x" + memHexLoc;
                 for (let j = 1; j < 9; j++) {
                     row.insertCell(j).innerHTML = "00";
                 }
+            }
+        }
 
+        public updateMemoryDisplay(): void {
+            let table = (<HTMLTableElement>document.getElementById("tableMemoryDisplay"));
+            table.innerHTML = "";
+            let memIndex = 0;
+            // populate table using i as hex decimal converter/counter
+            for (let i = 0; i < _MemorySize; i+=8) {
+                
+                let memHexLoc = i.toString(16);
+                if (memHexLoc.length == 1) {
+                    memHexLoc = "0" + memHexLoc;
+                }
+                if (memHexLoc.length == 2) {
+                    memHexLoc = "00" + memHexLoc;
+                }
+                // dividing by 8 to get back to base 1
+                let row = table.insertRow(i/8);
+                // memory location
+                row.insertCell(0).innerHTML = "0x" + memHexLoc;
+                // index of memory storage
+                for (let j = 1; j < 9; j++) {
+                    row.insertCell(j).innerHTML = _Memory.memoryStorage[memIndex];
+                    memIndex++;
+                }
             }
 
         }
-
 
         public addToPcbDisplay(pcb: ProcessControlBlock): void {
             console.log("Updating pcb display...");
@@ -189,7 +217,7 @@ module TSOS {
             // priority
             row.insertCell(1).innerHTML = pcb.priority.toString();
             // state
-            row.insertCell(2).innerHTML = "YASS QUEEN";//pcb.state;
+            row.insertCell(2).innerHTML = pcb.state;
             // pc
             row.insertCell(3).innerHTML = pcb.programCounter.toString();
             // ir
@@ -204,6 +232,23 @@ module TSOS {
             row.insertCell(8).innerHTML = pcb.Z.toString();
             // location
             row.insertCell(9).innerHTML = pcb.location;
+        }
+
+    
+        public updateCpuDisplay(): void {
+            let table = (<HTMLTableElement>document.getElementById("tableCpuDisplay"));
+            table.deleteRow(1);
+            let row = table.insertRow(1);
+            // PC
+            row.insertCell(0).innerHTML = _CPU.PC.toString();
+            // ACC
+            row.insertCell(1).innerHTML = _CPU.Acc.toString();
+            // X
+            row.insertCell(2).innerHTML = _CPU.Xreg.toString();
+            // Y
+            row.insertCell(3).innerHTML = _CPU.Yreg.toString();
+            // Z
+            row.insertCell(4).innerHTML = _CPU.Zflag.toString();
 
         }
     }

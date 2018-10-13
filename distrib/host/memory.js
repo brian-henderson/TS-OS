@@ -15,6 +15,7 @@ var TSOS;
             this.memoryStorage.forEach(function (i) {
                 i = "00";
             });
+            console.log(this.memoryStorage);
         };
         Memory.prototype.readMemory = function (PC) {
             return this.memoryStorage[PC];
@@ -25,7 +26,7 @@ var TSOS;
                 this.memoryStorage[i] = program[i];
                 console.log(this.memoryStorage[i]);
             }
-            // update display
+            _Control.updateMemoryDisplay();
         };
         ;
         return Memory;

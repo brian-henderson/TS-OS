@@ -53,3 +53,10 @@ table, th, td {
   padding: 5px;
 
 }
+
+
+#divMemoryDisplay {
+  height: 250px;
+  width: fit-content;
+  overflow-y: scroll;
+}
