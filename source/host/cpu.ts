@@ -56,7 +56,7 @@ module TSOS {
                     break;
                 case "AD":
                     // Store the accumulator from memory
-                    this.loadAccMemory();
+                    this.loadAccFromMemory();
                     break;
                 case "A2":
                     // Load a constant into the X register
@@ -71,6 +71,7 @@ module TSOS {
                     break;
                 case "8E":
                     // Load the X Register from memory
+                    this.loadXfromMemory();
                     break;
                 case "AC":
                     // Load the Y Register from memory
@@ -114,7 +115,7 @@ module TSOS {
         }
 
         // OP CODE  - AD
-        public loadAccMemory(): void {
+        public loadAccFromMemory(): void {
             // increase program counter
             this.increaseProgramCounter();
             // grab the memory location of where to store from
@@ -143,6 +144,34 @@ module TSOS {
             this.increaseProgramCounter();
             // get and assign x register
             this.Yreg = parseInt(_Memory.readMemory(this.PC),16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        }
+
+        // OP CODE  - AE
+        public loadXfromMemory(): void {
+            // increase program counter
+            this.increaseProgramCounter();
+            // grab the memory location of where stored
+            let memoryLoc = parseInt(_Memory.readMemory(this.PC), 16);
+            // increase program counter again
+            this.increaseProgramCounter();
+            // load into the X register on CPU
+            this.Xreg = parseInt(_Memory.readMemory(memoryLoc), 16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        }
+
+         // OP CODE  - AC
+         public loadYfromMemory(): void {
+            // increase program counter
+            this.increaseProgramCounter();
+            // grab the memory location of where stored
+            let memoryLoc = parseInt(_Memory.readMemory(this.PC), 16);
+            // increase program counter again
+            this.increaseProgramCounter();
+            // load into the Y register on CPU
+            this.Yreg = parseInt(_Memory.readMemory(memoryLoc), 16);
             // update program counter to next program
             this.increaseProgramCounter();
         }
