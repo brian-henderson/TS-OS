@@ -52,15 +52,19 @@ module TSOS {
             switch(this.currentInstruction) {
                 case "A9":
                     // Load the constant into the accumulator
+                    this.loadAcc();
                     break;
                 case "AD":
-                    // Store the accumulator into memory
+                    // Store the accumulator from memory
+                    this.loadAccMemory();
                     break;
                 case "A2":
                     // Load a constant into the X register
+                    this.loadXRegister();
                     break;
                 case "A0":
                     // Load a constant into the Y register
+                    this.loadYRegister();
                     break;
                 case "8D":
                     // tbd
@@ -93,6 +97,54 @@ module TSOS {
                     // invalid op code
 
             }
+        }
+
+        public increaseProgramCounter() {
+            this.PC++;
+        }
+
+        // OP CODE  - A9 
+        public loadAcc(): void {
+            // Increase program counter
+            this.increaseProgramCounter();
+            // save constant to accumulator
+            this.Acc = parseInt(_Memory.readMemory(this.PC),16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        }
+
+        // OP CODE  - AD
+        public loadAccMemory(): void {
+            // increase program counter
+            this.increaseProgramCounter();
+            // grab the memory location of where to store from
+            let memoryLoc = parseInt(_Memory.readMemory(this.PC), 16);
+            // increase program counter again
+            this.increaseProgramCounter();
+            // load into the accumulator reading 
+            this.Acc = parseInt(_Memory.readMemory(memoryLoc), 16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        }
+
+        // OP CODE  - A2
+        public loadXRegister(): void {
+            // increase program counter
+            this.increaseProgramCounter();
+            // get and assign x register
+            this.Xreg = parseInt(_Memory.readMemory(this.PC),16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        }
+
+        // OP CODE  - A0
+        public loadYRegister(): void {
+            // increase program counter
+            this.increaseProgramCounter();
+            // get and assign x register
+            this.Yreg = parseInt(_Memory.readMemory(this.PC),16);
+            // update program counter to next program
+            this.increaseProgramCounter();
         }
 
     }
