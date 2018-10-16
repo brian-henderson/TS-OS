@@ -48,34 +48,38 @@ var TSOS;
             // Do the real work here. Be sure to set this.isExecuting appropriately.
         };
         Cpu.prototype.executeProgram = function (pcb) {
-            this.currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
+            this.currentInstruction = _MemoryAccessor.readMemory(pcb.programCounter).toUpperCase();
             switch (this.currentInstruction) {
                 case "A9":
                     // Load the constant into the accumulator
+                    this.loadAcc();
                     break;
                 case "AD":
-                    // Store the accumulator into memory
+                    // Store the accumulator from memory
+                    this.loadAccFromMemory();
                     break;
                 case "A2":
                     // Load a constant into the X register
+                    this.loadXRegister();
                     break;
                 case "A0":
                     // Load a constant into the Y register
+                    this.loadYRegister();
                     break;
                 case "8D":
                     // tbd
                     break;
                 case "8E":
                     // Load the X Register from memory
+                    this.loadXfromMemory();
                     break;
                 case "AC":
                     // Load the Y Register from memory
-                    break;
-                case "6D":
-                    // Add address contents to accumulator
+                    this.loadYfromMemory();
                     break;
                 case "EC":
                     // compare memory to X register
+                    this.compareMemoryToX();
                     break;
                 case "D0":
                     // tbd
@@ -92,6 +96,100 @@ var TSOS;
                 default:
                 // invalid op code
             }
+            // Update the current process control block
+            _ProcessManager.currPCB.accumulator = this.Acc;
+            _ProcessManager.currPCB.programCounter = this.PC;
+            _ProcessManager.currPCB.X = this.Xreg;
+            _ProcessManager.currPCB.Y = this.Yreg;
+            _ProcessManager.currPCB.Z = this.Zflag;
+        };
+        Cpu.prototype.setCpu = function (pcb) {
+            this.PC = pcb.programCounter;
+            this.Acc = pcb.accumulator;
+            this.Xreg = pcb.X;
+            this.Yreg = pcb.Y;
+            this.Zflag = pcb.Z;
+        };
+        Cpu.prototype.increaseProgramCounter = function () {
+            this.PC++;
+        };
+        // OP CODE  - A9 
+        Cpu.prototype.loadAcc = function () {
+            // Increase program counter
+            this.increaseProgramCounter();
+            // save constant to accumulator
+            this.Acc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - AD
+        Cpu.prototype.loadAccFromMemory = function () {
+            // increase program counter
+            this.increaseProgramCounter();
+            // grab the memory location of where to store from
+            var memoryLoc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            // increase program counter again
+            this.increaseProgramCounter();
+            // load into the accumulator reading 
+            this.Acc = parseInt(_MemoryAccessor.readMemory(memoryLoc), 16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - A2
+        Cpu.prototype.loadXRegister = function () {
+            // increase program counter
+            this.increaseProgramCounter();
+            // get and assign x register
+            this.Xreg = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - A0
+        Cpu.prototype.loadYRegister = function () {
+            // increase program counter
+            this.increaseProgramCounter();
+            // get and assign x register
+            this.Yreg = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - AE
+        Cpu.prototype.loadXfromMemory = function () {
+            // increase program counter
+            this.increaseProgramCounter();
+            // grab the memory location of where stored
+            var memoryLoc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            // increase program counter again
+            this.increaseProgramCounter();
+            // load into the X register on CPU
+            this.Xreg = parseInt(_MemoryAccessor.readMemory(memoryLoc), 16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - AC
+        Cpu.prototype.loadYfromMemory = function () {
+            // increase program counter
+            this.increaseProgramCounter();
+            // grab the memory location of where stored
+            var memoryLoc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            // increase program counter again
+            this.increaseProgramCounter();
+            // load into the Y register on CPU
+            this.Yreg = parseInt(_MemoryAccessor.readMemory(memoryLoc), 16);
+            // update program counter to next program
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - EC
+        Cpu.prototype.compareMemoryToX = function () {
+            // increase program counter
+            this.increaseProgramCounter();
+            // grab the memory location of where stored
+            var memoryLoc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            // increase program counter again
+            this.increaseProgramCounter();
+            // get the mem to compare X to 
+            var mem = parseInt(_MemoryAccessor.readMemory(memoryLoc), 16);
+            this.Zflag = (mem == this.Xreg ? 1 : 0);
         };
         return Cpu;
     }());

@@ -17,7 +17,12 @@ var TSOS;
             if (processList === void 0) { processList = []; }
             this.processList = processList;
         }
+        ;
         ProcessManager.prototype.runProcess = function (pcb) {
+            this.currPCB = pcb;
+            this.currPCB.state = "running";
+            _CPU.setCpu(pcb);
+            _CPU.isExecuting = true;
         };
         return ProcessManager;
     }());

@@ -17,9 +17,16 @@
 
             constructor(
                 public processList: ProcessControlBlock[] = []
-            ) {}
+                ) {                    
+            };
+
+            public currPCB : ProcessControlBlock;
 
             public runProcess(pcb: ProcessControlBlock): void {
+                this.currPCB = pcb;
+                this.currPCB.state = "running";
+                _CPU.setCpu(pcb);
+                _CPU.isExecuting = true;
 
             }
 

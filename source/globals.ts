@@ -75,6 +75,7 @@ var _commandList: string[] = new Array();
 var _Memory: TSOS.Memory;
 var _MemoryManager: TSOS.MemoryManager;
 var _ProcessManager: TSOS.ProcessManager;
+var _MemoryAccessor: TSOS.MemoryAccessor;
 
 var _Control: TSOS.Control;
 

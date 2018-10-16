@@ -55,6 +55,7 @@ var _commandList = new Array();
 var _Memory;
 var _MemoryManager;
 var _ProcessManager;
+var _MemoryAccessor;
 var _Control;
 var _PID = -1;
 var onDocumentLoad = function () {

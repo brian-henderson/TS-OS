@@ -46,7 +46,6 @@ module TSOS {
 
             // Initialize control
             _Control = new Control();
-    
 
             // initilize process manager
             _ProcessManager = new ProcessManager();

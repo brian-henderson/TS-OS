@@ -17,18 +17,6 @@ var TSOS;
             });
             console.log(this.memoryStorage);
         };
-        Memory.prototype.readMemory = function (PC) {
-            return this.memoryStorage[PC];
-        };
-        ;
-        Memory.prototype.writeMemory = function (program) {
-            for (var i = 0; i < program.length; i++) {
-                this.memoryStorage[i] = program[i];
-                console.log(this.memoryStorage[i]);
-            }
-            _Control.updateMemoryDisplay();
-        };
-        ;
         return Memory;
     }());
     TSOS.Memory = Memory;

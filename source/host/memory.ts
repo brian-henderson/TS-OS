@@ -19,7 +19,7 @@
                 });
                 console.log(this.memoryStorage);
             }
-
+/*
             public readMemory(PC: number): string {
                 return this.memoryStorage[PC];
             };
@@ -31,6 +31,6 @@
                 }
                 _Control.updateMemoryDisplay();
             };
-
+*/
         }
     }
