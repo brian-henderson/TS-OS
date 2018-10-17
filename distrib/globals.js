@@ -22,9 +22,17 @@ var KEYBOARD_IRQ = 1;
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
+// Hardware (host)
 var _CPU; // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
+var _Memory;
+//var _MemoryAccessor: TSOS.MemoryAccessor;
+// Software (os)
+var _MemoryManager;
+var _ProcessManager;
 var _OSclock = 0; // Page 23.
 var _Mode = 0; // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
+// Adding Memory size here to be global and easy to change
+var _MemorySize = 256;
 var _Canvas; // Initialized in Control.hostInit().
 var _DrawingContext; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.
 var _DefaultFontFamily = "sans"; // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
@@ -52,14 +60,8 @@ var Glados = null; // This is the function Glados() in glados.js on Labouseur.co
 var _GLaDOS = null; // If the above is linked in, this is the instantiated instance of Glados.
 // List of commands 
 var _commandList = new Array();
-var _Memory;
-var _MemoryManager;
-var _ProcessManager;
-var _MemoryAccessor;
 var _Control;
 var _PID = -1;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };
-// Adding Memory size here to be global and easy to change
-var _MemorySize = 256;

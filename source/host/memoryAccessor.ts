@@ -5,13 +5,15 @@
 
      Requires global.ts.
 
-     ------------ */
+     ------------ --
 
      module TSOS {
 
         export class MemoryAccessor{
 
-            //constructor(){};
+            constructor(
+
+            ){};
 
             public readMemory(PC: number): string {
                 return _Memory.memoryStorage[PC];
@@ -27,3 +29,4 @@
 
         }
     }
+*/

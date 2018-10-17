@@ -21,9 +21,9 @@
                     // write the program to the memory, given user input already split into array
                     _MemoryManager.writeProgramToMemory(program);
                     // add this process to the list of upcoming processes
-                    _ProcessManager.processList.push(pcb);
+                    _ProcessManager.waitQueue.enqueue(pcb);
                     // get the instruction registry and set it 
-                    pcb.instructionReg = _MemoryAccessor.readMemory(pcb.programCounter);
+                    pcb.instructionReg = _Memory.readMemory(pcb.programCounter);
                     // set the location to memory (no hard drive yet so this is static but getting ready for next iP)
                     pcb.location = "Memory";
                     // output status to console
@@ -37,7 +37,7 @@
             }
 
             public writeProgramToMemory(program): void {
-                _MemoryAccessor.writeMemory(program);
+                _Memory.writeMemory(program);
             }
 
 

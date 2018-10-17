@@ -13,16 +13,25 @@
 var TSOS;
 (function (TSOS) {
     var ProcessManager = /** @class */ (function () {
-        function ProcessManager(processList) {
-            if (processList === void 0) { processList = []; }
-            this.processList = processList;
+        function ProcessManager(
+        //public processList: ProcessControlBlock[] = [],
+        waitQueue, readyQueue, currPCB) {
+            if (waitQueue === void 0) { waitQueue = new TSOS.Queue(); }
+            if (readyQueue === void 0) { readyQueue = new TSOS.Queue(); }
+            if (currPCB === void 0) { currPCB = null; }
+            this.waitQueue = waitQueue;
+            this.readyQueue = readyQueue;
+            this.currPCB = currPCB;
         }
         ;
         ProcessManager.prototype.runProcess = function (pcb) {
+            console.log("Run Process PCB: " + pcb.pid);
             this.currPCB = pcb;
             this.currPCB.state = "running";
-            _CPU.setCpu(pcb);
-            _CPU.isExecuting = true;
+            this.readyQueue.enqueue(pcb);
+        };
+        ProcessManager.prototype.readInstruction = function (PC) {
+            return _Memory.readMemory(PC);
         };
         return ProcessManager;
     }());

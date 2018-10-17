@@ -331,7 +331,7 @@ var TSOS;
         Shell.prototype.shellStatus = function (args) {
             var status = '';
             for (var i = 0; i < args.length; i++) {
-                status = status + '' + args[i];
+                status = status + ' ' + args[i];
             }
             document.getElementById('statusDisplay').innerHTML = "Status: " + status;
         };
@@ -364,7 +364,29 @@ var TSOS;
         Shell.prototype.shellRun = function (args) {
             if (args.length > 0) {
                 var pid = args[0];
-                _ProcessManager.runProcess(pid);
+                console.log("Runnign PID: " + pid);
+                var tempQueue = new TSOS.Queue();
+                var pcbToRun = void 0;
+                var pcbInQueue = false;
+                while (_ProcessManager.waitQueue.getSize() > 0) {
+                    var waitQueuePcb = _ProcessManager.waitQueue.dequeue();
+                    if (waitQueuePcb.pid == pid) {
+                        pcbToRun = waitQueuePcb;
+                        pcbInQueue = true;
+                    }
+                    else {
+                        tempQueue.enqueue(waitQueuePcb);
+                    }
+                }
+                while (tempQueue.getSize() > 0) {
+                    _ProcessManager.readyQueue.enqueue(tempQueue.dequeue());
+                }
+                if (pcbInQueue) {
+                    _ProcessManager.runProcess(pcbToRun);
+                }
+                else {
+                    _StdOut.putText("PID not found");
+                }
             }
             else {
                 _StdOut.putText("Please supply PID");

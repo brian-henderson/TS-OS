@@ -39,16 +39,21 @@ var TSOS;
             this.Yreg = 0;
             this.Zflag = 0;
             this.isExecuting = false;
-            this.currentInstruction = "";
+            //this.currentInstruction = "";
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
-            _Control.updateCpuDisplay();
+            //_Control.updateCpuDisplay();
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
+            this.executeProgram(_ProcessManager.readyQueue.dequeue());
         };
         Cpu.prototype.executeProgram = function (pcb) {
-            this.currentInstruction = _MemoryAccessor.readMemory(pcb.programCounter).toUpperCase();
+            var x = _ProcessManager.readyQueue.getSize();
+            console.log("q size = " + x);
+            var currentInstruction = _Memory.readMemory(pcb.programCounter); //.toUpperCase();
+            console.log(pcb);
+            _CPU.isExecuting = false;
             switch (this.currentInstruction) {
                 case "A9":
                     // Load the constant into the accumulator
@@ -118,7 +123,7 @@ var TSOS;
             // Increase program counter
             this.increaseProgramCounter();
             // save constant to accumulator
-            this.Acc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            this.Acc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
             // update program counter to next program
             this.increaseProgramCounter();
         };
@@ -127,11 +132,11 @@ var TSOS;
             // increase program counter
             this.increaseProgramCounter();
             // grab the memory location of where to store from
-            var memoryLoc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            var memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
             // increase program counter again
             this.increaseProgramCounter();
             // load into the accumulator reading 
-            this.Acc = parseInt(_MemoryAccessor.readMemory(memoryLoc), 16);
+            this.Acc = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             // update program counter to next program
             this.increaseProgramCounter();
         };
@@ -140,7 +145,7 @@ var TSOS;
             // increase program counter
             this.increaseProgramCounter();
             // get and assign x register
-            this.Xreg = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            this.Xreg = parseInt(_ProcessManager.readInstruction(this.PC), 16);
             // update program counter to next program
             this.increaseProgramCounter();
         };
@@ -149,7 +154,7 @@ var TSOS;
             // increase program counter
             this.increaseProgramCounter();
             // get and assign x register
-            this.Yreg = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            this.Yreg = parseInt(_ProcessManager.readInstruction(this.PC), 16);
             // update program counter to next program
             this.increaseProgramCounter();
         };
@@ -158,11 +163,11 @@ var TSOS;
             // increase program counter
             this.increaseProgramCounter();
             // grab the memory location of where stored
-            var memoryLoc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            var memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
             // increase program counter again
             this.increaseProgramCounter();
             // load into the X register on CPU
-            this.Xreg = parseInt(_MemoryAccessor.readMemory(memoryLoc), 16);
+            this.Xreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             // update program counter to next program
             this.increaseProgramCounter();
         };
@@ -171,11 +176,11 @@ var TSOS;
             // increase program counter
             this.increaseProgramCounter();
             // grab the memory location of where stored
-            var memoryLoc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            var memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
             // increase program counter again
             this.increaseProgramCounter();
             // load into the Y register on CPU
-            this.Yreg = parseInt(_MemoryAccessor.readMemory(memoryLoc), 16);
+            this.Yreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             // update program counter to next program
             this.increaseProgramCounter();
         };
@@ -184,11 +189,11 @@ var TSOS;
             // increase program counter
             this.increaseProgramCounter();
             // grab the memory location of where stored
-            var memoryLoc = parseInt(_MemoryAccessor.readMemory(this.PC), 16);
+            var memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
             // increase program counter again
             this.increaseProgramCounter();
             // get the mem to compare X to 
-            var mem = parseInt(_MemoryAccessor.readMemory(memoryLoc), 16);
+            var mem = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             this.Zflag = (mem == this.Xreg ? 1 : 0);
         };
         return Cpu;

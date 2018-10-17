@@ -399,7 +399,7 @@ module TSOS {
             var status = '';
             for (var i = 0; i < args.length; i++)
             {
-                status = status + '' + args[i];
+                status = status + ' ' + args[i];
             }
             document.getElementById('statusDisplay').innerHTML = "Status: " + status;
         }
@@ -427,7 +427,7 @@ module TSOS {
                 }
             }
             
-            var inputArray = programInput.split(" ");
+            let inputArray = programInput.split(" ");
 
             if (isValid) {
                 _MemoryManager.createProcess(inputArray);
@@ -438,7 +438,32 @@ module TSOS {
         public shellRun(args) {
             if (args.length > 0 ) {
                 let pid = args[0];
-                _ProcessManager.runProcess(pid);
+                console.log("Runnign PID: " + pid);
+                
+                let tempQueue: TSOS.Queue = new Queue();
+                let pcbToRun: ProcessControlBlock;
+                let pcbInQueue: boolean = false;
+                
+                while (_ProcessManager.waitQueue.getSize() > 0) {
+                    let waitQueuePcb = _ProcessManager.waitQueue.dequeue();
+                    if (waitQueuePcb.pid == pid) {
+                        pcbToRun = waitQueuePcb;
+                        pcbInQueue = true;
+                    }
+                    else {
+                        tempQueue.enqueue(waitQueuePcb);
+                    }
+                }
+                while (tempQueue.getSize() > 0) {
+                    _ProcessManager.readyQueue.enqueue(tempQueue.dequeue());
+                }
+                
+                if (pcbInQueue) {
+                    _ProcessManager.runProcess(pcbToRun);
+                }
+                else {
+                    _StdOut.putText("PID not found");
+                }
 
             }
             else {

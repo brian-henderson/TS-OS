@@ -19,18 +19,19 @@
                 });
                 console.log(this.memoryStorage);
             }
-/*
+
             public readMemory(PC: number): string {
+                console.log("read memory called with PC : " + PC);
                 return this.memoryStorage[PC];
             };
 
             public writeMemory(program) {
                 for (let i = 0; i < program.length; i++) {
                     this.memoryStorage[i] = program[i];
-                    console.log(this.memoryStorage[i]);
                 }
+                console.log("Current memory: " + this.memoryStorage);
                 _Control.updateMemoryDisplay();
             };
-*/
+
         }
     }

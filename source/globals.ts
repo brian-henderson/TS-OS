@@ -28,11 +28,21 @@ const KEYBOARD_IRQ: number = 1;
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
+// Hardware (host)
 var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
+var _Memory: TSOS.Memory;
+//var _MemoryAccessor: TSOS.MemoryAccessor;
+
+// Software (os)
+var _MemoryManager: TSOS.MemoryManager;
+var _ProcessManager: TSOS.ProcessManager;
 
 var _OSclock: number = 0;  // Page 23.
 
 var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
+
+// Adding Memory size here to be global and easy to change
+var _MemorySize = 256;
 
 var _Canvas: HTMLCanvasElement;         // Initialized in Control.hostInit().
 var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.
@@ -72,11 +82,6 @@ var _GLaDOS: any = null; // If the above is linked in, this is the instantiated 
 var _commandList: string[] = new Array();  
 
 
-var _Memory: TSOS.Memory;
-var _MemoryManager: TSOS.MemoryManager;
-var _ProcessManager: TSOS.ProcessManager;
-var _MemoryAccessor: TSOS.MemoryAccessor;
-
 var _Control: TSOS.Control;
 
 var _PID: number = -1;
@@ -85,5 +90,3 @@ var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };
 
-// Adding Memory size here to be global and easy to change
-var _MemorySize = 256;

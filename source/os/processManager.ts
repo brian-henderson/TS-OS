@@ -16,18 +16,23 @@
         export class ProcessManager {
 
             constructor(
-                public processList: ProcessControlBlock[] = []
+                //public processList: ProcessControlBlock[] = [],
+                public waitQueue: TSOS.Queue = new Queue(),
+                public readyQueue: TSOS.Queue = new Queue(),
+                public currPCB : ProcessControlBlock = null
                 ) {                    
             };
 
-            public currPCB : ProcessControlBlock;
 
             public runProcess(pcb: ProcessControlBlock): void {
+                console.log("Run Process PCB: " + pcb.pid);
                 this.currPCB = pcb;
                 this.currPCB.state = "running";
-                _CPU.setCpu(pcb);
-                _CPU.isExecuting = true;
+                this.readyQueue.enqueue(pcb);
+            }
 
+            public readInstruction(PC: number): string {
+                return _Memory.readMemory(PC);
             }
 
         
