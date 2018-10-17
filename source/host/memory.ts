@@ -25,13 +25,18 @@
                 return this.memoryStorage[PC];
             };
 
-            public writeMemory(program) {
+            public writeMemory(program): void {
                 for (let i = 0; i < program.length; i++) {
-                    this.memoryStorage[i] = program[i];
+                    //this.memoryStorage[i] = program[i];
+                    this.writeMemoryByte(i, program[i]);
                 }
                 console.log("Current memory: " + this.memoryStorage);
                 _Control.updateMemoryDisplay();
             };
+
+            public writeMemoryByte(loc: number, byteData: string): void {
+                this.memoryStorage[loc] = byteData;
+            }
 
         }
     }

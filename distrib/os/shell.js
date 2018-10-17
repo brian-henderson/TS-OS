@@ -364,9 +364,9 @@ var TSOS;
         Shell.prototype.shellRun = function (args) {
             if (args.length > 0) {
                 var pid = args[0];
-                console.log("Runnign PID: " + pid);
+                console.log("Running PID: " + pid);
                 var tempQueue = new TSOS.Queue();
-                var pcbToRun = void 0;
+                var pcbToRun = null;
                 var pcbInQueue = false;
                 while (_ProcessManager.waitQueue.getSize() > 0) {
                     var waitQueuePcb = _ProcessManager.waitQueue.dequeue();

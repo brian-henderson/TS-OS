@@ -16,21 +16,19 @@
 var TSOS;
 (function (TSOS) {
     var Cpu = /** @class */ (function () {
-        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, currentInstruction) {
+        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
             if (Yreg === void 0) { Yreg = 0; }
             if (Zflag === void 0) { Zflag = 0; }
             if (isExecuting === void 0) { isExecuting = false; }
-            if (currentInstruction === void 0) { currentInstruction = ""; }
             this.PC = PC;
             this.Acc = Acc;
             this.Xreg = Xreg;
             this.Yreg = Yreg;
             this.Zflag = Zflag;
             this.isExecuting = isExecuting;
-            this.currentInstruction = currentInstruction;
         }
         Cpu.prototype.init = function () {
             this.PC = 0;
@@ -39,7 +37,6 @@ var TSOS;
             this.Yreg = 0;
             this.Zflag = 0;
             this.isExecuting = false;
-            //this.currentInstruction = "";
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
@@ -49,12 +46,9 @@ var TSOS;
             this.executeProgram(_ProcessManager.readyQueue.dequeue());
         };
         Cpu.prototype.executeProgram = function (pcb) {
-            var x = _ProcessManager.readyQueue.getSize();
-            console.log("q size = " + x);
-            var currentInstruction = _Memory.readMemory(pcb.programCounter); //.toUpperCase();
-            console.log(pcb);
-            _CPU.isExecuting = false;
-            switch (this.currentInstruction) {
+            var currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
+            console.log("Current instruction: " + currentInstruction);
+            switch (currentInstruction) {
                 case "A9":
                     // Load the constant into the accumulator
                     this.loadAcc();
@@ -72,9 +66,14 @@ var TSOS;
                     this.loadYRegister();
                     break;
                 case "8D":
-                    // tbd
+                    // Store Accumulator in mem
+                    this.storeAccInMemory();
                     break;
-                case "8E":
+                case "6D":
+                    // Add and carry
+                    this.addWithCarry();
+                    break;
+                case "AE":
                     // Load the X Register from memory
                     this.loadXfromMemory();
                     break;
@@ -87,19 +86,28 @@ var TSOS;
                     this.compareMemoryToX();
                     break;
                 case "D0":
-                    // tbd
+                    // Branch N bytes if Z = 0
+                    this.branchBytes();
                     break;
                 case "FF":
                     // System call
+                    this.systemCall();
                     break;
                 case "EE":
-                    // increment byte value
+                    // increment byte value at address
+                    this.increment();
+                    break;
+                case "EA":
+                    // No Operation
+                    this.noOp();
                     break;
                 case "00":
-                    // new 
+                    // program go break break 
+                    this["break"]();
                     break;
                 default:
                 // invalid op code
+                // terminate
             }
             // Update the current process control block
             _ProcessManager.currPCB.accumulator = this.Acc;
@@ -195,6 +203,71 @@ var TSOS;
             // get the mem to compare X to 
             var mem = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             this.Zflag = (mem == this.Xreg ? 1 : 0);
+        };
+        // OP CODE  - 6D
+        Cpu.prototype.addWithCarry = function () {
+            this.increaseProgramCounter();
+            var addr = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            this.increaseProgramCounter();
+            this.Acc += parseInt(_ProcessManager.readInstruction(addr));
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - 8D
+        Cpu.prototype.storeAccInMemory = function () {
+            this.increaseProgramCounter();
+            var loc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            this.increaseProgramCounter();
+            _Memory.writeMemoryByte(loc, this.Acc.toString(16));
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - D0
+        Cpu.prototype.branchBytes = function () {
+            this.increaseProgramCounter();
+            if (this.Zflag === 0) {
+                var n = parseInt(_Memory.readMemory(this.PC), 16);
+                this.increaseProgramCounter();
+                this.PC += n;
+            }
+            else {
+                this.increaseProgramCounter();
+            }
+        };
+        // OP CODE  - FF
+        Cpu.prototype.systemCall = function () {
+            this.increaseProgramCounter();
+            if (this.Xreg === 1) {
+                _StdOut.putText(this.Yreg.toString());
+            }
+            else if (this.Xreg === 2) {
+                var addr = this.Yreg;
+                var output = '';
+                var charCode = parseInt(_ProcessManager.readInstruction(addr), 16);
+                while (charCode != 0) {
+                    output += String.fromCharCode(charCode);
+                    addr++;
+                    charCode = parseInt(_ProcessManager.readInstruction(addr), 16);
+                }
+                _StdOut.putText(output);
+            }
+        };
+        // OP CODE  - EE
+        Cpu.prototype.increment = function () {
+            this.increaseProgramCounter();
+            var memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            this.increaseProgramCounter();
+            var val = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+            val++;
+            _Memory.writeMemoryByte(memoryLoc, val.toString(16));
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - EA
+        Cpu.prototype.noOp = function () {
+            this.increaseProgramCounter();
+        };
+        // OP CODE  - 00
+        Cpu.prototype.breakProgram = function () {
+            this.increaseProgramCounter();
+            // terminate
         };
         return Cpu;
     }());

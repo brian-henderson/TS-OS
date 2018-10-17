@@ -24,12 +24,16 @@ var TSOS;
         ;
         Memory.prototype.writeMemory = function (program) {
             for (var i = 0; i < program.length; i++) {
-                this.memoryStorage[i] = program[i];
+                //this.memoryStorage[i] = program[i];
+                this.writeMemoryByte(i, program[i]);
             }
             console.log("Current memory: " + this.memoryStorage);
             _Control.updateMemoryDisplay();
         };
         ;
+        Memory.prototype.writeMemoryByte = function (loc, byteData) {
+            this.memoryStorage[loc] = byteData;
+        };
         return Memory;
     }());
     TSOS.Memory = Memory;

@@ -25,7 +25,7 @@ var TSOS;
         }
         ;
         ProcessManager.prototype.runProcess = function (pcb) {
-            console.log("Run Process PCB: " + pcb.pid);
+            console.log("Run Process with PCB PID: " + pcb.pid);
             this.currPCB = pcb;
             this.currPCB.state = "running";
             this.readyQueue.enqueue(pcb);

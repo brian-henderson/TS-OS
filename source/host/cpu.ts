@@ -25,7 +25,6 @@ module TSOS {
                     public Yreg: number = 0,
                     public Zflag: number = 0,
                     public isExecuting: boolean = false,
-                    public currentInstruction: string = ""
                 ){
         }
 
@@ -36,7 +35,6 @@ module TSOS {
             this.Yreg = 0;
             this.Zflag = 0;
             this.isExecuting = false;
-            //this.currentInstruction = "";
         }
 
 
@@ -51,13 +49,10 @@ module TSOS {
         }
 
         public executeProgram(pcb: ProcessControlBlock) {
-            let x = _ProcessManager.readyQueue.getSize();
-            console.log("q size = " + x);
-            let currentInstruction = _Memory.readMemory(pcb.programCounter);//.toUpperCase();
-            console.log(pcb);
-            _CPU.isExecuting = false;
+            let currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
+            console.log("Current instruction: " + currentInstruction);
             
-            switch(this.currentInstruction) {
+            switch(currentInstruction) {
                 case "A9":
                     // Load the constant into the accumulator
                     this.loadAcc();
@@ -75,9 +70,14 @@ module TSOS {
                     this.loadYRegister();
                     break;
                 case "8D":
-                    // tbd
+                    // Store Accumulator in mem
+                    this.storeAccInMemory();
                     break;
-                case "8E":
+                case "6D":
+                    // Add and carry
+                    this.addWithCarry();
+                    break;
+                case "AE":
                     // Load the X Register from memory
                     this.loadXfromMemory();
                     break;
@@ -90,19 +90,28 @@ module TSOS {
                     this.compareMemoryToX();
                     break;
                 case "D0":
-                    // tbd
+                    // Branch N bytes if Z = 0
+                    this.branchBytes();
                     break;
                 case "FF":
                     // System call
+                    this.systemCall();
                     break;
                 case "EE":
-                    // increment byte value
+                    // increment byte value at address
+                    this.increment();
+                    break;
+                case "EA":
+                    // No Operation
+                    this.noOp();
                     break;
                 case "00":
-                    // new 
+                    // program go break break 
+                    this.break();
                     break;
                 default:
                     // invalid op code
+                    // terminate
 
             }
             
@@ -112,6 +121,7 @@ module TSOS {
             _ProcessManager.currPCB.X = this.Xreg;
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
+
             
             
         }
@@ -211,6 +221,79 @@ module TSOS {
             // get the mem to compare X to 
             let mem = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             this.Zflag = (mem == this.Xreg ? 1 : 0);
+        }
+
+        // OP CODE  - 6D
+        public addWithCarry(): void {
+            this.increaseProgramCounter();
+            let addr = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            this.increaseProgramCounter();
+            this.Acc += parseInt(_ProcessManager.readInstruction(addr));
+            this.increaseProgramCounter();
+        }
+
+        // OP CODE  - 8D
+        public storeAccInMemory(): void {
+            this.increaseProgramCounter();
+            let loc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            this.increaseProgramCounter();
+            _Memory.writeMemoryByte(loc, this.Acc.toString(16));
+            this.increaseProgramCounter();
+        }
+
+        // OP CODE  - D0
+        public branchBytes(): void {
+            this.increaseProgramCounter();
+            if (this.Zflag === 0) {
+                let n = parseInt(_Memory.readMemory(this.PC), 16);
+                this.increaseProgramCounter();
+                this.PC += n;
+            }
+            else {
+                this.increaseProgramCounter();
+            }
+        }
+
+        // OP CODE  - FF
+        public systemCall(): void {
+            this.increaseProgramCounter();
+            if (this.Xreg ===  1) {
+                _StdOut.putText(this.Yreg.toString());
+            }
+            else if (this.Xreg === 2) {
+                let addr = this.Yreg;
+                let output = '';
+                let charCode = parseInt(_ProcessManager.readInstruction(addr), 16);
+                while (charCode != 0) {
+                    output += String.fromCharCode(charCode);
+                    addr++;
+                    charCode = parseInt(_ProcessManager.readInstruction(addr), 16);
+                }
+                _StdOut.putText(output);
+            }
+        }
+
+        // OP CODE  - EE
+        public increment(): void {
+            this.increaseProgramCounter();
+            let memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            this.increaseProgramCounter();
+            let val = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+            val++;
+            _Memory.writeMemoryByte(memoryLoc, val.toString(16));
+            this.increaseProgramCounter();
+
+        }
+
+        // OP CODE  - EA
+        public noOp(): void {
+            this.increaseProgramCounter();
+        }
+
+        // OP CODE  - 00
+        public breakProgram(): void {
+            this.increaseProgramCounter();
+            // terminate
         }
 
     }

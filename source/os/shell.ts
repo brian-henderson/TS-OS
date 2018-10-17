@@ -438,10 +438,10 @@ module TSOS {
         public shellRun(args) {
             if (args.length > 0 ) {
                 let pid = args[0];
-                console.log("Runnign PID: " + pid);
+                console.log("Running PID: " + pid);
                 
                 let tempQueue: TSOS.Queue = new Queue();
-                let pcbToRun: ProcessControlBlock;
+                let pcbToRun: ProcessControlBlock = null;
                 let pcbInQueue: boolean = false;
                 
                 while (_ProcessManager.waitQueue.getSize() > 0) {
@@ -464,7 +464,6 @@ module TSOS {
                 else {
                     _StdOut.putText("PID not found");
                 }
-
             }
             else {
                 _StdOut.putText("Please supply PID");
