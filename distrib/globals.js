@@ -62,6 +62,7 @@ var _GLaDOS = null; // If the above is linked in, this is the instantiated insta
 var _commandList = new Array();
 var _Control;
 var _PID = -1;
+var _SingleStep = false;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };

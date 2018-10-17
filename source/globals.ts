@@ -86,6 +86,8 @@ var _Control: TSOS.Control;
 
 var _PID: number = -1;
 
+var _SingleStep: boolean = false;
+
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };

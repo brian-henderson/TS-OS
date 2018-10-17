@@ -91,6 +91,7 @@ var TSOS;
             // .. enable the Halt and Reset buttons ...
             document.getElementById("btnHaltOS").disabled = false;
             document.getElementById("btnReset").disabled = false;
+            document.getElementById("btnSingleStep").disabled = false;
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
@@ -123,6 +124,23 @@ var TSOS;
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        };
+        Control.hostBtnSingleStep_click = function (btn) {
+            if (_SingleStep) {
+                document.getElementById("btnSingleStep").value = "Single Step: Off";
+                document.getElementById("btnSSExecute").disabled = true;
+                _SingleStep = false;
+                console.log("Setting Single Step to " + _SingleStep);
+            }
+            else {
+                document.getElementById("btnSingleStep").value = "Single Step: On";
+                document.getElementById("btnSSExecute").disabled = false;
+                _SingleStep = true;
+                console.log("Setting Single Step to " + _SingleStep);
+            }
+        };
+        Control.hostBtnSSExecute_click = function (btn) {
+            _CPU.isExecuting = true;
         };
         Control.initMemoryDisplay = function () {
             var table = document.getElementById("tableMemoryDisplay");

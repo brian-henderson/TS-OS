@@ -73,6 +73,25 @@
              tabindex="2"
              onclick="TSOS.Control.hostBtnReset_click(this);">
 
+      <input type="button"
+             id = "btnSingleStep"
+             name="brnSingleStep"
+             class="normal_button"
+             disabled="disabled"
+             value="Single Step: Off"
+             tabindex="3"
+             onclick="TSOS.Control.hostBtnSingleStep_click(this);">
+       
+      <input type="button"
+             id = "btnSSExecute"
+             name="brnSSExecute"
+             class="normal_button"
+             disabled="disabled"
+             value=" > "
+             tabindex="4"
+             onclick="TSOS.Control.hostBtnSSExecute_click(this);">
+
+
      <label id="timeDisplay"> 0000-00-00 00:00:00 </label> 
      <label id="statusDisplay"> Status: </label>
 

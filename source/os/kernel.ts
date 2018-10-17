@@ -97,7 +97,8 @@ module TSOS {
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
                that it has to look for interrupts and process them if it finds any.                           */
 
-            if (! _ProcessManager.readyQueue.isEmpty()) {
+          
+            if (! _ProcessManager.readyQueue.isEmpty() && !_SingleStep) {
                 _CPU.isExecuting = true;
             }
 

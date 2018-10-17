@@ -40,10 +40,15 @@ module TSOS {
 
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
-            //_Control.updateCpuDisplay();
+            _Control.updateCpuDisplay();
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             this.executeProgram(_ProcessManager.currPCB);
+
+            // single step
+            if (_SingleStep && _ProcessManager.currPCB != null && this.isExecuting) {
+                this.isExecuting = false;
+            }
         }
 
         public executeProgram(pcb: ProcessControlBlock) {
@@ -110,7 +115,7 @@ module TSOS {
                 default:
                     // invalid op code
                     _StdOut.putText("Invalid OP code...terminating");
-                    this.breakProgram(pcb);
+                    _ProcessManager.terminateProcess(pcb);
             }
             
             // Update the current process control block
