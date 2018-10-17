@@ -54,5 +54,9 @@ module TSOS {
             }
         }
 
+        public static setStatus(s: string): void {
+            document.getElementById('statusDisplay').innerHTML = s;
+        }
+
     }
 }

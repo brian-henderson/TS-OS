@@ -57,6 +57,9 @@ h3 {
 }
 
 .statusDisplay {
+  vertical-align: -3px;
+}
+.statusHeader {
   margin-left: 50px;
   vertical-align: middle;
 }

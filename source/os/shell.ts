@@ -401,7 +401,7 @@ module TSOS {
             {
                 status = status + ' ' + args[i];
             }
-            document.getElementById('statusDisplay').innerHTML = "Status: " + status;
+            Utils.setStatus(status);
         }
 
         public shellNuke(args) {

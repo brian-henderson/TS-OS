@@ -333,7 +333,7 @@ var TSOS;
             for (var i = 0; i < args.length; i++) {
                 status = status + ' ' + args[i];
             }
-            document.getElementById('statusDisplay').innerHTML = "Status: " + status;
+            TSOS.Utils.setStatus(status);
         };
         Shell.prototype.shellNuke = function (args) {
             _Kernel.krnTrapError("User has engaged thermo-nuclear detonation...aka BSOD");

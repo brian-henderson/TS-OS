@@ -54,6 +54,9 @@ var TSOS;
                 return false;
             }
         };
+        Utils.setStatus = function (s) {
+            document.getElementById('statusDisplay').innerHTML = s;
+        };
         return Utils;
     }());
     TSOS.Utils = Utils;
