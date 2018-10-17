@@ -43,7 +43,7 @@ var TSOS;
             //_Control.updateCpuDisplay();
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
-            this.executeProgram(_ProcessManager.readyQueue.dequeue());
+            this.executeProgram(_ProcessManager.currPCB);
         };
         Cpu.prototype.executeProgram = function (pcb) {
             var currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
@@ -103,11 +103,12 @@ var TSOS;
                     break;
                 case "00":
                     // program go break break 
-                    this["break"]();
+                    this.breakProgram(pcb);
                     break;
                 default:
-                // invalid op code
-                // terminate
+                    // invalid op code
+                    _StdOut.putText("Invalid OP code...terminating");
+                    this.breakProgram(pcb);
             }
             // Update the current process control block
             _ProcessManager.currPCB.accumulator = this.Acc;
@@ -115,6 +116,7 @@ var TSOS;
             _ProcessManager.currPCB.X = this.Xreg;
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
+            console.log("Finished Instruction: " + currentInstruction);
         };
         Cpu.prototype.setCpu = function (pcb) {
             this.PC = pcb.programCounter;
@@ -265,9 +267,9 @@ var TSOS;
             this.increaseProgramCounter();
         };
         // OP CODE  - 00
-        Cpu.prototype.breakProgram = function () {
+        Cpu.prototype.breakProgram = function (pcb) {
             this.increaseProgramCounter();
-            // terminate
+            _ProcessManager.terminateProcess(pcb);
         };
         return Cpu;
     }());

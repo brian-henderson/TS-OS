@@ -18,21 +18,29 @@
             constructor(
                 //public processList: ProcessControlBlock[] = [],
                 public waitQueue: TSOS.Queue = new Queue(),
-                public readyQueue: TSOS.Queue = new Queue(),
-                public currPCB : ProcessControlBlock = null
+                public readyQueue: TSOS.Queue = new Queue()
                 ) {                    
             };
 
+            public currPCB: TSOS.ProcessControlBlock;
 
             public runProcess(pcb: ProcessControlBlock): void {
                 console.log("Run Process with PCB PID: " + pcb.pid);
                 this.currPCB = pcb;
                 this.currPCB.state = "running";
-                this.readyQueue.enqueue(pcb);
+                this.readyQueue.enqueue(this.currPCB);
             }
 
             public readInstruction(PC: number): string {
                 return _Memory.readMemory(PC);
+            }
+
+            public terminateProcess(pcb: ProcessControlBlock): void {
+                if (this.readyQueue.isEmpty()) {
+                    _CPU.isExecuting = false;
+                    pcb.state = "terminated";
+                    this.readyQueue.dequeue();
+                }
             }
 
         

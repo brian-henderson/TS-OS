@@ -43,9 +43,7 @@ module TSOS {
             //_Control.updateCpuDisplay();
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
-            this.executeProgram(_ProcessManager.readyQueue.dequeue());
-            
-            
+            this.executeProgram(_ProcessManager.currPCB);
         }
 
         public executeProgram(pcb: ProcessControlBlock) {
@@ -107,12 +105,12 @@ module TSOS {
                     break;
                 case "00":
                     // program go break break 
-                    this.break();
+                    this.breakProgram(pcb);
                     break;
                 default:
                     // invalid op code
-                    // terminate
-
+                    _StdOut.putText("Invalid OP code...terminating");
+                    this.breakProgram(pcb);
             }
             
             // Update the current process control block
@@ -122,6 +120,7 @@ module TSOS {
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
 
+            console.log("Finished Instruction: " + currentInstruction);
             
             
         }
@@ -291,9 +290,9 @@ module TSOS {
         }
 
         // OP CODE  - 00
-        public breakProgram(): void {
+        public breakProgram(pcb: ProcessControlBlock): void {
             this.increaseProgramCounter();
-            // terminate
+            _ProcessManager.terminateProcess(pcb);
         }
 
     }
