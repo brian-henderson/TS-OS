@@ -42,17 +42,16 @@ module TSOS {
 
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
-            _Control.updateCpuDisplay();
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             this.executeProgram(_ProcessManager.currPCB);
-
+            _Control.updateCpuDisplay();
     
         }
 
         public executeProgram(pcb: ProcessControlBlock) {
             let currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
-            //this.IR = currentInstruction;
+            this.IR = currentInstruction;
             console.log("Current instruction: " + currentInstruction);
             
             switch(currentInstruction) {
@@ -146,7 +145,10 @@ module TSOS {
             this.PC++;
         }
 
+        // ==  OP CODES ====================================================================== //
+
         // OP CODE  - A9 
+        // Purpose: Load the accumulator with the next memory value
         public loadAcc(): void {
             // Increase program counter
             this.increaseProgramCounter();
@@ -157,13 +159,16 @@ module TSOS {
         }
 
         // OP CODE  - AD
+        // Purpose: Load the accumultaor with a specific memory address
         public loadAccFromMemory(): void {
             // increase program counter
             this.increaseProgramCounter();
-            // grab the memory location of where to store from
-            let memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            let hexStr = _ProcessManager.readInstruction(this.PC);
             // increase program counter again
             this.increaseProgramCounter();
+            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
+            // convert to decimal address
+            let memoryLoc = parseInt(hexStr, 16);
             // load into the accumulator reading 
             this.Acc = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             // update program counter to next program
@@ -171,6 +176,7 @@ module TSOS {
         }
 
         // OP CODE  - A2
+        // Purpose: Load constant into X Reg
         public loadXRegister(): void {
             // increase program counter
             this.increaseProgramCounter();
@@ -181,6 +187,7 @@ module TSOS {
         }
 
         // OP CODE  - A0
+        // Purpose: Load constant into Y Reg
         public loadYRegister(): void {
             // increase program counter
             this.increaseProgramCounter();
@@ -191,71 +198,79 @@ module TSOS {
         }
 
         // OP CODE  - AE
+        // Purpose: Load X Reg from memory
         public loadXfromMemory(): void {
             // increase program counter
             this.increaseProgramCounter();
-            // grab the memory location of where stored
-            let memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
-            // increase program counter again
+            let hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            // load into the X register on CPU
+            hexStr += _ProcessManager.readInstruction(this.PC);
+            let memoryLoc = parseInt(hexStr, 16);
             this.Xreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
-            // update program counter to next program
             this.increaseProgramCounter();
         }
 
          // OP CODE  - AC
+         // Purpose: Load Y reg from memory
          public loadYfromMemory(): void {
             // increase program counter
             this.increaseProgramCounter();
-            // grab the memory location of where stored
-            let memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
-            // increase program counter again
+            let hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            // load into the Y register on CPU
+            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
+            let memoryLoc = parseInt(hexStr, 16);
             this.Yreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
-            // update program counter to next program
             this.increaseProgramCounter();
         }
 
         // OP CODE  - EC
+        // Purpose: Compare X reg to byte in memory
         public compareMemoryToX(): void {
             // increase program counter
             this.increaseProgramCounter();
-            // grab the memory location of where stored
-            let memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
-            // increase program counter again
+            let hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            // get the mem to compare X to 
-            let mem = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
-            this.Zflag = (mem == this.Xreg ? 1 : 0);
+            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
+            let memoryLoc = parseInt(hexStr, 16);
+            let byte = _ProcessManager.readInstruction(memoryLoc);
+            this.Zflag = ( (parseInt(byte.toString(), 16) == this.Xreg ) ? 1 : 0);
+            this.increaseProgramCounter();
         }
 
         // OP CODE  - 6D
+        // Purpsoe: Add contents of the address to acc and save results in acc
         public addWithCarry(): void {
             this.increaseProgramCounter();
-            let addr = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            let hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            this.Acc += parseInt(_ProcessManager.readInstruction(addr));
+            hexStr += _ProcessManager.readInstruction(this.PC);
+            let memoryLoc = parseInt(hexStr, 16);
+            let val = _ProcessManager.readInstruction(memoryLoc);
+            this.Acc += parseInt(val);
             this.increaseProgramCounter();
         }
 
         // OP CODE  - 8D
+        // Purpose: store the acc into memory
         public storeAccInMemory(): void {
             this.increaseProgramCounter();
-            let loc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            let hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            _Memory.writeMemoryByte(loc, this.Acc.toString(16));
+            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
+            let memoryLoc = parseInt(hexStr, 16);
+            let val = this.Acc.toString(16);
+            _Memory.writeMemoryByte(memoryLoc, val);
             this.increaseProgramCounter();
         }
 
         // OP CODE  - D0
+        // Purpose: Branch n bytes if z flag is 0
         public branchBytes(): void {
             this.increaseProgramCounter();
-            if (this.Zflag === 0) {
-                let n = parseInt(_Memory.readMemory(this.PC), 16);
-                this.increaseProgramCounter();
-                this.PC += n;
+            if (this.Zflag == 0) {
+                let branchN = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+                let branchedPC = this.PC + branchN;
+                this.PC = branchedPC;
             }
             else {
                 this.increaseProgramCounter();
@@ -263,42 +278,48 @@ module TSOS {
         }
 
         // OP CODE  - FF
+        // Purpose: print integer stored in Y reg 
         public systemCall(): void {
-            this.increaseProgramCounter();
             if (this.Xreg ===  1) {
                 _StdOut.putText(this.Yreg.toString());
             }
             else if (this.Xreg === 2) {
-                let addr = this.Yreg;
+                let memoryLoc = this.Yreg;
                 let output = '';
-                let charCode = parseInt(_ProcessManager.readInstruction(addr), 16);
-                while (charCode != 0) {
+                while (_Memory.readMemory(memoryLoc) != "00") {
+                    let ascii = _Memory.readMemory(memoryLoc);
+                    let charCode = parseInt(ascii.toString(), 16);
                     output += String.fromCharCode(charCode);
-                    addr++;
-                    charCode = parseInt(_ProcessManager.readInstruction(addr), 16);
+                    memoryLoc ++;
                 }
                 _StdOut.putText(output);
             }
+            this.increaseProgramCounter();
         }
 
         // OP CODE  - EE
+        // Purpose: Increment the value of a byte.
         public increment(): void {
             this.increaseProgramCounter();
-            let memoryLoc = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+            let hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            let val = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
-            val++;
-            _Memory.writeMemoryByte(memoryLoc, val.toString(16));
+            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
+            let memoryLoc = parseInt(hexStr, 16);
+            let value = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+            value ++;
+            let hexValue = value.toString(16);
+            _Memory.writeMemoryByte(memoryLoc, hexValue);
             this.increaseProgramCounter();
-
         }
 
         // OP CODE  - EA
+        // Purpose: No operation, just increase program
         public noOp(): void {
             this.increaseProgramCounter();
         }
 
         // OP CODE  - 00
+        // Purpose: make the program stop/break/terminate/end/die
         public breakProgram(pcb: ProcessControlBlock): void {
             this.increaseProgramCounter();
             _ProcessManager.terminateProcess(pcb);
