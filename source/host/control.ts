@@ -266,14 +266,16 @@ module TSOS {
             let row = table.insertRow(1);
             // PC
             row.insertCell(0).innerHTML = _CPU.PC.toString();
+            // IR
+            row.insertCell(1).innerHTML = _CPU.IR.toString();
             // ACC
-            row.insertCell(1).innerHTML = _CPU.Acc.toString();
+            row.insertCell(2).innerHTML = _CPU.Acc.toString();
             // X
-            row.insertCell(2).innerHTML = _CPU.Xreg.toString();
+            row.insertCell(3).innerHTML = _CPU.Xreg.toString();
             // Y
-            row.insertCell(3).innerHTML = _CPU.Yreg.toString();
+            row.insertCell(4).innerHTML = _CPU.Yreg.toString();
             // Z
-            row.insertCell(4).innerHTML = _CPU.Zflag.toString();
+            row.insertCell(5).innerHTML = _CPU.Zflag.toString();
 
         }
     }

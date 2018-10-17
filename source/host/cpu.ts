@@ -25,6 +25,7 @@ module TSOS {
                     public Yreg: number = 0,
                     public Zflag: number = 0,
                     public isExecuting: boolean = false,
+                    public IR: string = "--"
                 ){
         }
 
@@ -35,6 +36,7 @@ module TSOS {
             this.Yreg = 0;
             this.Zflag = 0;
             this.isExecuting = false;
+            this.IR = "--";
         }
 
 
@@ -45,14 +47,12 @@ module TSOS {
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             this.executeProgram(_ProcessManager.currPCB);
 
-            // single step
-            if (_SingleStep && _ProcessManager.currPCB != null && this.isExecuting) {
-                this.isExecuting = false;
-            }
+    
         }
 
         public executeProgram(pcb: ProcessControlBlock) {
             let currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
+            //this.IR = currentInstruction;
             console.log("Current instruction: " + currentInstruction);
             
             switch(currentInstruction) {
@@ -124,6 +124,10 @@ module TSOS {
             _ProcessManager.currPCB.X = this.Xreg;
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
+
+            if (_SingleStep) {
+                this.isExecuting = false;
+            }
 
             console.log("Finished Instruction: " + currentInstruction);
             

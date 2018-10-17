@@ -16,19 +16,21 @@
 var TSOS;
 (function (TSOS) {
     var Cpu = /** @class */ (function () {
-        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting) {
+        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, IR) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
             if (Yreg === void 0) { Yreg = 0; }
             if (Zflag === void 0) { Zflag = 0; }
             if (isExecuting === void 0) { isExecuting = false; }
+            if (IR === void 0) { IR = "--"; }
             this.PC = PC;
             this.Acc = Acc;
             this.Xreg = Xreg;
             this.Yreg = Yreg;
             this.Zflag = Zflag;
             this.isExecuting = isExecuting;
+            this.IR = IR;
         }
         Cpu.prototype.init = function () {
             this.PC = 0;
@@ -37,6 +39,7 @@ var TSOS;
             this.Yreg = 0;
             this.Zflag = 0;
             this.isExecuting = false;
+            this.IR = "--";
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
@@ -44,13 +47,10 @@ var TSOS;
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             this.executeProgram(_ProcessManager.currPCB);
-            // single step
-            if (_SingleStep && _ProcessManager.currPCB != null && this.isExecuting) {
-                this.isExecuting = false;
-            }
         };
         Cpu.prototype.executeProgram = function (pcb) {
             var currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
+            //this.IR = currentInstruction;
             console.log("Current instruction: " + currentInstruction);
             switch (currentInstruction) {
                 case "A9":
@@ -120,6 +120,9 @@ var TSOS;
             _ProcessManager.currPCB.X = this.Xreg;
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
+            if (_SingleStep) {
+                this.isExecuting = false;
+            }
             console.log("Finished Instruction: " + currentInstruction);
         };
         Cpu.prototype.setCpu = function (pcb) {
