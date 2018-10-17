@@ -98,14 +98,13 @@ var TSOS;
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new TSOS.Cpu(); // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init(); //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
-            //  _MemoryAccessor = new MemoryAccessor();
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
             console.log("memory please be populated");
-            this.initMemoryDisplay();
+            _Control.updateMemoryDisplay();
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");
@@ -140,26 +139,6 @@ var TSOS;
         Control.hostBtnSSExecute_click = function (btn) {
             _CPU.isExecuting = true;
         };
-        Control.initMemoryDisplay = function () {
-            var table = document.getElementById("tableMemoryDisplay");
-            table.deleteRow(0);
-            // populate table using i as hex decimal converter/counter
-            for (var i = 0; i < _MemorySize; i += 8) {
-                var memHexLoc = i.toString(16);
-                if (memHexLoc.length == 1) {
-                    memHexLoc = "0" + memHexLoc;
-                }
-                if (memHexLoc.length == 2) {
-                    memHexLoc = "00" + memHexLoc;
-                }
-                // dividing by 8 to get back to base 1
-                var row = table.insertRow(i / 8);
-                row.insertCell(0).innerHTML = "0x" + memHexLoc;
-                for (var j = 1; j < 9; j++) {
-                    row.insertCell(j).innerHTML = "00";
-                }
-            }
-        };
         Control.prototype.updateMemoryDisplay = function () {
             var table = document.getElementById("tableMemoryDisplay");
             table.innerHTML = "";
@@ -180,8 +159,10 @@ var TSOS;
                 // index of memory storage
                 for (var j = 1; j < 9; j++) {
                     row.insertCell(j).innerHTML = _Memory.memoryStorage[memIndex];
+                    row.cells[j].className = "memoryDisplayByte";
                     memIndex++;
                 }
+                row.cells[0].className = "memoryDisplayHex";
             }
         };
         Control.prototype.addToPcbDisplay = function (pcb) {

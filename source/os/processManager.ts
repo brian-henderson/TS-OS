@@ -16,7 +16,6 @@
         export class ProcessManager {
 
             constructor(
-                //public processList: ProcessControlBlock[] = [],
                 public waitQueue: TSOS.Queue = new Queue(),
                 public readyQueue: TSOS.Queue = new Queue()
                 ) {                    

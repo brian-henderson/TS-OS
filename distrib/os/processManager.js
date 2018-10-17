@@ -13,9 +13,7 @@
 var TSOS;
 (function (TSOS) {
     var ProcessManager = /** @class */ (function () {
-        function ProcessManager(
-        //public processList: ProcessControlBlock[] = [],
-        waitQueue, readyQueue) {
+        function ProcessManager(waitQueue, readyQueue) {
             if (waitQueue === void 0) { waitQueue = new TSOS.Queue(); }
             if (readyQueue === void 0) { readyQueue = new TSOS.Queue(); }
             this.waitQueue = waitQueue;

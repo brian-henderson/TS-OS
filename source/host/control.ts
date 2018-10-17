@@ -124,8 +124,6 @@ module TSOS {
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
 
 
-          //  _MemoryAccessor = new MemoryAccessor();
-
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
@@ -133,7 +131,7 @@ module TSOS {
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
             console.log("memory please be populated");
-            this.initMemoryDisplay();
+            _Control.updateMemoryDisplay();
 
         }
 
@@ -174,30 +172,6 @@ module TSOS {
             _CPU.isExecuting = true;
         }
 
-        public static initMemoryDisplay(): void {
-
-            let table = (<HTMLTableElement>document.getElementById("tableMemoryDisplay"));
-            table.deleteRow(0);
-
-            // populate table using i as hex decimal converter/counter
-            for (let i = 0; i < _MemorySize; i+=8) {
-                
-                let memHexLoc = i.toString(16);
-                if (memHexLoc.length == 1) {
-                    memHexLoc = "0" + memHexLoc;
-                }
-                if (memHexLoc.length == 2) {
-                    memHexLoc = "00" + memHexLoc;
-                }
-                // dividing by 8 to get back to base 1
-                let row = table.insertRow(i/8);
-                row.insertCell(0).innerHTML = "0x" + memHexLoc;
-                for (let j = 1; j < 9; j++) {
-                    row.insertCell(j).innerHTML = "00";
-                }
-            }
-        }
-
         public updateMemoryDisplay(): void {
             let table = (<HTMLTableElement>document.getElementById("tableMemoryDisplay"));
             table.innerHTML = "";
@@ -219,8 +193,10 @@ module TSOS {
                 // index of memory storage
                 for (let j = 1; j < 9; j++) {
                     row.insertCell(j).innerHTML = _Memory.memoryStorage[memIndex];
-                    memIndex++;
+                    row.cells[j].className = "memoryDisplayByte";
+                    memIndex++; 
                 }
+                row.cells[0].className = "memoryDisplayHex";
             }
 
         }

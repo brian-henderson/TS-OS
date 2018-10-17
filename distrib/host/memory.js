@@ -15,8 +15,6 @@ var TSOS;
             for (var i = 0; i < this.memoryStorage.length; i++) {
                 this.memoryStorage[i] = "00";
             }
-            console.log("Memory Initted");
-            console.log(this.memoryStorage);
         };
         Memory.prototype.readMemory = function (PC) {
             return this.memoryStorage[PC];

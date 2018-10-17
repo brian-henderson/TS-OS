@@ -76,15 +76,13 @@ h3 {
   text-align: center;
 }
 
-table, th, td {
-  border: 1px solid black;
-  background-color: white;
-  padding: 5px;
 
+.cardMemoryDisplay {
+  height: 250px;
+  
+  overflow-y: scroll;
 }
 
-#divMemoryDisplay {
-  height: 250px;
-  width: fit-content;
-  overflow-y: scroll;
+.memoryDisplayHex {
+  font-weight: bold;
 }

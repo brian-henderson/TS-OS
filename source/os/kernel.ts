@@ -113,6 +113,8 @@ module TSOS {
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
                 this.krnTrace("Idle");
             }
+
+            _Control.updateMemoryDisplay();
         }
 
 

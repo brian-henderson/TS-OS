@@ -11,11 +11,7 @@ var TSOS;
             return programLength <= _Memory.memoryStorage.length;
         };
         MemoryManager.prototype.writeProgramToMemory = function (program) {
-            console.log("Memory before writing");
-            console.log(_Memory.memoryStorage);
             _Memory.writeMemory(program);
-            console.log("Memory after writing");
-            console.log(_Memory.memoryStorage);
         };
         return MemoryManager;
     }());
