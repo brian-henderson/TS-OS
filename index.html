@@ -6,6 +6,8 @@
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
    <link href="https://fonts.googleapis.com/css?family=Bowlby+One+SC|Monoton|Source+Code+Pro" rel="stylesheet">
    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
+   
+   <link rel="shortcut icon" href="favicon.ico" /> 
    <title>
       HidalgOS - a browser-based virtual Operating System in TypeScript
    </title>
@@ -54,7 +56,7 @@
                                         <input  type="button" 
                                                 id="btnStartOS" 
                                                 name="brnStartOS" 
-                                                class="btn btn-success" 
+                                                class="btn btn-success btn-sm" 
                                                 value="Start"
                                                 tabindex="0" 
                                                 onclick="TSOS.Control.hostBtnStartOS_click(this);">
@@ -63,7 +65,7 @@
                                         <input  type="button" 
                                                 id="btnHaltOS" 
                                                 name="brnHaltOS" 
-                                                class="btn btn-warning" 
+                                                class="btn btn-warning btn-sm" 
                                                 disabled="disabled"
                                                 value="Halt" 
                                                 tabindex="1" 
@@ -73,7 +75,7 @@
                                         <input  type="button" 
                                                 id="btnReset" 
                                                 name="brnReset" 
-                                                class="btn btn-danger" 
+                                                class="btn btn-danger btn-sm" 
                                                 disabled="disabled"
                                                 value="Reset" 
                                                 tabindex="2" 
@@ -84,7 +86,7 @@
                                         <input  type="button" 
                                                 id="btnSingleStep" 
                                                 name="brnSingleStep" 
-                                                class="btn btn-info btnSS"
+                                                class="btn btn-info btnSS btn-sm"
                                                 disabled="disabled" 
                                                 value="Single Step: Off" 
                                                 tabindex="3" onclick="TSOS.Control.hostBtnSingleStep_click(this);">
@@ -92,7 +94,7 @@
                                         <input  type="button" 
                                                 id="btnSSExecute" 
                                                 name="brnSSExecute" 
-                                                class="btn btn-secondary btnSSExecute"
+                                                class="btn btn-secondary btnSSExecute btn-sm"
                                                 disabled="disabled" 
                                                 value=" >> " 
                                                 tabindex="4" 
@@ -105,7 +107,7 @@
                                 </li>
                         </ul>
                         <span class="navbar-text">
-                                <span>T:</span>
+                                <span class="timeHeader">T:</span>
                                 <label id="timeDisplay" class="timeDisplay"> 0000-00-00 00:00:00 </label>
                         </span>
                 </div>
@@ -128,7 +130,7 @@
                 <label>
                         User Program Input
                         <br>
-                        <textarea name="taProgramInput" id="taProgramInput" rows="4" cols="48"></textarea>
+                        <textarea name="taProgramInput" id="taProgramInput" rows="4" cols="48">A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</textarea>
                 </label>
         </div>
 
@@ -209,10 +211,9 @@
 
 <p class="footerText" style="clear:both;">
    <br>
-   Copyright &copy; 2008 - 2016 No Rights Reserved.
+   Copyright &copy; 2018 No Rights Reserved.
    <br>
-   Reproduction is inhibited without the express written consent of
-   Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
+   Brian Henderson & Alan Labouseur
 </p>
 
 
