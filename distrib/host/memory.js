@@ -9,16 +9,16 @@ var TSOS;
 (function (TSOS) {
     var Memory = /** @class */ (function () {
         function Memory() {
+            this.memoryStorage = new Array(_MemorySize);
         }
         Memory.prototype.init = function () {
-            this.memoryStorage = new Array(_MemorySize);
-            this.memoryStorage.forEach(function (i) {
-                i = "00";
-            });
+            for (var i = 0; i < this.memoryStorage.length; i++) {
+                this.memoryStorage[i] = "00";
+            }
+            console.log("Memory Initted");
             console.log(this.memoryStorage);
         };
         Memory.prototype.readMemory = function (PC) {
-            console.log("read memory called with PC : " + PC);
             return this.memoryStorage[PC];
         };
         ;
@@ -27,7 +27,6 @@ var TSOS;
                 //this.memoryStorage[i] = program[i];
                 this.writeMemoryByte(i, program[i]);
             }
-            console.log("Current memory: " + this.memoryStorage);
             _Control.updateMemoryDisplay();
         };
         ;

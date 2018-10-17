@@ -209,7 +209,6 @@ module TSOS {
             this.Xreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             this.increaseProgramCounter();
         }
-
          // OP CODE  - AC
          // Purpose: Load Y reg from memory
          public loadYfromMemory(): void {

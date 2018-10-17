@@ -65,7 +65,6 @@ var TSOS;
                     // Backspace
                 }
                 else if (chr == String.fromCharCode(8)) {
-                    console.log("Key pressed - BACKSPACE");
                     // as long as the backspace count is over 0, begin backspacing procedure
                     if (this.backspaceCount != 0) {
                         // reverting to the last imageData obtained before last char/text was written
@@ -79,7 +78,6 @@ var TSOS;
                     // Tab - cmd completion
                 }
                 else if (chr == String.fromCharCode(9)) {
-                    console.log("Key pressed - TAB");
                     var highestMatchIndex = 0;
                     var charCount = 0;
                     for (var i = 0; i < _commandList.length; i++) {
@@ -137,10 +135,6 @@ var TSOS;
                             this.cmdIndex--;
                         }
                     }
-                    // used for debugging and testing 
-                    console.log(this.commandHistory);
-                    console.log("out - " + output);
-                    console.log("cmdIndex - " + this.cmdIndex);
                     // if the buffer is not blank, delete the characters on the canvas from the buffer
                     if (this.buffer.length > 0) {
                         for (var i = 0; i < this.buffer.length; i++) {
@@ -163,7 +157,6 @@ var TSOS;
                     }
                 }
                 else {
-                    console.log("Key pressed - Normal char");
                     // This is a "normal" character, so ...
                     // ... get the Image Data from the canvas so it can be referenced for backspacing purposes
                     this.backspaceImageData.push(_DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height));

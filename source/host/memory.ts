@@ -10,18 +10,15 @@
      module TSOS {
 
         export class Memory{
-            public memoryStorage: Array<string>;
+            public memoryStorage: Array<string> = new Array(_MemorySize);
             
             public init(): void {
-                this.memoryStorage = new Array(_MemorySize);
-                this.memoryStorage.forEach(i => {
-                    i = "00";
-                });
-                console.log(this.memoryStorage);
+                for(let i = 0; i < this.memoryStorage.length; i++) {
+                    this.memoryStorage[i] = "00";
+                }
             }
 
             public readMemory(PC: number): string {
-                console.log("read memory called with PC : " + PC);
                 return this.memoryStorage[PC];
             };
 
@@ -30,7 +27,6 @@
                     //this.memoryStorage[i] = program[i];
                     this.writeMemoryByte(i, program[i]);
                 }
-                console.log("Current memory: " + this.memoryStorage);
                 _Control.updateMemoryDisplay();
             };
 

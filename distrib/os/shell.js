@@ -357,7 +357,7 @@ var TSOS;
             }
             var inputArray = programInput.split(" ");
             if (isValid) {
-                _MemoryManager.createProcess(inputArray);
+                _ProcessManager.createProcess(inputArray);
                 console.log("Valid..");
             }
         };
