@@ -53,6 +53,8 @@
                 this.currPCB = pcb;
                 this.currPCB.state = "running";
                 this.readyQueue.enqueue(this.currPCB);
+                _Control.updateCpuDisplay();
+                _Control.updatePcbDisplay(pcb);;
             }
 
             public readInstruction(PC: number): string {

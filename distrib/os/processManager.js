@@ -48,6 +48,9 @@ var TSOS;
             this.currPCB = pcb;
             this.currPCB.state = "running";
             this.readyQueue.enqueue(this.currPCB);
+            _Control.updateCpuDisplay();
+            _Control.updatePcbDisplay(pcb);
+            ;
         };
         ProcessManager.prototype.readInstruction = function (PC) {
             return _Memory.readMemory(PC);

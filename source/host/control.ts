@@ -201,8 +201,26 @@ module TSOS {
 
         }
 
+        public updateCpuDisplay(): void {
+            let table = (<HTMLTableElement>document.getElementById("tableCpuDisplay"));
+            table.deleteRow(1);
+            let row = table.insertRow(1);
+            // PC
+            row.insertCell(0).innerHTML = Utils.formatHexDisplay(_CPU.PC);
+            // IR
+            row.insertCell(1).innerHTML = _CPU.IR.toString();
+            // ACC
+            row.insertCell(2).innerHTML = _CPU.Acc.toString();
+            // X
+            row.insertCell(3).innerHTML = _CPU.Xreg.toString();
+            // Y
+            row.insertCell(4).innerHTML = _CPU.Yreg.toString();
+            // Z
+            row.insertCell(5).innerHTML = _CPU.Zflag.toString();
+        }
+
         public addToPcbDisplay(pcb: ProcessControlBlock): void {
-            console.log("Updating pcb display...");
+            console.log("Adding pcb to display...");
             let table = (<HTMLTableElement>document.getElementById("tablePcbDisplay"));
 
             if (_PID == 0) {
@@ -217,7 +235,7 @@ module TSOS {
             // state
             row.insertCell(2).innerHTML = pcb.state;
             // pc
-            row.insertCell(3).innerHTML = pcb.programCounter.toString();
+            row.insertCell(3).innerHTML = Utils.formatHexDisplay(pcb.programCounter);
             // ir
             row.insertCell(4).innerHTML = pcb.instructionReg;
             // acc
@@ -232,24 +250,27 @@ module TSOS {
             row.insertCell(9).innerHTML = pcb.location;
         }
 
-    
-        public updateCpuDisplay(): void {
-            let table = (<HTMLTableElement>document.getElementById("tableCpuDisplay"));
-            table.deleteRow(1);
-            let row = table.insertRow(1);
-            // PC
-            row.insertCell(0).innerHTML = _CPU.PC.toString();
-            // IR
-            row.insertCell(1).innerHTML = _CPU.IR.toString();
-            // ACC
-            row.insertCell(2).innerHTML = _CPU.Acc.toString();
-            // X
-            row.insertCell(3).innerHTML = _CPU.Xreg.toString();
-            // Y
-            row.insertCell(4).innerHTML = _CPU.Yreg.toString();
-            // Z
-            row.insertCell(5).innerHTML = _CPU.Zflag.toString();
+        public updatePcbDisplay(pcb: ProcessControlBlock): void {
 
+            let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
+            let tableLength = table.rows.length;
+            for (let i = 0; i < tableLength; i++) {
+                let row = table.rows[i].cells;
+                if (parseInt(row[0].innerHTML) == pcb.pid) {
+                    row[1].innerHTML = pcb.priority.toString();
+                    row[2].innerHTML = pcb.state;
+                    row[3].innerHTML = Utils.formatHexDisplay(pcb.programCounter);
+                    row[4].innerHTML = pcb.instructionReg;
+                    row[5].innerHTML = pcb.accumulator.toString();
+                    row[6].innerHTML = pcb.X.toString();
+                    row[7].innerHTML = pcb.Y.toString();
+                    row[8].innerHTML = pcb.Z.toString();
+                    row[9].innerHTML = pcb.location;
+                    break;
+                }
+            }
+        
         }
+
     }
 }

@@ -47,6 +47,7 @@ var TSOS;
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             this.executeProgram(_ProcessManager.currPCB);
             _Control.updateCpuDisplay();
+            _Control.updatePcbDisplay(_ProcessManager.currPCB);
         };
         Cpu.prototype.executeProgram = function (pcb) {
             var currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
@@ -120,10 +121,10 @@ var TSOS;
             _ProcessManager.currPCB.X = this.Xreg;
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
+            _ProcessManager.currPCB.instructionReg = this.IR;
             if (_SingleStep) {
                 this.isExecuting = false;
             }
-            console.log("Finished Instruction: " + currentInstruction);
         };
         Cpu.prototype.setCpu = function (pcb) {
             this.PC = pcb.programCounter;
@@ -189,7 +190,7 @@ var TSOS;
             this.increaseProgramCounter();
             var hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC);
+            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
             var memoryLoc = parseInt(hexStr, 16);
             this.Xreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             this.increaseProgramCounter();

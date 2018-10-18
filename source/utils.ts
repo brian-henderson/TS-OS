@@ -58,5 +58,13 @@ module TSOS {
             document.getElementById('statusDisplay').innerHTML = s;
         }
 
+        public static formatHexDisplay(n: number): string {
+            let str = n.toString(16).toUpperCase();
+            if (str.length == 1) {
+                str = "0" + str;
+            }
+            return str;
+        }
+
     }
 }

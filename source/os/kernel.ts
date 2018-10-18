@@ -110,11 +110,12 @@ module TSOS {
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed. {
                 _CPU.cycle();
+                _Control.updateMemoryDisplay();
+                _Control.updatePcbDisplay(_ProcessManager.currPCB);
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
                 this.krnTrace("Idle");
             }
-
-            _Control.updateMemoryDisplay();
+            
         }
 
 

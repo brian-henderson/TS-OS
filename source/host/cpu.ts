@@ -46,6 +46,7 @@ module TSOS {
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             this.executeProgram(_ProcessManager.currPCB);
             _Control.updateCpuDisplay();
+            _Control.updatePcbDisplay(_ProcessManager.currPCB)
     
         }
 
@@ -123,13 +124,11 @@ module TSOS {
             _ProcessManager.currPCB.X = this.Xreg;
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
+            _ProcessManager.currPCB.instructionReg = this.IR;
 
             if (_SingleStep) {
                 this.isExecuting = false;
             }
-
-            console.log("Finished Instruction: " + currentInstruction);
-            
             
         }
 
@@ -204,7 +203,7 @@ module TSOS {
             this.increaseProgramCounter();
             let hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC);
+            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
             let memoryLoc = parseInt(hexStr, 16);
             this.Xreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             this.increaseProgramCounter();
@@ -305,7 +304,7 @@ module TSOS {
             hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
             let memoryLoc = parseInt(hexStr, 16);
             let value = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
-            value ++;
+            value++;
             let hexValue = value.toString(16);
             _Memory.writeMemoryByte(memoryLoc, hexValue);
             this.increaseProgramCounter();

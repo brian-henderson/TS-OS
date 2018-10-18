@@ -57,6 +57,13 @@ var TSOS;
         Utils.setStatus = function (s) {
             document.getElementById('statusDisplay').innerHTML = s;
         };
+        Utils.formatHexDisplay = function (n) {
+            var str = n.toString(16).toUpperCase();
+            if (str.length == 1) {
+                str = "0" + str;
+            }
+            return str;
+        };
         return Utils;
     }());
     TSOS.Utils = Utils;
