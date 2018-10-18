@@ -214,7 +214,7 @@ var TSOS;
             this.increaseProgramCounter();
             var hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
+            hexStr = _ProcessManager.readInstruction(this.PC) + hexStr;
             var memoryLoc = parseInt(hexStr, 16);
             var byte = _ProcessManager.readInstruction(memoryLoc);
             this.Zflag = ((parseInt(byte.toString(), 16) == this.Xreg) ? 1 : 0);
@@ -226,7 +226,7 @@ var TSOS;
             this.increaseProgramCounter();
             var hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC);
+            hexStr = _ProcessManager.readInstruction(this.PC) + hexStr;
             var memoryLoc = parseInt(hexStr, 16);
             var val = _ProcessManager.readInstruction(memoryLoc);
             this.Acc += parseInt(val);
@@ -251,7 +251,12 @@ var TSOS;
             if (this.Zflag == 0) {
                 var branchN = parseInt(_ProcessManager.readInstruction(this.PC), 16);
                 var branchedPC = this.PC + branchN;
-                this.PC = branchedPC;
+                if (branchedPC + 1 > _MemoryPartitionSize) {
+                    this.PC = branchedPC - _MemoryPartitionSize;
+                }
+                else {
+                    this.PC = branchedPC;
+                }
             }
             else {
                 this.increaseProgramCounter();

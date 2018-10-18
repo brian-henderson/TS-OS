@@ -228,7 +228,7 @@ module TSOS {
             this.increaseProgramCounter();
             let hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
+            hexStr = _ProcessManager.readInstruction(this.PC) + hexStr;
             let memoryLoc = parseInt(hexStr, 16);
             let byte = _ProcessManager.readInstruction(memoryLoc);
             this.Zflag = ( (parseInt(byte.toString(), 16) == this.Xreg ) ? 1 : 0);
@@ -241,7 +241,7 @@ module TSOS {
             this.increaseProgramCounter();
             let hexStr = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC);
+            hexStr = _ProcessManager.readInstruction(this.PC) + hexStr;
             let memoryLoc = parseInt(hexStr, 16);
             let val = _ProcessManager.readInstruction(memoryLoc);
             this.Acc += parseInt(val);
@@ -268,7 +268,12 @@ module TSOS {
             if (this.Zflag == 0) {
                 let branchN = parseInt(_ProcessManager.readInstruction(this.PC), 16);
                 let branchedPC = this.PC + branchN;
-                this.PC = branchedPC;
+                if (branchedPC + 1 > _MemoryPartitionSize ) {
+                    this.PC = branchedPC - _MemoryPartitionSize;
+                }
+                else {
+                    this.PC = branchedPC;
+                }
             }
             else {
                 this.increaseProgramCounter();

@@ -43,6 +43,8 @@ var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode
 
 // Adding Memory size here to be global and easy to change
 var _MemorySize = 256;
+// The size of the memory blocks
+var _MemoryPartitionSize = 256;
 
 var _Canvas: HTMLCanvasElement;         // Initialized in Control.hostInit().
 var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.
