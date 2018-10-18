@@ -46,7 +46,7 @@ var TSOS;
         ProcessManager.prototype.runProcess = function (pcb) {
             console.log("Run Process with PCB PID: " + pcb.pid);
             this.currPCB = pcb;
-            this.currPCB.state = "running";
+            this.currPCB.state = "Running";
             this.readyQueue.enqueue(this.currPCB);
             _Control.updateCpuDisplay();
             _Control.updatePcbDisplay(pcb);
@@ -56,9 +56,9 @@ var TSOS;
             return _Memory.readMemory(PC);
         };
         ProcessManager.prototype.terminateProcess = function (pcb) {
-            if (this.readyQueue.isEmpty()) {
+            if (!this.readyQueue.isEmpty()) {
                 _CPU.isExecuting = false;
-                pcb.state = "terminated";
+                pcb.state = "Terminated";
                 this.readyQueue.dequeue();
             }
         };

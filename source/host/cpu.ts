@@ -53,7 +53,7 @@ module TSOS {
         public executeProgram(pcb: ProcessControlBlock) {
             let currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
             this.IR = currentInstruction;
-            console.log("Current instruction: " + currentInstruction);
+            console.log("Current Instruction Executing: " + currentInstruction);
             
             switch(currentInstruction) {
                 case "A9":
@@ -226,12 +226,11 @@ module TSOS {
         public compareMemoryToX(): void {
             // increase program counter
             this.increaseProgramCounter();
-            let hexStr = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr = _ProcessManager.readInstruction(this.PC) + hexStr;
-            let memoryLoc = parseInt(hexStr, 16);
-            let byte = _ProcessManager.readInstruction(memoryLoc);
-            this.Zflag = ( (parseInt(byte.toString(), 16) == this.Xreg ) ? 1 : 0);
+            let memoryLoc = parseInt(memoryLocHex, 16);
+            let byte = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+            this.Zflag = (byte === this.Xreg ? 1 : 0);
             this.increaseProgramCounter();
         }
 
@@ -264,15 +263,21 @@ module TSOS {
         // OP CODE  - D0
         // Purpose: Branch n bytes if z flag is 0
         public branchBytes(): void {
+            console.log("Branching")
             this.increaseProgramCounter();
-            if (this.Zflag == 0) {
+            if (this.Zflag === 0) {
                 let branchN = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+                console.log("BranchN: " + branchN )
+                this.increaseProgramCounter();
                 let branchedPC = this.PC + branchN;
-                if (branchedPC + 1 > _MemoryPartitionSize ) {
+                console.log("BranchedPC: " + branchedPC )
+                if (branchedPC  > _MemoryPartitionSize - 1) {
                     this.PC = branchedPC - _MemoryPartitionSize;
+                    console.log("BranchedPC > 255: PC:  " + this.PC )
                 }
                 else {
                     this.PC = branchedPC;
+                    console.log("BranchedPC NOT > 255: PC:  " + this.PC )
                 }
             }
             else {
@@ -289,11 +294,11 @@ module TSOS {
             else if (this.Xreg === 2) {
                 let memoryLoc = this.Yreg;
                 let output = '';
-                while (_Memory.readMemory(memoryLoc) != "00") {
-                    let ascii = _Memory.readMemory(memoryLoc);
-                    let charCode = parseInt(ascii.toString(), 16);
-                    output += String.fromCharCode(charCode);
+                let ascii = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+                while (ascii != 0) {
+                    output += String.fromCharCode(ascii);
                     memoryLoc ++;
+                    ascii = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
                 }
                 _StdOut.putText(output);
             }
@@ -326,6 +331,7 @@ module TSOS {
         public breakProgram(pcb: ProcessControlBlock): void {
             this.increaseProgramCounter();
             _ProcessManager.terminateProcess(pcb);
+            console.log("Breaking Program");
         }
 
     }

@@ -51,7 +51,7 @@
             public runProcess(pcb: ProcessControlBlock): void {
                 console.log("Run Process with PCB PID: " + pcb.pid);
                 this.currPCB = pcb;
-                this.currPCB.state = "running";
+                this.currPCB.state = "Running";
                 this.readyQueue.enqueue(this.currPCB);
                 _Control.updateCpuDisplay();
                 _Control.updatePcbDisplay(pcb);;
@@ -62,9 +62,9 @@
             }
 
             public terminateProcess(pcb: ProcessControlBlock): void {
-                if (this.readyQueue.isEmpty()) {
+                if (! this.readyQueue.isEmpty()) {
                     _CPU.isExecuting = false;
-                    pcb.state = "terminated";
+                    pcb.state = "Terminated";
                     this.readyQueue.dequeue();
                 }
             }

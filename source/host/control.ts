@@ -130,7 +130,6 @@ module TSOS {
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
-            console.log("memory please be populated");
             _Control.updateMemoryDisplay();
 
         }
