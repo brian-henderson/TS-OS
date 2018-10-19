@@ -406,6 +406,7 @@ module TSOS {
 
         public shellNuke(args) {
             _Kernel.krnTrapError("User has engaged thermo-nuclear detonation...aka BSOD");
+            Utils.setStatus("Oh no. Too much bacon");
         }
 
         public shellLoad(args) {

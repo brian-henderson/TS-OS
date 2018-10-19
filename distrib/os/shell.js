@@ -337,6 +337,7 @@ var TSOS;
         };
         Shell.prototype.shellNuke = function (args) {
             _Kernel.krnTrapError("User has engaged thermo-nuclear detonation...aka BSOD");
+            TSOS.Utils.setStatus("Oh no. Too much bacon");
         };
         Shell.prototype.shellLoad = function (args) {
             // grab the input value from well the...input

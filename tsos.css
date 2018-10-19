@@ -52,7 +52,7 @@ h3 {
 
 #display {
   background-color: whitesmoke;
-  border: 2px solid black;
+  border: 1px solid lightgray;
   cursor: default;
 }
 
@@ -108,4 +108,8 @@ h3 {
 
 #tablePcbDisplay {
    width:532px;
+}
+
+#divContainer {
+   padding-top: 10px;
 }

@@ -178,12 +178,12 @@ module TSOS {
         public loadAccFromMemory(): void {
             // increase program counter
             this.increaseProgramCounter();
-            let hexStr = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
             // increase program counter again
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
+            memoryLocHex += _ProcessManager.readInstruction(this.PC) + memoryLocHex;
             // convert to decimal address
-            let memoryLoc = parseInt(hexStr, 16);
+            let memoryLoc = parseInt(memoryLocHex, 16);
             // load into the accumulator reading 
             this.Acc = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             // update program counter to next program
