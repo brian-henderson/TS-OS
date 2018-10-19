@@ -31,6 +31,11 @@ var TSOS;
         Memory.prototype.writeMemoryByte = function (loc, byteData) {
             this.memoryStorage[loc] = byteData;
         };
+        Memory.prototype.clearMemory = function () {
+            for (var i = 0; i < this.memoryStorage.length; i++) {
+                this.memoryStorage[i] = "00";
+            }
+        };
         return Memory;
     }());
     TSOS.Memory = Memory;

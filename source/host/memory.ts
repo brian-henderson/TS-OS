@@ -34,5 +34,11 @@
                 this.memoryStorage[loc] = byteData;
             }
 
+            public clearMemory(): void {
+                for(let i=0; i < this.memoryStorage.length; i++) {
+                    this.memoryStorage[i] = "00";
+                }
+            }
+
         }
     }

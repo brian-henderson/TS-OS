@@ -122,6 +122,11 @@ var TSOS;
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
             _ProcessManager.currPCB.instructionReg = this.IR;
+            console.log("....CURRENT ACC: " + this.Acc);
+            console.log("....CURRENT PC : " + this.PC);
+            console.log("....CURRENT X  : " + this.Xreg);
+            console.log("....CURRENT Y  : " + this.Yreg);
+            console.log("....CURRENT Z  : " + this.Zflag);
             if (_SingleStep) {
                 this.isExecuting = false;
             }
@@ -188,10 +193,9 @@ var TSOS;
         Cpu.prototype.loadXfromMemory = function () {
             // increase program counter
             this.increaseProgramCounter();
-            var hexStr = _ProcessManager.readInstruction(this.PC);
+            var memoryLocHex = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
-            var memoryLoc = parseInt(hexStr, 16);
+            var memoryLoc = parseInt(memoryLocHex, 16);
             this.Xreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             this.increaseProgramCounter();
         };
@@ -200,10 +204,9 @@ var TSOS;
         Cpu.prototype.loadYfromMemory = function () {
             // increase program counter
             this.increaseProgramCounter();
-            var hexStr = _ProcessManager.readInstruction(this.PC);
+            var memoryLocHex = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
-            var memoryLoc = parseInt(hexStr, 16);
+            var memoryLoc = parseInt(memoryLocHex, 16);
             this.Yreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             this.increaseProgramCounter();
         };
@@ -235,12 +238,12 @@ var TSOS;
         // Purpose: store the acc into memory
         Cpu.prototype.storeAccInMemory = function () {
             this.increaseProgramCounter();
-            var hexStr = _ProcessManager.readInstruction(this.PC);
+            var memoryLocHex = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
-            var memoryLoc = parseInt(hexStr, 16);
-            var val = this.Acc.toString(16);
-            _Memory.writeMemoryByte(memoryLoc, val);
+            var memoryLoc = parseInt(memoryLocHex, 16);
+            var value = this.Acc.toString(16).toUpperCase();
+            value = value.length < 2 ? ("0" + value) : value;
+            _Memory.writeMemoryByte(memoryLoc, value);
             this.increaseProgramCounter();
         };
         // OP CODE  - D0
@@ -290,13 +293,14 @@ var TSOS;
         // Purpose: Increment the value of a byte.
         Cpu.prototype.increment = function () {
             this.increaseProgramCounter();
-            var hexStr = _ProcessManager.readInstruction(this.PC);
+            var memoryLocHex = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
-            var memoryLoc = parseInt(hexStr, 16);
-            var value = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+            var memoryLoc = parseInt(memoryLocHex, 16);
+            var byte = _ProcessManager.readInstruction(memoryLoc);
+            var value = parseInt(byte, 16);
             value++;
             var hexValue = value.toString(16);
+            hexValue = hexValue.length < 2 ? ("0" + hexValue) : hexValue;
             _Memory.writeMemoryByte(memoryLoc, hexValue);
             this.increaseProgramCounter();
         };
@@ -310,7 +314,6 @@ var TSOS;
         Cpu.prototype.breakProgram = function (pcb) {
             this.increaseProgramCounter();
             _ProcessManager.terminateProcess(pcb);
-            console.log("Breaking Program");
         };
         return Cpu;
     }());

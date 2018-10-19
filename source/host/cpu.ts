@@ -126,6 +126,12 @@ module TSOS {
             _ProcessManager.currPCB.Z = this.Zflag;
             _ProcessManager.currPCB.instructionReg = this.IR;
 
+            console.log("....CURRENT ACC: " + this.Acc);
+            console.log("....CURRENT PC : " + this.PC);
+            console.log("....CURRENT X  : " + this.Xreg);
+            console.log("....CURRENT Y  : " + this.Yreg);
+            console.log("....CURRENT Z  : " + this.Zflag);
+
             if (_SingleStep) {
                 this.isExecuting = false;
             }
@@ -199,24 +205,22 @@ module TSOS {
         // OP CODE  - AE
         // Purpose: Load X Reg from memory
         public loadXfromMemory(): void {
-            // increase program counter
-            this.increaseProgramCounter();
-            let hexStr = _ProcessManager.readInstruction(this.PC);
-            this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
-            let memoryLoc = parseInt(hexStr, 16);
-            this.Xreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
-            this.increaseProgramCounter();
+             // increase program counter
+             this.increaseProgramCounter();
+             let memoryLocHex = _ProcessManager.readInstruction(this.PC);
+             this.increaseProgramCounter();
+             let memoryLoc = parseInt(memoryLocHex, 16);
+             this.Xreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+             this.increaseProgramCounter();
         }
          // OP CODE  - AC
          // Purpose: Load Y reg from memory
          public loadYfromMemory(): void {
             // increase program counter
             this.increaseProgramCounter();
-            let hexStr = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
-            let memoryLoc = parseInt(hexStr, 16);
+            let memoryLoc = parseInt(memoryLocHex, 16);
             this.Yreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
             this.increaseProgramCounter();
         }
@@ -251,12 +255,12 @@ module TSOS {
         // Purpose: store the acc into memory
         public storeAccInMemory(): void {
             this.increaseProgramCounter();
-            let hexStr = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
-            let memoryLoc = parseInt(hexStr, 16);
-            let val = this.Acc.toString(16);
-            _Memory.writeMemoryByte(memoryLoc, val);
+            let memoryLoc = parseInt(memoryLocHex, 16);
+            let value = this.Acc.toString(16).toUpperCase();
+            value = value.length < 2 ? ("0" + value) : value;
+            _Memory.writeMemoryByte(memoryLoc, value);
             this.increaseProgramCounter();
         }
 
@@ -309,13 +313,14 @@ module TSOS {
         // Purpose: Increment the value of a byte.
         public increment(): void {
             this.increaseProgramCounter();
-            let hexStr = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
             this.increaseProgramCounter();
-            hexStr += _ProcessManager.readInstruction(this.PC) + hexStr;
-            let memoryLoc = parseInt(hexStr, 16);
-            let value = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+            let memoryLoc = parseInt(memoryLocHex, 16);
+            let byte = _ProcessManager.readInstruction(memoryLoc);
+            let value = parseInt(byte, 16);
             value++;
             let hexValue = value.toString(16);
+            hexValue = hexValue.length < 2 ? ("0" + hexValue) : hexValue;
             _Memory.writeMemoryByte(memoryLoc, hexValue);
             this.increaseProgramCounter();
         }
@@ -331,7 +336,6 @@ module TSOS {
         public breakProgram(pcb: ProcessControlBlock): void {
             this.increaseProgramCounter();
             _ProcessManager.terminateProcess(pcb);
-            console.log("Breaking Program");
         }
 
     }

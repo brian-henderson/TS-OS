@@ -1,4 +1,6 @@
 ///<reference path="../globals.ts" />
+///<reference path="../utils.ts" />
+
 /* ------------
      Kernel.ts
 
@@ -53,6 +55,7 @@
                 this.currPCB = pcb;
                 this.currPCB.state = "Running";
                 this.readyQueue.enqueue(this.currPCB);
+                Utils.setStatus("Enjoying the delicious flavors (Executing Program)");
                 _Control.updateCpuDisplay();
                 _Control.updatePcbDisplay(pcb);;
             }
@@ -63,9 +66,11 @@
 
             public terminateProcess(pcb: ProcessControlBlock): void {
                 if (! this.readyQueue.isEmpty()) {
-                    _CPU.isExecuting = false;
                     pcb.state = "Terminated";
+                    _CPU.isExecuting = false;
+                    _Memory.clearMemory();
                     this.readyQueue.dequeue();
+                    _Console.advanceLine();
                 }
             }
 

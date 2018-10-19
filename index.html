@@ -113,101 +113,111 @@
                 </div>
         </nav>
 
-        <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
-                <canvas id="display" width="500px" height="500px" tabindex="3">
-                </canvas>
-        </div>
+        <div class="container">
 
-        <div id="divLog" style="margin-left:520px;">
-                <label>
-                        Host Log
-                        <br>
-                        <textarea name="taHostLog" id="taHostLog" rows="6" cols="48"></textarea>
-                </label>
-        </div>
+                <div class="row">
+                        <div class="col-lg-6">
+                                <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
+                                        <label>Console
+                                        <canvas id="display" width="500px" height="500px" tabindex="3">
+                                        </canvas></label>
+                                </div>
+                        </div>
+                        <div class="col-lg-6">
+                                <div id="divLog">
+                                        <label>
+                                                Host Log
+                                                <br>
+                                                <textarea name="taHostLog" id="taHostLog" rows="6" cols=55></textarea>
+                                        </label>
+                                </div>
+                                <div id="divCpuDisplay" >
+                                                <label>
+                                                CPU Display
+                                                <table id="tableCpuDisplay"  class="table table-sm table-striped table-bordered">
+                                                        <tr>
+                                                                <th>PC</th>
+                                                                <th>IR</th>
+                                                                <th>AC</th>
+                                                                <th>X</th>
+                                                                <th>Y</th>
+                                                                <th>Z</th>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>--</td>
+                                                                <td>--</td>
+                                                                <td>--</td>
+                                                                <td>--</td>
+                                                                <td>--</td>
+                                                                <td>--</td>
+                                                        </tr>
+                                                        </table>
+                                                </label>
+                                </div>
 
-        <div id="divUserProgramInput" style="margin-left:520px;">
-                <label>
-                        User Program Input
-                        <br>
-                        <textarea name="taProgramInput" id="taProgramInput" rows="4" cols="48">A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</textarea>
-                </label>
-        </div>
-
-        <div id="divCpuDisplay" style="margin-left:520px;">
-                <label>
-                CPU Display
-                <table id="tableCpuDisplay"  class="table table-sm table-striped table-bordered">
-                        <tr>
-                                <th>PC</th>
-                                <th>IR</th>
-                                <th>AC</th>
-                                <th>X</th>
-                                <th>Y</th>
-                                <th>Z</th>
-                        </tr>
-                        <tr>
-                                <td>--</td>
-                                <td>--</td>
-                                <td>--</td>
-                                <td>--</td>
-                                <td>--</td>
-                                <td>--</td>
-                        </tr>
-                        </table>
-                </label>
-        </div>
-
-        <div id="divPcbDisplay" style="margin-left:520px;">
-                <label>
-                        PCB Display
-                        <table id="tablePcbDisplay" class="table table-sm table-striped table-bordered">
-                                <tr>
-                                        <th>PID</th>
-                                        <th>Priority</th>
-                                        <th>State</th>
-                                        <th>PC</th>
-                                        <th>IR</th>
-                                        <th>ACC</th>
-                                        <th>X</th>
-                                        <th>Y</th>
-                                        <th>Z</th>
-                                        <th>Location</th>
-                                </tr>
-                                <tr>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                </tr>
-                        </table>
-                </label>
-        </div>
-
-        <div class="card w-50">
-                <div class="card-header">
-                        Memory Display
+                                <div id="divUserProgramInput">
+                                                <label>
+                                                        User Program Input
+                                                        <br>
+                                                        <textarea name="taProgramInput" id="taProgramInput" rows="4" cols="21">A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</textarea>
+                                                </label>
+                                        </div>
+                        
+                        
+                        </div>
                 </div>
-                <div class="card-body cardMemoryDisplay">
-                        <table id="tableMemoryDisplay" class="table table-striped table-bordered">
-                                <tr>
-                                        <th>--</th>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                </tr>
-                        </table>
+
+                <div id="divPcbDisplay" style="margin-left:520px;">
+                        <label>
+                                PCB Display
+                                <table id="tablePcbDisplay" class="table table-sm table-striped table-bordered">
+                                        <tr>
+                                                <th>PID</th>
+                                                <th>Priority</th>
+                                                <th>State</th>
+                                                <th>PC</th>
+                                                <th>IR</th>
+                                                <th>ACC</th>
+                                                <th>X</th>
+                                                <th>Y</th>
+                                                <th>Z</th>
+                                                <th>Location</th>
+                                        </tr>
+                                        <tr>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                        </tr>
+                                </table>
+                        </label>
+                </div>
+
+                <div class="card w-50">
+                        <div class="card-header">
+                                Memory Display
+                        </div>
+                        <div class="card-body cardMemoryDisplay">
+                                <table id="tableMemoryDisplay" class="table table-striped table-bordered">
+                                        <tr>
+                                                <th>--</th>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                        </tr>
+                                </table>
+                        </div>
                 </div>
         </div>
 
