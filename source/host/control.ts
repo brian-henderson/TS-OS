@@ -271,5 +271,19 @@ module TSOS {
         
         }
 
+        public terminatePcbDisplay(pcb: ProcessControlBlock): void {
+            let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
+            let tableLength = table.rows.length;
+            pcb.location = "Black Hole";
+            for (let i = 0; i < tableLength; i++) {
+                let row = table.rows[i].cells;
+                if (parseInt(row[0].innerHTML) == pcb.pid) {
+                    row[9].innerHTML = pcb.location;
+                    break;
+                }
+            }
+        
+        }
+
     }
 }

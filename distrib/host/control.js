@@ -228,6 +228,18 @@ var TSOS;
                 }
             }
         };
+        Control.prototype.terminatePcbDisplay = function (pcb) {
+            var table = document.getElementById("tablePcbDisplay");
+            var tableLength = table.rows.length;
+            pcb.location = "Black Hole";
+            for (var i = 0; i < tableLength; i++) {
+                var row = table.rows[i].cells;
+                if (parseInt(row[0].innerHTML) == pcb.pid) {
+                    row[9].innerHTML = pcb.location;
+                    break;
+                }
+            }
+        };
         return Control;
     }());
     TSOS.Control = Control;

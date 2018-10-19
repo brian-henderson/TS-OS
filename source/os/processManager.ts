@@ -55,7 +55,7 @@
                 this.currPCB = pcb;
                 this.currPCB.state = "Running";
                 this.readyQueue.enqueue(this.currPCB);
-                Utils.setStatus("Enjoying the delicious flavors (Executing Program)");
+                Utils.setStatus("Enjoying the delicious flavors");
                 _Control.updateCpuDisplay();
                 _Control.updatePcbDisplay(pcb);;
             }
@@ -66,11 +66,15 @@
 
             public terminateProcess(pcb: ProcessControlBlock): void {
                 if (! this.readyQueue.isEmpty()) {
-                    pcb.state = "Terminated";
-                    _CPU.isExecuting = false;
-                    _Memory.clearMemory();
                     this.readyQueue.dequeue();
+                    pcb.state = "Terminated";
+                    _Control.terminatePcbDisplay(pcb);
+                    _CPU.isExecuting = false;
+                    _CPU.resetCpu();
+                    _Memory.clearMemory();
+                    Utils.setStatus("Still a little hungry...");
                     _Console.advanceLine();
+                    _OsShell.putPrompt();
                 }
             }
 

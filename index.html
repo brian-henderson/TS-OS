@@ -1,13 +1,15 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-   <meta name="author"             content="Alan G. Labouseur" />
-   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+   <meta name="author" content="Alan G. Labouseur" />
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous">
    <link href="https://fonts.googleapis.com/css?family=Bowlby+One+SC|Monoton|Source+Code+Pro" rel="stylesheet">
    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
-   
-   <link rel="shortcut icon" href="favicon.ico" /> 
+
+   <link rel="shortcut icon" href="favicon.ico" />
    <title>
       HidalgOS - a browser-based virtual Operating System in TypeScript
    </title>
@@ -40,196 +42,186 @@
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. 
    <script type="text/javascript" src="http://alanclasses.github.io/TSOS/test/glados-ip2.js"></script> -->
-   
+
 </head>
 
 <body onload="onDocumentLoad()">
 
 
-<div id="divMain" style="width:100%;">
+   <div id="divMain" style="width:100%;">
+<!-- NAV BAR -------------------------------------------------------------------->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+         <a class="navbar-brand" href="#">HidalgOS</a>
+         <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+               <li class="nav-item">
+                  <input   type="button" 
+                           id="btnStartOS" 
+                           name="brnStartOS" 
+                           class="btn btn-success btn-sm" 
+                           value="Start"
+                           tabindex="0" 
+                           onclick="TSOS.Control.hostBtnStartOS_click(this);">
+               </li>
+               <li class="nav-item">
+                  <input   type="button" 
+                           id="btnHaltOS" 
+                           name="brnHaltOS"  
+                           class="btn btn-warning btn-sm" 
+                           disabled="disabled"
+                           value="Halt" 
+                           tabindex="1" 
+                           onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+               </li>
+               <li class="nav-item">
+                  <input   type="button" 
+                           id="btnReset" 
+                           name="brnReset" 
+                           class="btn btn-danger btn-sm" 
+                           disabled="disabled"
+                           value="Reset" 
+                           tabindex="2" 
+                           onclick="TSOS.Control.hostBtnReset_click(this);">
+               </li>
+               <li>
+                  <div class="btn-group" role="group">
+                     <input type="button" 
+                            id="btnSingleStep" 
+                            name="brnSingleStep" 
+                            class="btn btn-info btnSS btn-sm"
+                            disabled="disabled" 
+                            value="Single Step: Off" 
+                            tabindex="3" 
+                            onclick="TSOS.Control.hostBtnSingleStep_click(this);">
+                            
+                     <input type="button" 
+                            id="btnSSExecute" 
+                            name="brnSSExecute" 
+                            class="btn btn-secondary btnSSExecute btn-sm"
+                            disabled="disabled" 
+                            value=" >> " 
+                            tabindex="4" 
+                            onclick="TSOS.Control.hostBtnSSExecute_click(this);">
+                  </div>
+               </li>
+               <li>
+                  <span class="statusHeader">Status:</span>
+                  <label id="statusDisplay" class="statusDisplay"></label>
+               </li>
+            </ul>
+               <span class="navbar-text">
+                  <span class="timeHeader">T:</span>
+                  <label id="timeDisplay" class="timeDisplay"> 0000-00-00 00:00:00 </label>
+               </span>
+         </div>
+      </nav>
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="#">HidalgOS</a>
-                <div class="collapse navbar-collapse" id="navbarText">
-                        <ul class="navbar-nav mr-auto">
-                                <li class="nav-item">
-                                        <input  type="button" 
-                                                id="btnStartOS" 
-                                                name="brnStartOS" 
-                                                class="btn btn-success btn-sm" 
-                                                value="Start"
-                                                tabindex="0" 
-                                                onclick="TSOS.Control.hostBtnStartOS_click(this);">
-                                </li>
-                                <li class="nav-item">
-                                        <input  type="button" 
-                                                id="btnHaltOS" 
-                                                name="brnHaltOS" 
-                                                class="btn btn-warning btn-sm" 
-                                                disabled="disabled"
-                                                value="Halt" 
-                                                tabindex="1" 
-                                                onclick="TSOS.Control.hostBtnHaltOS_click(this);">
-                                </li>
-                                <li class="nav-item">
-                                        <input  type="button" 
-                                                id="btnReset" 
-                                                name="brnReset" 
-                                                class="btn btn-danger btn-sm" 
-                                                disabled="disabled"
-                                                value="Reset" 
-                                                tabindex="2" 
-                                                onclick="TSOS.Control.hostBtnReset_click(this);">
-                                </li>
-                                <li>
-                                   <div class="btn-group" role="group">
-                                        <input  type="button" 
-                                                id="btnSingleStep" 
-                                                name="brnSingleStep" 
-                                                class="btn btn-info btnSS btn-sm"
-                                                disabled="disabled" 
-                                                value="Single Step: Off" 
-                                                tabindex="3" onclick="TSOS.Control.hostBtnSingleStep_click(this);">
+<!-- MAIN CONTAINER  ------------------------------------------------------------>
+      <div class="container">
 
-                                        <input  type="button" 
-                                                id="btnSSExecute" 
-                                                name="brnSSExecute" 
-                                                class="btn btn-secondary btnSSExecute btn-sm"
-                                                disabled="disabled" 
-                                                value=" >> " 
-                                                tabindex="4" 
-                                                onclick="TSOS.Control.hostBtnSSExecute_click(this);">
-                                   </div>
-                                </li>
-                                <li>
-                                        <span class="statusHeader">Status:</span>
-                                        <label id="statusDisplay" class="statusDisplay"></label>
-                                </li>
-                        </ul>
-                        <span class="navbar-text">
-                                <span class="timeHeader">T:</span>
-                                <label id="timeDisplay" class="timeDisplay"> 0000-00-00 00:00:00 </label>
-                        </span>
-                </div>
-        </nav>
+         <div class="row">
+<!-- CONSOLE & MEMORY  ---------------------------------------------------------->
+            <div class="col-lg-6">
+               <label>
+                  Console
+                  <canvas id="display" width="500px" height="500px" tabindex="3">
+                  </canvas></label>
+               <br>
+               <table id="tableMemoryDisplay" class="table table-striped table-bordered">
+                  <label>Memory Display</label>
+                  <tr>
+                     <th>--</th>
+                     <td>--</td>
+                     <td>--</td>
+                     <td>--</td>
+                     <td>--</td>
+                     <td>--</td>
+                     <td>--</td>
+                     <td>--</td>
+                     <td>--</td>
+                  </tr>
+               </table>
 
-        <div class="container">
+            </div>
 
-                <div class="row">
-                        <div class="col-lg-6">
-                                <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
-                                        <label>Console
-                                        <canvas id="display" width="500px" height="500px" tabindex="3">
-                                        </canvas></label>
-                                </div>
-                        </div>
-                        <div class="col-lg-6">
-                                <div id="divLog">
-                                        <label>
-                                                Host Log
-                                                <br>
-                                                <textarea name="taHostLog" id="taHostLog" rows="6" cols=55></textarea>
-                                        </label>
-                                </div>
-                                <div id="divCpuDisplay" >
-                                                <label>
-                                                CPU Display
-                                                <table id="tableCpuDisplay"  class="table table-sm table-striped table-bordered">
-                                                        <tr>
-                                                                <th>PC</th>
-                                                                <th>IR</th>
-                                                                <th>AC</th>
-                                                                <th>X</th>
-                                                                <th>Y</th>
-                                                                <th>Z</th>
-                                                        </tr>
-                                                        <tr>
-                                                                <td>--</td>
-                                                                <td>--</td>
-                                                                <td>--</td>
-                                                                <td>--</td>
-                                                                <td>--</td>
-                                                                <td>--</td>
-                                                        </tr>
-                                                        </table>
-                                                </label>
-                                </div>
+            <div class="col-lg-6">
+<!-- HOST LOG ------------------------------------------------------------------->
+               <label>
+                  Host Log
+                  <textarea readonly name="taHostLog" id="taHostLog" class="form-control" rows="6" cols=80>
+                  </textarea>
+               </label>
+<!-- CPU DISPLAY ---------------------------------------------------------------->               
+               <label>
+                  CPU Display
+                  <table id="tableCpuDisplay" class="table table-sm table-striped table-bordered">
+                     <tr>
+                        <th>PC</th>
+                        <th>IR</th>
+                        <th>AC</th>
+                        <th>X</th>
+                        <th>Y</th>
+                        <th>Z</th>
+                     </tr>
+                     <tr>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                     </tr>
+                  </table>
+               </label>
+<!-- USER PROGRAM INPUT --------------------------------------------------------->
+               <label>
+                  User Program Input
+                  <textarea name="taProgramInput" id="taProgramInput" class="form-control" rows="4">A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</textarea>
+               </label>
+<!-- PCB DISPLAY ---------------------------------------------------------------->
+               <label>
+                     PCB Display
+                     <table id="tablePcbDisplay" class="table table-sm table-striped table-bordered">
+                        <tr>
+                           <th>PID</th>
+                           <th>Priority</th>
+                           <th>State</th>
+                           <th>PC</th>
+                           <th>IR</th>
+                           <th>ACC</th>
+                           <th>X</th>
+                           <th>Y</th>
+                           <th>Z</th>
+                           <th>Location</th>
+                        </tr>
+                        <tr>
+                           <td>--</td>
+                           <td>--</td>
+                           <td>--</td>
+                           <td>--</td>
+                           <td>--</td>
+                           <td>--</td>
+                           <td>--</td>
+                           <td>--</td>
+                           <td>--</td>
+                           <td>--</td>
+                        </tr>
+                     </table>
+                  </label>
+            </div>
+         </div>
 
-                                <div id="divUserProgramInput">
-                                                <label>
-                                                        User Program Input
-                                                        <br>
-                                                        <textarea name="taProgramInput" id="taProgramInput" rows="4" cols="21">A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</textarea>
-                                                </label>
-                                        </div>
-                        
-                        
-                        </div>
-                </div>
+      </div>
 
-                <div id="divPcbDisplay" style="margin-left:520px;">
-                        <label>
-                                PCB Display
-                                <table id="tablePcbDisplay" class="table table-sm table-striped table-bordered">
-                                        <tr>
-                                                <th>PID</th>
-                                                <th>Priority</th>
-                                                <th>State</th>
-                                                <th>PC</th>
-                                                <th>IR</th>
-                                                <th>ACC</th>
-                                                <th>X</th>
-                                                <th>Y</th>
-                                                <th>Z</th>
-                                                <th>Location</th>
-                                        </tr>
-                                        <tr>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                        </tr>
-                                </table>
-                        </label>
-                </div>
+   </div>
 
-                <div class="card w-50">
-                        <div class="card-header">
-                                Memory Display
-                        </div>
-                        <div class="card-body cardMemoryDisplay">
-                                <table id="tableMemoryDisplay" class="table table-striped table-bordered">
-                                        <tr>
-                                                <th>--</th>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                        </tr>
-                                </table>
-                        </div>
-                </div>
-        </div>
-
-</div>
-
-<p class="footerText" style="clear:both;">
-   <br>
-   Copyright &copy; 2018 No Rights Reserved.
-   <br>
-   Brian Henderson & Alan Labouseur
-</p>
-
+   <p class="footerText" style="clear:both;">
+      <br>
+      Copyright &copy; 2018 No Rights Reserved.
+      <br>
+      Brian Henderson & Alan Labouseur
+   </p>
 
 </body>
+
 </html>

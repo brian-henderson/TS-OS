@@ -85,3 +85,27 @@ h3 {
 .memoryDisplayHex {
   font-weight: bold;
 }
+
+#taHostLog {
+  font-size: 8pt;
+  width:532px;
+  margin-bottom: 25px;
+}
+
+#tableMemoryDisplay {
+   width: 505px;
+   overflow-y: scroll;
+}
+
+#tableCpuDisplay {
+   width: 270px;
+}
+
+#taProgramInput {
+   color: black;
+   columns: 21; 
+}
+
+#tablePcbDisplay {
+   width:532px;
+}

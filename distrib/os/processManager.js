@@ -49,7 +49,7 @@ var TSOS;
             this.currPCB = pcb;
             this.currPCB.state = "Running";
             this.readyQueue.enqueue(this.currPCB);
-            TSOS.Utils.setStatus("Enjoying the delicious flavors (Executing Program)");
+            TSOS.Utils.setStatus("Enjoying the delicious flavors");
             _Control.updateCpuDisplay();
             _Control.updatePcbDisplay(pcb);
             ;
@@ -59,11 +59,15 @@ var TSOS;
         };
         ProcessManager.prototype.terminateProcess = function (pcb) {
             if (!this.readyQueue.isEmpty()) {
-                pcb.state = "Terminated";
-                _CPU.isExecuting = false;
-                _Memory.clearMemory();
                 this.readyQueue.dequeue();
+                pcb.state = "Terminated";
+                _Control.terminatePcbDisplay(pcb);
+                _CPU.isExecuting = false;
+                _CPU.resetCpu();
+                _Memory.clearMemory();
+                TSOS.Utils.setStatus("Still a little hungry...");
                 _Console.advanceLine();
+                _OsShell.putPrompt();
             }
         };
         return ProcessManager;
