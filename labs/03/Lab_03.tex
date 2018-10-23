@@ -1,0 +1,66 @@
+\documentclass[12pt]{article}
+   \usepackage[margin=.75in]{geometry}
+   \usepackage{hyperref}
+   \usepackage{multicol}
+   \setlength{\columnsep}{1cm}
+    
+   \begin{document}
+   \date{Fall 2018}
+    
+   \title{LAB 03	}
+   \author{Brian Henderson \\ 
+         CMPT 424: Operating Systems}
+   \maketitle
+   
+   \subsection*{Explain the difference between internal and external fragmentation.}
+   
+   Internal fragmentation is the wasted space within the memory partition due to excessive space requested for memory allocation. External fragmentation is the different free space holes in the memory.
+   
+   \begin{multicols}{2}
+   [
+   \subsection*{Given	five	(5)	memory	partitions	of	100KB,	500KB,	200KB,	300KB,	and	600KB	(in	that	
+   order),	how	would	optimal,	first-fit,	best-fit,	and	worst-fit	algorithms	place	processes	
+   of	212KB,	417KB,	112KB,	and	426KB	(in	that	order)?}
+   ]
+   
+   
+   \begin{enumerate}
+   \item Optimal Fit
+       \begin{itemize}
+       \item 100KB: null
+       \item 500KB: 417KB
+       \item 200KB: null 
+       \item 300KB: 212KB
+       \item 600KB: 426KB, 112KB
+       \end{itemize}
+   \item First Fit
+       \begin{itemize}
+       \item 100KB: null
+       \item 500KB: 212KB
+       \item 200KB: 417KB
+       \item 300KB: 112KB
+       \item 600KB: 426KB
+       \end{itemize}
+   \item Best Fit
+       \begin{itemize}
+       \item 100KB: null
+       \item 500KB: 417KB
+       \item 200KB: null
+       \item 300KB: 212KB
+       \item 600KB: 426KB, 112KB
+       \end{itemize}
+   \item Worst Fit
+       \begin{itemize}
+       \item 100KB: null
+       \item 500KB: 426KB
+       \item 200KB: null
+       \item 300KB: 112KB
+       \item 600KB: 212KB, 417KB
+       \end{itemize}
+   \end{enumerate}
+   
+   
+   \end{multicols}
+    
+   \end{document}
+   
