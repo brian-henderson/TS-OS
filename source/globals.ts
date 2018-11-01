@@ -42,7 +42,7 @@ var _OSclock: number = 0;  // Page 23.
 var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
 
 // Adding Memory size here to be global and easy to change
-var _MemorySize = 256;
+var _MemorySize = 768;
 // The size of the memory blocks
 var _MemoryPartitionSize = 256;
 

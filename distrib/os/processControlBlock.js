@@ -12,6 +12,7 @@ var TSOS;
             this.Y = 0;
             this.Z = 0;
             this.location = null;
+            this.partitionIndex = 0;
             this.pid = p;
         }
         ;

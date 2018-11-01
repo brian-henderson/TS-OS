@@ -25,7 +25,7 @@ module TSOS {
                     public Yreg: number = 0,
                     public Zflag: number = 0,
                     public isExecuting: boolean = false,
-                    public IR: string = "--"
+                    public IR: string = "--",
                 ){
         }
 
@@ -51,58 +51,58 @@ module TSOS {
         }
 
         public executeProgram(pcb: ProcessControlBlock) {
-            let currentInstruction = _Memory.readMemory(pcb.programCounter).toUpperCase();
+            let currentInstruction = _Memory.readMemory(pcb.partitionIndex, pcb.programCounter).toUpperCase();
             this.IR = currentInstruction;
             console.log("Current Instruction Executing: " + currentInstruction);
             
             switch(currentInstruction) {
                 case "A9":
                     // Load the constant into the accumulator
-                    this.loadAcc();
+                    this.loadAcc(pcb);
                     break;
                 case "AD":
                     // Store the accumulator from memory
-                    this.loadAccFromMemory();
+                    this.loadAccFromMemory(pcb);
                     break;
                 case "A2":
                     // Load a constant into the X register
-                    this.loadXRegister();
+                    this.loadXRegister(pcb);
                     break;
                 case "A0":
                     // Load a constant into the Y register
-                    this.loadYRegister();
+                    this.loadYRegister(pcb);
                     break;
                 case "8D":
                     // Store Accumulator in mem
-                    this.storeAccInMemory();
+                    this.storeAccInMemory(pcb);
                     break;
                 case "6D":
                     // Add and carry
-                    this.addWithCarry();
+                    this.addWithCarry(pcb);
                     break;
                 case "AE":
                     // Load the X Register from memory
-                    this.loadXfromMemory();
+                    this.loadXfromMemory(pcb);
                     break;
                 case "AC":
                     // Load the Y Register from memory
-                    this.loadYfromMemory();
+                    this.loadYfromMemory(pcb);
                     break;
                 case "EC":
                     // compare memory to X register
-                    this.compareMemoryToX();
+                    this.compareMemoryToX(pcb);
                     break;
                 case "D0":
                     // Branch N bytes if Z = 0
-                    this.branchBytes();
+                    this.branchBytes(pcb);
                     break;
                 case "FF":
                     // System call
-                    this.systemCall();
+                    this.systemCall(pcb);
                     break;
                 case "EE":
                     // increment byte value at address
-                    this.increment();
+                    this.increment(pcb);
                     break;
                 case "EA":
                     // No Operation
@@ -164,123 +164,123 @@ module TSOS {
 
         // OP CODE  - A9 
         // Purpose: Load the accumulator with the next memory value
-        public loadAcc(): void {
+        public loadAcc(pcb: ProcessControlBlock): void {
             // Increase program counter
             this.increaseProgramCounter();
             // save constant to accumulator
-            this.Acc = parseInt(_ProcessManager.readInstruction(this.PC),16);
+            this.Acc = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, this.PC),16);
             // update program counter to next program
             this.increaseProgramCounter();
         }
 
         // OP CODE  - AD
         // Purpose: Load the accumultaor with a specific memory address
-        public loadAccFromMemory(): void {
+        public loadAccFromMemory(pcb: ProcessControlBlock): void {
             // increase program counter
             this.increaseProgramCounter();
-            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
             // increase program counter again
             this.increaseProgramCounter();
-            memoryLocHex += _ProcessManager.readInstruction(this.PC) + memoryLocHex;
+            memoryLocHex += _ProcessManager.readInstruction(pcb.partitionIndex, this.PC) + memoryLocHex;
             // convert to decimal address
             let memoryLoc = parseInt(memoryLocHex, 16);
             // load into the accumulator reading 
-            this.Acc = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+            this.Acc = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
             // update program counter to next program
             this.increaseProgramCounter();
         }
 
         // OP CODE  - A2
         // Purpose: Load constant into X Reg
-        public loadXRegister(): void {
+        public loadXRegister(pcb: ProcessControlBlock): void {
             // increase program counter
             this.increaseProgramCounter();
             // get and assign x register
-            this.Xreg = parseInt(_ProcessManager.readInstruction(this.PC),16);
+            this.Xreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, this.PC),16);
             // update program counter to next program
             this.increaseProgramCounter();
         }
 
         // OP CODE  - A0
         // Purpose: Load constant into Y Reg
-        public loadYRegister(): void {
+        public loadYRegister(pcb: ProcessControlBlock): void {
             // increase program counter
             this.increaseProgramCounter();
             // get and assign x register
-            this.Yreg = parseInt(_ProcessManager.readInstruction(this.PC),16);
+            this.Yreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, this.PC),16);
             // update program counter to next program
             this.increaseProgramCounter();
         }
 
         // OP CODE  - AE
         // Purpose: Load X Reg from memory
-        public loadXfromMemory(): void {
+        public loadXfromMemory(pcb: ProcessControlBlock): void {
              // increase program counter
              this.increaseProgramCounter();
-             let memoryLocHex = _ProcessManager.readInstruction(this.PC);
+             let memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
              this.increaseProgramCounter();
              let memoryLoc = parseInt(memoryLocHex, 16);
-             this.Xreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+             this.Xreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
              this.increaseProgramCounter();
         }
          // OP CODE  - AC
          // Purpose: Load Y reg from memory
-         public loadYfromMemory(): void {
+         public loadYfromMemory(pcb: ProcessControlBlock): void {
             // increase program counter
             this.increaseProgramCounter();
-            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
             this.increaseProgramCounter();
             let memoryLoc = parseInt(memoryLocHex, 16);
-            this.Yreg = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+            this.Yreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
             this.increaseProgramCounter();
         }
 
         // OP CODE  - EC
         // Purpose: Compare X reg to byte in memory
-        public compareMemoryToX(): void {
+        public compareMemoryToX(pcb: ProcessControlBlock): void {
             // increase program counter
             this.increaseProgramCounter();
-            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
             this.increaseProgramCounter();
             let memoryLoc = parseInt(memoryLocHex, 16);
-            let byte = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+            let byte = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
             this.Zflag = (byte === this.Xreg ? 1 : 0);
             this.increaseProgramCounter();
         }
 
         // OP CODE  - 6D
         // Purpsoe: Add contents of the address to acc and save results in acc
-        public addWithCarry(): void {
+        public addWithCarry(pcb: ProcessControlBlock): void {
             this.increaseProgramCounter();
-            let hexStr = _ProcessManager.readInstruction(this.PC);
+            let hexStr = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
             this.increaseProgramCounter();
-            hexStr = _ProcessManager.readInstruction(this.PC) + hexStr;
+            hexStr = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC) + hexStr;
             let memoryLoc = parseInt(hexStr, 16);
-            let val = _ProcessManager.readInstruction(memoryLoc);
+            let val = _ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc);
             this.Acc += parseInt(val);
             this.increaseProgramCounter();
         }
 
         // OP CODE  - 8D
         // Purpose: store the acc into memory
-        public storeAccInMemory(): void {
+        public storeAccInMemory(pcb: ProcessControlBlock): void {
             this.increaseProgramCounter();
-            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
             this.increaseProgramCounter();
             let memoryLoc = parseInt(memoryLocHex, 16);
             let value = this.Acc.toString(16).toUpperCase();
             value = value.length < 2 ? ("0" + value) : value;
-            _Memory.writeMemoryByte(memoryLoc, value);
+            _Memory.writeMemoryByte(pcb.partitionIndex, memoryLoc, value);
             this.increaseProgramCounter();
         }
 
         // OP CODE  - D0
         // Purpose: Branch n bytes if z flag is 0
-        public branchBytes(): void {
+        public branchBytes(pcb: ProcessControlBlock): void {
             console.log("Branching")
             this.increaseProgramCounter();
             if (this.Zflag === 0) {
-                let branchN = parseInt(_ProcessManager.readInstruction(this.PC), 16);
+                let branchN = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, this.PC), 16);
                 console.log("BranchN: " + branchN )
                 this.increaseProgramCounter();
                 let branchedPC = this.PC + branchN;
@@ -301,18 +301,18 @@ module TSOS {
 
         // OP CODE  - FF
         // Purpose: print integer stored in Y reg 
-        public systemCall(): void {
+        public systemCall(pcb: ProcessControlBlock): void {
             if (this.Xreg ===  1) {
                 _StdOut.putText(this.Yreg.toString());
             }
             else if (this.Xreg === 2) {
                 let memoryLoc = this.Yreg;
                 let output = '';
-                let ascii = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+                let ascii = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
                 while (ascii != 0) {
                     output += String.fromCharCode(ascii);
                     memoryLoc ++;
-                    ascii = parseInt(_ProcessManager.readInstruction(memoryLoc), 16);
+                    ascii = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
                 }
                 _StdOut.putText(output);
             }
@@ -321,17 +321,17 @@ module TSOS {
 
         // OP CODE  - EE
         // Purpose: Increment the value of a byte.
-        public increment(): void {
+        public increment(pcb: ProcessControlBlock): void {
             this.increaseProgramCounter();
-            let memoryLocHex = _ProcessManager.readInstruction(this.PC);
+            let memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
             this.increaseProgramCounter();
             let memoryLoc = parseInt(memoryLocHex, 16);
-            let byte = _ProcessManager.readInstruction(memoryLoc);
+            let byte = _ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc);
             let value = parseInt(byte, 16);
             value++;
             let hexValue = value.toString(16);
             hexValue = hexValue.length < 2 ? ("0" + hexValue) : hexValue;
-            _Memory.writeMemoryByte(memoryLoc, hexValue);
+            _Memory.writeMemoryByte(pcb.partitionIndex, memoryLoc, hexValue);
             this.increaseProgramCounter();
         }
 

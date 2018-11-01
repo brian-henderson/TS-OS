@@ -22,26 +22,29 @@ var TSOS;
         }
         ;
         ProcessManager.prototype.createProcess = function (program) {
-            if (_MemoryManager.checkMemorySpace(program.length)) {
+            var partitionID = _MemoryManager.getAvailablePartition();
+            if (partitionID != -1) {
                 // update to new Process ID 
                 _PID++;
                 // create new process control block
                 var pcb = new TSOS.ProcessControlBlock(_PID);
+                // assign the available partiton to the pcb and process
+                pcb.partitionIndex = partitionID;
                 // write the program to the memory, given user input already split into array
-                _MemoryManager.writeProgramToMemory(program);
+                _MemoryManager.writeProgramToMemory(pcb.partitionIndex, program);
                 // add this process to the list of upcoming processes
                 this.waitQueue.enqueue(pcb);
                 // get the instruction registry and set it 
-                pcb.instructionReg = _Memory.readMemory(pcb.programCounter);
+                pcb.instructionReg = _Memory.readMemory(pcb.partitionIndex, pcb.programCounter);
                 // set the location to memory (no hard drive yet so this is static but getting ready for next iP)
-                pcb.location = "Memory";
+                pcb.location = "Memory: Partition: " + (pcb.partitionIndex).toString();
                 // output status to console
                 _StdOut.putText("Program loaded to memory with PID " + _PID);
                 // add pcb to the pcb display list
                 _Control.addToPcbDisplay(pcb);
             }
             else {
-                _StdOut.putText("Program not loaded to memory, too big");
+                _StdOut.putText("Program not loaded to memory, no available partitions");
             }
         };
         ProcessManager.prototype.runProcess = function (pcb) {
@@ -54,8 +57,8 @@ var TSOS;
             _Control.updatePcbDisplay(pcb);
             ;
         };
-        ProcessManager.prototype.readInstruction = function (PC) {
-            return _Memory.readMemory(PC);
+        ProcessManager.prototype.readInstruction = function (partition, PC) {
+            return _Memory.readMemory(partition, PC);
         };
         ProcessManager.prototype.terminateProcess = function (pcb) {
             if (!this.readyQueue.isEmpty()) {
@@ -64,7 +67,7 @@ var TSOS;
                 _Control.terminatePcbDisplay(pcb);
                 _CPU.isExecuting = false;
                 _CPU.resetCpu();
-                _Memory.clearMemory();
+                _Memory.clearMemoryPartition(pcb.partitionIndex);
                 TSOS.Utils.setStatus("Still a little hungry...");
                 _Console.advanceLine();
                 _OsShell.putPrompt();

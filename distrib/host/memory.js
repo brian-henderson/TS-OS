@@ -16,24 +16,58 @@ var TSOS;
                 this.memoryStorage[i] = "00";
             }
         };
-        Memory.prototype.readMemory = function (PC) {
-            return this.memoryStorage[PC];
+        Memory.prototype.readMemory = function (partition, PC) {
+            var loc = PC;
+            if (partition === 1) {
+                loc += 256;
+            }
+            if (partition === 2) {
+                loc += 512;
+            }
+            return this.memoryStorage[loc];
         };
         ;
-        Memory.prototype.writeMemory = function (program) {
+        Memory.prototype.writeMemory = function (partition, program) {
             for (var i = 0; i < program.length; i++) {
                 //this.memoryStorage[i] = program[i];
-                this.writeMemoryByte(i, program[i]);
+                this.writeMemoryByte(partition, i, program[i]);
             }
             _Control.updateMemoryDisplay();
         };
         ;
-        Memory.prototype.writeMemoryByte = function (loc, byteData) {
+        Memory.prototype.writeMemoryByte = function (partition, loc, byteData) {
+            if (partition === 1) {
+                loc += 256;
+            }
+            if (partition === 2) {
+                loc += 512;
+            }
             this.memoryStorage[loc] = byteData;
         };
         Memory.prototype.clearMemory = function () {
             for (var i = 0; i < this.memoryStorage.length; i++) {
                 this.memoryStorage[i] = "00";
+            }
+        };
+        Memory.prototype.clearMemoryPartition = function (partition) {
+            switch (partition) {
+                case 0:
+                    for (var i = 0; i < 256; i++) {
+                        this.memoryStorage[i] = "00";
+                    }
+                    break;
+                case 1:
+                    for (var i = 256; i < 512; i++) {
+                        this.memoryStorage[i] = "00";
+                    }
+                    break;
+                case 2:
+                    for (var i = 512; i < 768; i++) {
+                        this.memoryStorage[i] = "00";
+                    }
+                    break;
+                default:
+                    console.log("Failed to clear memory partition");
             }
         };
         return Memory;

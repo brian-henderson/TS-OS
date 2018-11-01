@@ -26,27 +26,31 @@
             public currPCB: TSOS.ProcessControlBlock;
 
             public createProcess(program: Array<string>): void {
-                if (_MemoryManager.checkMemorySpace(program.length)) {
-                    // update to new Process ID 
-                    _PID++;
-                    // create new process control block
-                    let pcb = new ProcessControlBlock(_PID);
-                    // write the program to the memory, given user input already split into array
-                    _MemoryManager.writeProgramToMemory(program);
-                    // add this process to the list of upcoming processes
-                    this.waitQueue.enqueue(pcb);
-                    // get the instruction registry and set it 
-                    pcb.instructionReg = _Memory.readMemory(pcb.programCounter);
-                    // set the location to memory (no hard drive yet so this is static but getting ready for next iP)
-                    pcb.location = "Memory";
-                    // output status to console
-                    _StdOut.putText("Program loaded to memory with PID " + _PID);
-                    // add pcb to the pcb display list
-                    _Control.addToPcbDisplay(pcb);
-                }
-                else {
-                    _StdOut.putText("Program not loaded to memory, too big");
-                }
+               let partitionID = _MemoryManager.getAvailablePartition();
+
+               if (partitionID != -1) {
+                  // update to new Process ID 
+                  _PID++;
+                  // create new process control block
+                  let pcb = new ProcessControlBlock(_PID);
+                  // assign the available partiton to the pcb and process
+                  pcb.partitionIndex = partitionID;
+                  // write the program to the memory, given user input already split into array
+                  _MemoryManager.writeProgramToMemory(pcb.partitionIndex, program);
+                  // add this process to the list of upcoming processes
+                  this.waitQueue.enqueue(pcb);
+                  // get the instruction registry and set it 
+                  pcb.instructionReg = _Memory.readMemory(pcb.partitionIndex, pcb.programCounter);
+                  // set the location to memory (no hard drive yet so this is static but getting ready for next iP)
+                  pcb.location = "Memory: Partition: " + (pcb.partitionIndex).toString();
+                  // output status to console
+                  _StdOut.putText("Program loaded to memory with PID " + _PID);
+                  // add pcb to the pcb display list
+                  _Control.addToPcbDisplay(pcb);
+               }
+               else {
+                  _StdOut.putText("Program not loaded to memory, no available partitions");
+               }
             }
 
 
@@ -60,8 +64,8 @@
                 _Control.updatePcbDisplay(pcb);;
             }
 
-            public readInstruction(PC: number): string {
-                return _Memory.readMemory(PC);
+            public readInstruction(partition: number, PC: number): string {
+                return _Memory.readMemory(partition, PC);
             }
 
             public terminateProcess(pcb: ProcessControlBlock): void {
@@ -71,7 +75,7 @@
                     _Control.terminatePcbDisplay(pcb);
                     _CPU.isExecuting = false;
                     _CPU.resetCpu();
-                    _Memory.clearMemory();
+                    _Memory.clearMemoryPartition(pcb.partitionIndex);
                     Utils.setStatus("Still a little hungry...");
                     _Console.advanceLine();
                     _OsShell.putPrompt();
