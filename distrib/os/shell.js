@@ -73,6 +73,9 @@ var TSOS;
             // run
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<PID> - Used to run the loaded process given a PID");
             this.commandList[this.commandList.length] = sc;
+            // run
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "Used to clear all memory partitions");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // This adds all the shell commands to a globals list to be accessed in console
@@ -264,6 +267,9 @@ var TSOS;
                     case "run":
                         _StdOut.putText("<PID> - Used to run the loaded process given a PID");
                         break;
+                    case "run":
+                        _StdOut.putText("Used to clear all memory partitions. Use wisely.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -392,6 +398,9 @@ var TSOS;
             else {
                 _StdOut.putText("Please supply PID");
             }
+        };
+        Shell.prototype.shellClearMem = function (args) {
+            _Memory.clearMemory();
         };
         return Shell;
     }());

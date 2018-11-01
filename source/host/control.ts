@@ -249,27 +249,35 @@ module TSOS {
             row.insertCell(9).innerHTML = pcb.location;
         }
 
-        public updatePcbDisplay(pcb: ProcessControlBlock): void {
+       public updatePcbDisplay(pcb: ProcessControlBlock): void {
 
-            let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
-            let tableLength = table.rows.length;
-            for (let i = 0; i < tableLength; i++) {
-                let row = table.rows[i].cells;
-                if (parseInt(row[0].innerHTML) == pcb.pid) {
-                    row[1].innerHTML = pcb.priority.toString();
-                    row[2].innerHTML = pcb.state;
-                    row[3].innerHTML = Utils.formatHexDisplay(pcb.programCounter);
-                    row[4].innerHTML = pcb.instructionReg;
-                    row[5].innerHTML = pcb.accumulator.toString();
-                    row[6].innerHTML = pcb.X.toString();
-                    row[7].innerHTML = pcb.Y.toString();
-                    row[8].innerHTML = pcb.Z.toString();
-                    row[9].innerHTML = pcb.location;
-                    break;
+          let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
+          let tableLength = table.rows.length;
+          for (let i = 0; i < tableLength; i++) {
+             let row = table.rows[i].cells;
+             if (parseInt(row[0].innerHTML) == pcb.pid) {
+                row[1].innerHTML = pcb.priority.toString();
+                row[2].innerHTML = pcb.state;
+                row[3].innerHTML = Utils.formatHexDisplay(pcb.programCounter);
+                row[4].innerHTML = pcb.instructionReg;
+                row[5].innerHTML = pcb.accumulator.toString();
+                row[6].innerHTML = pcb.X.toString();
+                row[7].innerHTML = pcb.Y.toString();
+                row[8].innerHTML = pcb.Z.toString();
+                row[9].innerHTML = pcb.location;
+
+                if (pcb.state === "Running") {
+                  table.rows[i].bgColor = "#B0E0E6";
                 }
-            }
-        
-        }
+                else {
+                  table.rows[i].bgColor = "white";  
+                }
+
+                break;
+             }
+          }
+
+       }
 
         public terminatePcbDisplay(pcb: ProcessControlBlock): void {
             let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");

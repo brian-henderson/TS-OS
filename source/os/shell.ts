@@ -124,6 +124,12 @@ module TSOS {
                 "<PID> - Used to run the loaded process given a PID");
             this.commandList[this.commandList.length] = sc;
 
+            // run
+            sc = new ShellCommand(this.shellClearMem, 
+               "clearmem",
+               "Used to clear all memory partitions");
+           this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -329,6 +335,9 @@ module TSOS {
                     case "run":
                         _StdOut.putText("<PID> - Used to run the loaded process given a PID");
                         break;
+                    case "run":
+                        _StdOut.putText("Used to clear all memory partitions. Use wisely.");
+                        break;
                 default:
                     _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -444,7 +453,7 @@ module TSOS {
                 let tempQueue: TSOS.Queue = new Queue();
                 let pcbToRun: ProcessControlBlock = null;
                 let pcbInQueue: boolean = false;
-                
+
                 while (_ProcessManager.waitQueue.getSize() > 0) {
                     let waitQueuePcb = _ProcessManager.waitQueue.dequeue();
                     if (waitQueuePcb.pid == pid) {
@@ -469,6 +478,10 @@ module TSOS {
             else {
                 _StdOut.putText("Please supply PID");
             }
+        }
+
+        public shellClearMem(args) {
+           _Memory.clearMemory();
         }
 
 

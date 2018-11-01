@@ -42,7 +42,7 @@
                   // get the instruction registry and set it 
                   pcb.instructionReg = _Memory.readMemory(pcb.partitionIndex, pcb.programCounter);
                   // set the location to memory (no hard drive yet so this is static but getting ready for next iP)
-                  pcb.location = "Memory: Pt: " + (pcb.partitionIndex).toString();
+                  pcb.location = "Memory: P: " + (pcb.partitionIndex).toString();
                   // output status to console
                   _StdOut.putText("Program loaded to memory with PID " + _PID);
                   // add pcb to the pcb display list
@@ -72,6 +72,7 @@
                 if (! this.readyQueue.isEmpty()) {
                     this.readyQueue.dequeue();
                     pcb.state = "Terminated";
+                    _MemoryManager.partitions[pcb.partitionIndex].available = true;
                     _Control.terminatePcbDisplay(pcb);
                     _CPU.isExecuting = false;
                     _CPU.resetCpu();

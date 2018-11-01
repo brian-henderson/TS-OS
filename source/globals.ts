@@ -90,6 +90,8 @@ var _PID: number = -1;
 
 var _SingleStep: boolean = false;
 
+var _Quantum: number = 6;
+
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };

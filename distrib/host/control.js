@@ -224,6 +224,12 @@ var TSOS;
                     row[7].innerHTML = pcb.Y.toString();
                     row[8].innerHTML = pcb.Z.toString();
                     row[9].innerHTML = pcb.location;
+                    if (pcb.state === "Running") {
+                        table.rows[i].bgColor = "#B0E0E6";
+                    }
+                    else {
+                        table.rows[i].bgColor = "white";
+                    }
                     break;
                 }
             }
