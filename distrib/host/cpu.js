@@ -52,7 +52,7 @@ var TSOS;
         Cpu.prototype.executeProgram = function (pcb) {
             var currentInstruction = _Memory.readMemory(pcb.partitionIndex, pcb.programCounter).toUpperCase();
             this.IR = currentInstruction;
-            console.log("Current Instruction Executing: " + currentInstruction);
+            //console.log("Current Instruction Executing: " + currentInstruction);
             switch (currentInstruction) {
                 case "A9":
                     // Load the constant into the accumulator
@@ -122,11 +122,13 @@ var TSOS;
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
             _ProcessManager.currPCB.instructionReg = this.IR;
+            /*
             console.log("....CURRENT ACC: " + this.Acc);
             console.log("....CURRENT PC : " + this.PC);
             console.log("....CURRENT X  : " + this.Xreg);
             console.log("....CURRENT Y  : " + this.Yreg);
             console.log("....CURRENT Z  : " + this.Zflag);
+            */
             if (_SingleStep) {
                 this.isExecuting = false;
             }
@@ -258,21 +260,16 @@ var TSOS;
         // OP CODE  - D0
         // Purpose: Branch n bytes if z flag is 0
         Cpu.prototype.branchBytes = function (pcb) {
-            console.log("Branching");
             this.increaseProgramCounter();
             if (this.Zflag === 0) {
                 var branchN = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, this.PC), 16);
-                console.log("BranchN: " + branchN);
                 this.increaseProgramCounter();
                 var branchedPC = this.PC + branchN;
-                console.log("BranchedPC: " + branchedPC);
                 if (branchedPC > _MemoryPartitionSize - 1) {
                     this.PC = branchedPC - _MemoryPartitionSize;
-                    console.log("BranchedPC > 255: PC:  " + this.PC);
                 }
                 else {
                     this.PC = branchedPC;
-                    console.log("BranchedPC NOT > 255: PC:  " + this.PC);
                 }
             }
             else {

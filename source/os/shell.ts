@@ -456,7 +456,7 @@ module TSOS {
                     }
                 }
                 while (tempQueue.getSize() > 0) {
-                    _ProcessManager.readyQueue.enqueue(tempQueue.dequeue());
+                    _ProcessManager.waitQueue.enqueue(tempQueue.dequeue());
                 }
                 
                 if (pcbInQueue) {

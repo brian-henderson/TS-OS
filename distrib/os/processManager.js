@@ -37,7 +37,7 @@ var TSOS;
                 // get the instruction registry and set it 
                 pcb.instructionReg = _Memory.readMemory(pcb.partitionIndex, pcb.programCounter);
                 // set the location to memory (no hard drive yet so this is static but getting ready for next iP)
-                pcb.location = "Memory: Partition: " + (pcb.partitionIndex).toString();
+                pcb.location = "Memory: Pt: " + (pcb.partitionIndex).toString();
                 // output status to console
                 _StdOut.putText("Program loaded to memory with PID " + _PID);
                 // add pcb to the pcb display list
