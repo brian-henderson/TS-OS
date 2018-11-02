@@ -14,13 +14,15 @@
 var TSOS;
 (function (TSOS) {
     var ProcessManager = /** @class */ (function () {
-        function ProcessManager(waitQueue, readyQueue, processArray) {
+        function ProcessManager(waitQueue, readyQueue, processArray, runningAll) {
             if (waitQueue === void 0) { waitQueue = new TSOS.Queue(); }
             if (readyQueue === void 0) { readyQueue = new TSOS.Queue(); }
             if (processArray === void 0) { processArray = new Array(); }
+            if (runningAll === void 0) { runningAll = false; }
             this.waitQueue = waitQueue;
             this.readyQueue = readyQueue;
             this.processArray = processArray;
+            this.runningAll = runningAll;
         }
         ;
         ProcessManager.prototype.createProcess = function (program) {
@@ -53,37 +55,38 @@ var TSOS;
             console.log("Current Process List: ", this.processArray);
         };
         ProcessManager.prototype.runProcess = function (pcb) {
-            console.log("Run Process with PCB PID: " + pcb.pid);
-            this.currPCB = pcb;
-            this.currPCB.state = "Running";
-            this.readyQueue.enqueue(this.currPCB);
-            TSOS.Utils.setStatus("Enjoying the delicious flavors");
-            _Control.updateCpuDisplay();
-            _Control.updatePcbDisplay(pcb);
+            if (!this.runningAll) {
+                console.log("Run Process with PCB PID: " + pcb.pid);
+                this.currPCB = pcb;
+                this.currPCB.state = "Running";
+                this.readyQueue.enqueue(this.currPCB);
+                TSOS.Utils.setStatus("Enjoying the delicious flavors");
+                _Control.updateCpuDisplay();
+                _Control.updatePcbDisplay(pcb);
+            }
         };
         ProcessManager.prototype.readInstruction = function (partition, PC) {
             return _Memory.readMemory(partition, PC);
         };
         ProcessManager.prototype.terminateProcess = function (pcb) {
-            //if (! this.readyQueue.isEmpty()) {
             _CPU.isExecuting = false;
+            if (pcb.state == "Running" || pcb.state == "Ready") {
+                this.removeProcessFromReadyQueue(pcb.pid);
+            }
             pcb.state = "Terminated";
             pcb.location = "Black Hole";
-            this.removeProcessFromReadyQueue(pcb.pid);
             _MemoryManager.partitions[pcb.partitionIndex].available = true;
             _CPU.resetCpu();
-            //_Control.terminatePcbDisplay(pcb);
             _Control.updatePcbDisplay(pcb);
             _Memory.clearMemoryPartition(pcb.partitionIndex);
             _Console.advanceLine();
             _OsShell.putPrompt();
             TSOS.Utils.setStatus("Still a little hungry...");
-            //}
         };
         ProcessManager.prototype.runAllProccesses = function () {
+            this.runningAll = true;
             while (this.waitQueue.getSize() > 0) {
-                var runningPCB = this.waitQueue.dequeue();
-                this.runProcess(runningPCB);
+                //
             }
         };
         ProcessManager.prototype.getPCBfromPid = function (pid) {
