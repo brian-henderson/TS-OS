@@ -65,6 +65,7 @@ var _commandList = new Array();
 var _Control;
 var _PID = -1;
 var _SingleStep = false;
+var _Quantum = 6;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };

@@ -224,24 +224,12 @@ var TSOS;
                     row[7].innerHTML = pcb.Y.toString();
                     row[8].innerHTML = pcb.Z.toString();
                     row[9].innerHTML = pcb.location;
-                    if (pcb.state === "Running") {
+                    if (pcb.state === "Running" || pcb.state === "Ready") {
                         table.rows[i].bgColor = "#B0E0E6";
                     }
                     else {
                         table.rows[i].bgColor = "white";
                     }
-                    break;
-                }
-            }
-        };
-        Control.prototype.terminatePcbDisplay = function (pcb) {
-            var table = document.getElementById("tablePcbDisplay");
-            var tableLength = table.rows.length;
-            pcb.location = "Black Hole";
-            for (var i = 0; i < tableLength; i++) {
-                var row = table.rows[i].cells;
-                if (parseInt(row[0].innerHTML) == pcb.pid) {
-                    row[9].innerHTML = pcb.location;
                     break;
                 }
             }

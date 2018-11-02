@@ -124,11 +124,23 @@ module TSOS {
                 "<PID> - Used to run the loaded process given a PID");
             this.commandList[this.commandList.length] = sc;
 
-            // run
+            // clearMem
             sc = new ShellCommand(this.shellClearMem, 
                "clearmem",
-               "Used to clear all memory partitions");
+               "- Used to clear all memory partitions");
            this.commandList[this.commandList.length] = sc;
+
+            // runAll
+            sc = new ShellCommand(this.shellRunAll, 
+               "runall",
+               "- Excutes all programs at once");
+            this.commandList[this.commandList.length] = sc;
+
+            // runAll
+            sc = new ShellCommand(this.shellKill, 
+               "kill",
+               "<PID> - Kill a process with the associated PID");
+            this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -335,8 +347,14 @@ module TSOS {
                     case "run":
                         _StdOut.putText("<PID> - Used to run the loaded process given a PID");
                         break;
-                    case "run":
+                    case "clearmem":
                         _StdOut.putText("Used to clear all memory partitions. Use wisely.");
+                        break;
+                    case "runall":
+                        _StdOut.putText("Excutes all programs at once");
+                        break;
+                    case "kill":
+                        _StdOut.putText("<PID> - Used to kill a specific process identified by PID");
                         break;
                 default:
                     _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -393,7 +411,7 @@ module TSOS {
         }
 
         public shellWhereAmI(args) {
-            _StdOut.putText("In a dark place we find ourselves, and little more knowlege lights our way.");
+            _StdOut.putText("Campus Deli.");
         }
 
         public shellCoinFlip(args) {
@@ -454,6 +472,7 @@ module TSOS {
                 let pcbToRun: ProcessControlBlock = null;
                 let pcbInQueue: boolean = false;
 
+                // Grab the appropriate pcb from the wait queue 
                 while (_ProcessManager.waitQueue.getSize() > 0) {
                     let waitQueuePcb = _ProcessManager.waitQueue.dequeue();
                     if (waitQueuePcb.pid == pid) {
@@ -483,6 +502,19 @@ module TSOS {
         public shellClearMem(args) {
            _Memory.clearMemory();
         }
+
+        public shellRunAll(args) {
+           _ProcessManager.runAllProccesses();
+        }
+
+       public shellKill(args) {
+          if (args.length > 0) {
+            console.log("Killing process ", args[0] );
+             _ProcessManager.killProcessByPid(args[0]);
+          } else {
+             _StdOut.putText("Usage: kill <PID> - Please supply a PID");
+          }
+       }
 
 
     }

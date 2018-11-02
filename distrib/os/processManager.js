@@ -14,11 +14,13 @@
 var TSOS;
 (function (TSOS) {
     var ProcessManager = /** @class */ (function () {
-        function ProcessManager(waitQueue, readyQueue) {
+        function ProcessManager(waitQueue, readyQueue, processArray) {
             if (waitQueue === void 0) { waitQueue = new TSOS.Queue(); }
             if (readyQueue === void 0) { readyQueue = new TSOS.Queue(); }
+            if (processArray === void 0) { processArray = new Array(); }
             this.waitQueue = waitQueue;
             this.readyQueue = readyQueue;
+            this.processArray = processArray;
         }
         ;
         ProcessManager.prototype.createProcess = function (program) {
@@ -28,6 +30,8 @@ var TSOS;
                 _PID++;
                 // create new process control block
                 var pcb = new TSOS.ProcessControlBlock(_PID);
+                // add pcb to process list
+                this.processArray.push(pcb);
                 // assign the available partiton to the pcb and process
                 pcb.partitionIndex = partitionID;
                 // write the program to the memory, given user input already split into array
@@ -46,6 +50,7 @@ var TSOS;
             else {
                 _StdOut.putText("Program not loaded to memory, no available partitions");
             }
+            console.log("Current Process List: ", this.processArray);
         };
         ProcessManager.prototype.runProcess = function (pcb) {
             console.log("Run Process with PCB PID: " + pcb.pid);
@@ -55,24 +60,57 @@ var TSOS;
             TSOS.Utils.setStatus("Enjoying the delicious flavors");
             _Control.updateCpuDisplay();
             _Control.updatePcbDisplay(pcb);
-            ;
         };
         ProcessManager.prototype.readInstruction = function (partition, PC) {
             return _Memory.readMemory(partition, PC);
         };
         ProcessManager.prototype.terminateProcess = function (pcb) {
-            if (!this.readyQueue.isEmpty()) {
-                this.readyQueue.dequeue();
-                pcb.state = "Terminated";
-                _MemoryManager.partitions[pcb.partitionIndex].available = true;
-                _Control.terminatePcbDisplay(pcb);
-                _CPU.isExecuting = false;
-                _CPU.resetCpu();
-                _Memory.clearMemoryPartition(pcb.partitionIndex);
-                TSOS.Utils.setStatus("Still a little hungry...");
-                _Console.advanceLine();
-                _OsShell.putPrompt();
+            //if (! this.readyQueue.isEmpty()) {
+            _CPU.isExecuting = false;
+            pcb.state = "Terminated";
+            pcb.location = "Black Hole";
+            this.removeProcessFromReadyQueue(pcb.pid);
+            _MemoryManager.partitions[pcb.partitionIndex].available = true;
+            _CPU.resetCpu();
+            //_Control.terminatePcbDisplay(pcb);
+            _Control.updatePcbDisplay(pcb);
+            _Memory.clearMemoryPartition(pcb.partitionIndex);
+            _Console.advanceLine();
+            _OsShell.putPrompt();
+            TSOS.Utils.setStatus("Still a little hungry...");
+            //}
+        };
+        ProcessManager.prototype.runAllProccesses = function () {
+            while (this.waitQueue.getSize() > 0) {
+                var runningPCB = this.waitQueue.dequeue();
+                this.runProcess(runningPCB);
             }
+        };
+        ProcessManager.prototype.getPCBfromPid = function (pid) {
+            var pcb;
+            for (var i = 0; i < this.processArray.length; i++) {
+                if (this.processArray[i].pid == pid) {
+                    pcb = this.processArray[i];
+                    break;
+                }
+            }
+            return pcb;
+        };
+        ProcessManager.prototype.removeProcessFromReadyQueue = function (pid) {
+            var tempQueue = new TSOS.Queue();
+            while (this.readyQueue.getSize() > 0) {
+                var queuePCB = this.readyQueue.dequeue();
+                if (queuePCB.pid != pid) {
+                    tempQueue.enqueue(queuePCB);
+                }
+            }
+            while (tempQueue.getSize() > 0) {
+                this.readyQueue.enqueue(tempQueue.dequeue());
+            }
+        };
+        ProcessManager.prototype.killProcessByPid = function (pid) {
+            var pcb = this.getPCBfromPid(pid);
+            this.terminateProcess(pcb);
         };
         return ProcessManager;
     }());

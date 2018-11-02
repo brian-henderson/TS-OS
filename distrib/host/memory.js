@@ -48,6 +48,10 @@ var TSOS;
             for (var i = 0; i < this.memoryStorage.length; i++) {
                 this.memoryStorage[i] = "00";
             }
+            _Control.updateMemoryDisplay();
+            for (var i = 0; i < _MemoryManager.partitions.length; i++) {
+                _MemoryManager.partitions[i].available = true;
+            }
         };
         Memory.prototype.clearMemoryPartition = function (partition) {
             switch (partition) {

@@ -114,6 +114,7 @@ var TSOS;
                     // invalid op code
                     _StdOut.putText("Invalid OP code...terminating");
                     _ProcessManager.terminateProcess(pcb);
+                    _ProcessManager.readyQueue.dequeue();
             }
             // Update the current process control block
             _ProcessManager.currPCB.accumulator = this.Acc;
@@ -320,6 +321,7 @@ var TSOS;
         Cpu.prototype.breakProgram = function (pcb) {
             this.increaseProgramCounter();
             _ProcessManager.terminateProcess(pcb);
+            _ProcessManager.readyQueue.dequeue();
         };
         return Cpu;
     }());

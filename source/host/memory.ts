@@ -53,6 +53,11 @@
                 for(let i=0; i < this.memoryStorage.length; i++) {
                     this.memoryStorage[i] = "00";
                 }
+                _Control.updateMemoryDisplay();
+                
+                for (let i=0; i < _MemoryManager.partitions.length; i++) {
+                  _MemoryManager.partitions[i].available = true;
+                }
             }
 
             public clearMemoryPartition(partition: number): void {
