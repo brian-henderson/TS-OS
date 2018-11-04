@@ -116,7 +116,6 @@ module TSOS {
                     // invalid op code
                     _StdOut.putText("Invalid OP code...terminating");
                     _ProcessManager.terminateProcess(pcb);
-                    _ProcessManager.readyQueue.dequeue();
             }
             
             // Update the current process control block
@@ -343,7 +342,6 @@ module TSOS {
         public breakProgram(pcb: ProcessControlBlock): void {
             this.increaseProgramCounter();
             _ProcessManager.terminateProcess(pcb);
-            _ProcessManager.readyQueue.dequeue();
         }
 
     }

@@ -127,7 +127,6 @@ module TSOS {
       public killProcessByPid(pid: number) {
          let pcb: ProcessControlBlock = this.getPCBfromPid(pid);
          this.terminateProcess(pcb);
-
       }
 
 

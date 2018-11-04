@@ -36,6 +36,7 @@ var _Memory: TSOS.Memory;
 // Software (os)
 var _MemoryManager: TSOS.MemoryManager;
 var _ProcessManager: TSOS.ProcessManager;
+var _Scheduler: TSOS.Scheduler;
 
 var _OSclock: number = 0;  // Page 23.
 
@@ -91,6 +92,7 @@ var _PID: number = -1;
 var _SingleStep: boolean = false;
 
 var _Quantum: number = 6;
+var _CurrSchedulingAlgo: string = "FirstComeFirstServe";
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
