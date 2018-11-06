@@ -269,9 +269,9 @@ module TSOS {
             if (_SarcasticMode) {
                 _StdOut.putResponseText("Unbelievable. You, [subject name here],");
                 _StdOut.advanceLine();
-                _StdOut.putResponseText("must be the pride of [subject hometown here].");
+                _StdOut.putText("must be the pride of [subject hometown here].");
             } else {
-                _StdOut.putResponseText("Type 'help' for, well... help.");
+                _StdOut.putText("Type 'help' for, well... help.");
             }
         }
 
@@ -577,12 +577,12 @@ module TSOS {
       }
 
       public shellPS(args) {
-         console.log("PCB Arr: ", _ProcessManager.processArray);
-
+         let displayAll = args[0] === "all" ? true : false;
          for (let i=0; i < _ProcessManager.processArray.length; i++) {
             let pcb: ProcessControlBlock = _ProcessManager.processArray[i];
-            if (pcb.state != "Terminated") {
-               console.log("PID: " + pcb.pid + " State: " + pcb.state);
+            if (pcb.state != "Terminated" || displayAll ) {
+               _StdOut.putResponseText("PID: {"+pcb.pid+"} State: {"+pcb.state+"} Location: {"+pcb.location+"}");
+               _StdOut.advanceLine();
             }
          }
       }

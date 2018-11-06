@@ -78,8 +78,6 @@ module TSOS {
          }  
       }
 
-      public d
-
 
 
 

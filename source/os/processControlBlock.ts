@@ -13,6 +13,8 @@
             public Z: number = 0;
             public location: string = null;
             public partitionIndex: number = 0;
+            public waitTime: number = 0;
+            public responseTime: number = 0;
             
             constructor(p) {
                 this.pid = p;

@@ -191,10 +191,10 @@ var TSOS;
             if (_SarcasticMode) {
                 _StdOut.putResponseText("Unbelievable. You, [subject name here],");
                 _StdOut.advanceLine();
-                _StdOut.putResponseText("must be the pride of [subject hometown here].");
+                _StdOut.putText("must be the pride of [subject hometown here].");
             }
             else {
-                _StdOut.putResponseText("Type 'help' for, well... help.");
+                _StdOut.putText("Type 'help' for, well... help.");
             }
         };
         Shell.prototype.shellCurse = function () {
@@ -478,11 +478,12 @@ var TSOS;
             }
         };
         Shell.prototype.shellPS = function (args) {
-            console.log("PCB Arr: ", _ProcessManager.processArray);
+            var displayAll = args[0] === "all" ? true : false;
             for (var i = 0; i < _ProcessManager.processArray.length; i++) {
                 var pcb = _ProcessManager.processArray[i];
-                if (pcb.state != "Terminated") {
-                    console.log("PID: " + pcb.pid + " State: " + pcb.state);
+                if (pcb.state != "Terminated" || displayAll) {
+                    _StdOut.putResponseText("PID: {" + pcb.pid + "} State: {" + pcb.state + "} Location: {" + pcb.location + "}");
+                    _StdOut.advanceLine();
                 }
             }
         };

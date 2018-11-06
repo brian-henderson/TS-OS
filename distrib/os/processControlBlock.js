@@ -13,6 +13,8 @@ var TSOS;
             this.Z = 0;
             this.location = null;
             this.partitionIndex = 0;
+            this.waitTime = 0;
+            this.responseTime = 0;
             this.pid = p;
         }
         ;
