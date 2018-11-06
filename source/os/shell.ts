@@ -136,10 +136,16 @@ module TSOS {
                "- Excutes all programs at once");
             this.commandList[this.commandList.length] = sc;
 
-            // runAll
+            // kill
             sc = new ShellCommand(this.shellKill, 
                "kill",
                "<PID> - Kill a process with the associated PID");
+            this.commandList[this.commandList.length] = sc;
+
+            // set schedule
+            sc = new ShellCommand(this.shellSetSchedule, 
+               "setschedule",
+               "<fcfs || rr || priority> - Sets scheduling algorithim");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -356,6 +362,9 @@ module TSOS {
                     case "kill":
                         _StdOut.putText("<PID> - Used to kill a specific process identified by PID");
                         break;
+                     case "setschedule":
+                        _StdOut.putText("<fcfs || rr || priority> - Sets scheduling algorithim");
+                        break;
                 default:
                     _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -515,9 +524,6 @@ module TSOS {
                   _StdOut.putText("All memory partitions cleared");
                   _Memory.clearMemory();
            }
-           //if (args[0] == 1 || )
-           //_Memory.clearMemory();
-           //_StdOut.putText("All Memory partitions are cleared")
         }
 
         public shellRunAll(args) {
@@ -529,6 +535,17 @@ module TSOS {
              _ProcessManager.killProcessByPid(args[0]);
           } else {
              _StdOut.putText("Usage: kill <PID> - Please supply a PID");
+          }
+       }
+
+       public shellSetSchedule(args) {
+          if (args.length > 0 ) {
+            if (_Scheduler.isVaildScheduler(args[0])) {
+               _Scheduler.currAlgo = args[0];
+            }
+          }
+          else {
+             _StdOut.putText("Set the correct algo type dummy!");
           }
        }
 

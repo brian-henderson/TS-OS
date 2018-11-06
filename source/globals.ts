@@ -93,7 +93,10 @@ var _PID: number = -1;
 var _SingleStep: boolean = false;
 
 var _Quantum: number = 6;
-var _CurrSchedulingAlgo: string = "FirstComeFirstServe";
+
+const ROUND_ROBIN = 'rr';
+const FIRST_COME_FIRST_SERVE = 'fcfc';
+
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

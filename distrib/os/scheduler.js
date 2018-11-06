@@ -2,29 +2,36 @@
 var TSOS;
 (function (TSOS) {
     var Scheduler = /** @class */ (function () {
-        function Scheduler(quantum, counter, 
-        //public currAlgo: string = "ROUND_ROBIN",
-        currAlgo) {
+        function Scheduler(quantum, counter, currAlgo, schedulingAlgos) {
             if (quantum === void 0) { quantum = 6; }
             if (counter === void 0) { counter = 0; }
-            if (currAlgo === void 0) { currAlgo = "FIRST_COME_FIRST_SERVE"; }
+            if (currAlgo === void 0) { currAlgo = "rr"; }
+            if (schedulingAlgos === void 0) { schedulingAlgos = ["rr", "fcfs", "priority"]; }
             this.quantum = quantum;
             this.counter = counter;
             this.currAlgo = currAlgo;
+            this.schedulingAlgos = schedulingAlgos;
         }
         ;
         Scheduler.prototype.validateScheduler = function () {
             switch (this.currAlgo) {
-                case "FIRST_COME_FIRST_SERVE":
+                case "fcfs":
                     this.schedulerFCFS();
                     break;
-                case "ROUND_ROBIN":
+                case "rr":
                     this.schedulerRR();
                     break;
                 default:
                     console.log("Broken scheduler");
             }
             this.counter++;
+        };
+        Scheduler.prototype.isVaildScheduler = function (arg) {
+            for (var i = 0; i < this.schedulingAlgos.length; i++) {
+                if (this.schedulingAlgos[i] === arg) {
+                    return true;
+                }
+            }
         };
         Scheduler.prototype.schedulerRR = function () {
             if (this.counter === 0) {

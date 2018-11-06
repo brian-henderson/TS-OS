@@ -68,7 +68,8 @@ var _Control;
 var _PID = -1;
 var _SingleStep = false;
 var _Quantum = 6;
-var _CurrSchedulingAlgo = "FirstComeFirstServe";
+var ROUND_ROBIN = 'rr';
+var FIRST_COME_FIRST_SERVE = 'fcfc';
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };

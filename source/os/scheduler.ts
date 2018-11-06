@@ -7,25 +7,31 @@ module TSOS {
       constructor( 
          public quantum: number = 6,
          public counter: number = 0,
-         //public currAlgo: string = "ROUND_ROBIN",
-         public currAlgo: string = "FIRST_COME_FIRST_SERVE",
+         public currAlgo: string = "rr",
+         public schedulingAlgos: string[] = ["rr", "fcfs", "priority"]
       ){};
 
       
       public validateScheduler() {
-
          switch (this.currAlgo) { 
-           case "FIRST_COME_FIRST_SERVE":
+           case "fcfs":
                this.schedulerFCFS();
                break; 
-            case "ROUND_ROBIN":
+            case "rr":
                this.schedulerRR();
                break;
             default:
                console.log("Broken scheduler");
          }
          this.counter ++;
+      }
 
+      public isVaildScheduler(arg: string): boolean {
+         for (let i=0; i< this.schedulingAlgos.length; i++) {
+            if (this.schedulingAlgos[i] === arg) {
+               return true;
+            }
+         }
       }
 
       public schedulerRR() {

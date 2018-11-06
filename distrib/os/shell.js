@@ -79,8 +79,11 @@ var TSOS;
             // runAll
             sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Excutes all programs at once");
             this.commandList[this.commandList.length] = sc;
-            // runAll
+            // kill
             sc = new TSOS.ShellCommand(this.shellKill, "kill", "<PID> - Kill a process with the associated PID");
+            this.commandList[this.commandList.length] = sc;
+            // set schedule
+            sc = new TSOS.ShellCommand(this.shellSetSchedule, "setschedule", "<fcfs || rr || priority> - Sets scheduling algorithim");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -282,6 +285,9 @@ var TSOS;
                     case "kill":
                         _StdOut.putText("<PID> - Used to kill a specific process identified by PID");
                         break;
+                    case "setschedule":
+                        _StdOut.putText("<fcfs || rr || priority> - Sets scheduling algorithim");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -429,9 +435,6 @@ var TSOS;
                     _StdOut.putText("All memory partitions cleared");
                     _Memory.clearMemory();
             }
-            //if (args[0] == 1 || )
-            //_Memory.clearMemory();
-            //_StdOut.putText("All Memory partitions are cleared")
         };
         Shell.prototype.shellRunAll = function (args) {
             _ProcessManager.runAllProccesses();
@@ -442,6 +445,16 @@ var TSOS;
             }
             else {
                 _StdOut.putText("Usage: kill <PID> - Please supply a PID");
+            }
+        };
+        Shell.prototype.shellSetSchedule = function (args) {
+            if (args.length > 0) {
+                if (_Scheduler.isVaildScheduler(args[0])) {
+                    _Scheduler.currAlgo = args[0];
+                }
+            }
+            else {
+                _StdOut.putText("Set the correct algo type dummy!");
             }
         };
         return Shell;
