@@ -73,6 +73,7 @@ var TSOS;
                 default:
                     console.log("Failed to clear memory partition");
             }
+            _MemoryManager.partitions[partition].available = true;
         };
         return Memory;
     }());

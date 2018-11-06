@@ -26,7 +26,6 @@
                if (partition === 2){
                   loc += 512;
                } 
-               
                return this.memoryStorage[loc];
             };
 
@@ -80,6 +79,7 @@
                   default:
                      console.log("Failed to clear memory partition");
                }
+               _MemoryManager.partitions[partition].available = true;
             }
 
         }

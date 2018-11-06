@@ -53,7 +53,7 @@ module TSOS {
         public executeProgram(pcb: ProcessControlBlock) {
             let currentInstruction = _Memory.readMemory(pcb.partitionIndex, pcb.programCounter).toUpperCase();
             this.IR = currentInstruction;
-            //console.log("Current Instruction Executing: " + currentInstruction);
+            this.setCpu(pcb);
             
             switch(currentInstruction) {
                 case "A9":
@@ -119,25 +119,22 @@ module TSOS {
             }
             
             // Update the current process control block
-            _ProcessManager.currPCB.accumulator = this.Acc;
-            _ProcessManager.currPCB.programCounter = this.PC;
-            _ProcessManager.currPCB.X = this.Xreg;
-            _ProcessManager.currPCB.Y = this.Yreg;
-            _ProcessManager.currPCB.Z = this.Zflag;
-            _ProcessManager.currPCB.instructionReg = this.IR;
+            this.updateCurrentPCB();
 
-            /*
-            console.log("....CURRENT ACC: " + this.Acc);
-            console.log("....CURRENT PC : " + this.PC);
-            console.log("....CURRENT X  : " + this.Xreg);
-            console.log("....CURRENT Y  : " + this.Yreg);
-            console.log("....CURRENT Z  : " + this.Zflag);
-            */
             if (_SingleStep) {
                 this.isExecuting = false;
             }
             
         }
+
+       public updateCurrentPCB(): void {
+          _ProcessManager.currPCB.accumulator = this.Acc;
+          _ProcessManager.currPCB.programCounter = this.PC;
+          _ProcessManager.currPCB.X = this.Xreg;
+          _ProcessManager.currPCB.Y = this.Yreg;
+          _ProcessManager.currPCB.Z = this.Zflag;
+          _ProcessManager.currPCB.instructionReg = this.IR;
+       }
 
         public setCpu(pcb: ProcessControlBlock): void {
             this.PC = pcb.programCounter;

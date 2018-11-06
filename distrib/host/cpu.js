@@ -52,7 +52,7 @@ var TSOS;
         Cpu.prototype.executeProgram = function (pcb) {
             var currentInstruction = _Memory.readMemory(pcb.partitionIndex, pcb.programCounter).toUpperCase();
             this.IR = currentInstruction;
-            //console.log("Current Instruction Executing: " + currentInstruction);
+            this.setCpu(pcb);
             switch (currentInstruction) {
                 case "A9":
                     // Load the constant into the accumulator
@@ -114,25 +114,20 @@ var TSOS;
                     // invalid op code
                     _StdOut.putText("Invalid OP code...terminating");
                     _ProcessManager.terminateProcess(pcb);
-                    _ProcessManager.readyQueue.dequeue();
             }
             // Update the current process control block
+            this.updateCurrentPCB();
+            if (_SingleStep) {
+                this.isExecuting = false;
+            }
+        };
+        Cpu.prototype.updateCurrentPCB = function () {
             _ProcessManager.currPCB.accumulator = this.Acc;
             _ProcessManager.currPCB.programCounter = this.PC;
             _ProcessManager.currPCB.X = this.Xreg;
             _ProcessManager.currPCB.Y = this.Yreg;
             _ProcessManager.currPCB.Z = this.Zflag;
             _ProcessManager.currPCB.instructionReg = this.IR;
-            /*
-            console.log("....CURRENT ACC: " + this.Acc);
-            console.log("....CURRENT PC : " + this.PC);
-            console.log("....CURRENT X  : " + this.Xreg);
-            console.log("....CURRENT Y  : " + this.Yreg);
-            console.log("....CURRENT Z  : " + this.Zflag);
-            */
-            if (_SingleStep) {
-                this.isExecuting = false;
-            }
         };
         Cpu.prototype.setCpu = function (pcb) {
             this.PC = pcb.programCounter;
@@ -321,7 +316,6 @@ var TSOS;
         Cpu.prototype.breakProgram = function (pcb) {
             this.increaseProgramCounter();
             _ProcessManager.terminateProcess(pcb);
-            _ProcessManager.readyQueue.dequeue();
         };
         return Cpu;
     }());

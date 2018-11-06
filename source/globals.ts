@@ -36,6 +36,7 @@ var _Memory: TSOS.Memory;
 // Software (os)
 var _MemoryManager: TSOS.MemoryManager;
 var _ProcessManager: TSOS.ProcessManager;
+// Variable for Scheduler
 var _Scheduler: TSOS.Scheduler;
 
 var _OSclock: number = 0;  // Page 23.

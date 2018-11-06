@@ -48,10 +48,12 @@ module TSOS {
             _Control = new Control();
 
             // initilize process manager
-            _ProcessManager = new ProcessManager();
+            _ProcessManager = new ProcessManager()
 
-            // initialize scheduler
+            // init scheduler
             _Scheduler = new Scheduler();
+
+         
         
             // Load the Keyboard Device Driver
             this.krnTrace("Loading the keyboard device driver.");
@@ -102,7 +104,16 @@ module TSOS {
 
           
             if (! _ProcessManager.readyQueue.isEmpty() && !_SingleStep) {
-                _CPU.isExecuting = true;
+               // run all processes
+               if ( _ProcessManager.runningAll ) {
+                  // eventually re organize based off of priortiy
+               } 
+               // process is executed via a run cmd indicating PID
+               else {
+                  let pcb: ProcessControlBlock = _ProcessManager.readyQueue.dequeue();
+                  _ProcessManager.currPCB = pcb;
+               }
+               _CPU.isExecuting = true;
             }
 
             // Check for an interrupt, are any. Page 560
@@ -112,10 +123,13 @@ module TSOS {
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed. {
-                _CPU.cycle();
-                _Scheduler.validateScheduler();
-                _Control.updateMemoryDisplay();
-                _Control.updatePcbDisplay(_ProcessManager.currPCB);
+               
+               if (_ProcessManager.runningAll) {
+                  _Scheduler.validateScheduler();
+               }
+               _CPU.cycle();
+               _Control.updateMemoryDisplay();
+               _Control.updatePcbDisplay(_ProcessManager.currPCB);
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
                 this.krnTrace("Idle");
             }

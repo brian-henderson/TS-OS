@@ -1,16 +1,5 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../utils.ts" />
-/* ------------
-     Kernel.ts
-
-     Requires globals.ts
-              queue.ts
-
-     Routines for the Operating System, NOT the host.
-
-     This code references page numbers in the text book:
-     Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
-     ------------ */
 var TSOS;
 (function (TSOS) {
     var ProcessManager = /** @class */ (function () {
@@ -57,13 +46,19 @@ var TSOS;
         ProcessManager.prototype.runProcess = function (pcb) {
             if (!this.runningAll) {
                 console.log("Run Process with PCB PID: " + pcb.pid);
-                this.currPCB = pcb;
-                this.currPCB.state = "Running";
-                this.readyQueue.enqueue(this.currPCB);
-                TSOS.Utils.setStatus("Enjoying the delicious flavors");
-                _Control.updateCpuDisplay();
-                _Control.updatePcbDisplay(pcb);
+                //this.currPCB = pcb;
+                //this.currPCB.state = "Running";
+                pcb.state = "Running";
+                this.readyQueue.enqueue(pcb);
             }
+            else {
+                console.log("Adding to ready queue running all state ready PCB PID: ", pcb.pid);
+                pcb.state = "Ready";
+                this.readyQueue.enqueue(pcb);
+            }
+            TSOS.Utils.setStatus("Enjoying the delicious flavors");
+            _Control.updateCpuDisplay();
+            _Control.updatePcbDisplay(pcb);
         };
         ProcessManager.prototype.readInstruction = function (partition, PC) {
             return _Memory.readMemory(partition, PC);
@@ -75,10 +70,9 @@ var TSOS;
             }
             pcb.state = "Terminated";
             pcb.location = "Black Hole";
-            _MemoryManager.partitions[pcb.partitionIndex].available = true;
+            _Memory.clearMemoryPartition(pcb.partitionIndex);
             _CPU.resetCpu();
             _Control.updatePcbDisplay(pcb);
-            _Memory.clearMemoryPartition(pcb.partitionIndex);
             _Console.advanceLine();
             _OsShell.putPrompt();
             TSOS.Utils.setStatus("Still a little hungry...");
@@ -86,7 +80,7 @@ var TSOS;
         ProcessManager.prototype.runAllProccesses = function () {
             this.runningAll = true;
             while (this.waitQueue.getSize() > 0) {
-                //
+                this.runProcess(this.waitQueue.dequeue());
             }
         };
         ProcessManager.prototype.getPCBfromPid = function (pid) {

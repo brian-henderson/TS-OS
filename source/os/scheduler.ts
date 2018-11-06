@@ -1,68 +1,58 @@
 ///<reference path="../globals.ts" />
-///<reference path="../utils.ts" />
 
-/* ------------
-     Scheduler.ts
+module TSOS {
 
-     Requires globals.ts
-              queue.ts
+   export class Scheduler {
 
-     Routines for the Operating System, NOT the host.
+      constructor( 
+         public quantum: number = 6,
+         public counter: number = 0,
+         public currAlgo: string = "ROUND_ROBIN",
+      ){};
 
-     This code references page numbers in the text book:
-     Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
-     ------------ */
+      
+      public validateScheduler() {
 
-     module TSOS {
-
-      export class Scheduler {
-   
-         constructor(
-            public quantum: number = _Quantum,
-            public scheduleIndex: number = 0,
-            public currAlgo: string = _CurrSchedulingAlgo,
-            public algoArray: string[] = ["FirstComeFirstServe", "RoundRobin"] 
-         ){};
-
-         public validateScheduler(){
-
-            switch(this.currAlgo) {
-               case "FirstComeFirstServe":
-                  this.schedulerFCFS();
-                  break;
-               case "RoundRobin":
-                  this.schedulerRR():
-                  break;
-               default:
-                  console.log("Broken scheduler");
-            }
-
+         switch (this.currAlgo) { 
+       /*     case "FirstComeFirstServe":
+               this.schedulerFCFS();
+               break; */
+            case "ROUND_ROBIN":
+               this.schedulerRR();
+               break;
+            default:
+               console.log("Broken scheduler");
          }
+         this.counter ++;
 
-         public schedulerFCFS() {
-
-
-
-         }
-
-         public schedulerRR() {
-            if (this.scheduleIndex === this.quantum) {
-               if (_ProcessManager.readyQueue.getSize() > 1 ) {
-                  //put the curr queeue to the end of the queue
-                  let q = _ProcessManager.readyQueue.dequeue();
-                  _ProcessManager.readyQueue.enqueue(q);
-               }
-               this.scheduleIndex = 0;
-            }
-            else {
-               // execute another cycle and add another ot cycle.
-               this.scheduleIndex += 1;
-            }
-         }
-   
-         
-   
-   
       }
-   
+
+      public schedulerRR() {
+         console.log("Counter: "+this.counter+" -- Quantum: " +this.quantum);
+         if (this.counter === 0) {
+            let pcb = _ProcessManager.readyQueue.dequeue()
+            pcb.state = "Running";
+            _ProcessManager.currPCB = pcb;
+         }
+         else if (this.counter == this.quantum) {
+            if ( !_ProcessManager.readyQueue.isEmpty() ) {
+               // get the curr pcb and put it to the back of the queue
+               _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
+               // set the new curr pcb to the next in the queue
+               _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
+            }
+            this.counter = 0;
+         }
+
+      }
+
+      public schedulerFCFS() {
+
+      }
+
+
+
+
    }
+
+}

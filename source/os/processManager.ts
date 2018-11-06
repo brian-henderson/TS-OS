@@ -1,18 +1,6 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../utils.ts" />
 
-/* ------------
-     Kernel.ts
-
-     Requires globals.ts
-              queue.ts
-
-     Routines for the Operating System, NOT the host.
-
-     This code references page numbers in the text book:
-     Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
-     ------------ */
-
 module TSOS {
 
    export class ProcessManager {
@@ -60,15 +48,22 @@ module TSOS {
 
 
       public runProcess(pcb: ProcessControlBlock): void {
-         if (!this.runningAll) {
+         if (! this.runningAll) {
             console.log("Run Process with PCB PID: " + pcb.pid);
-            this.currPCB = pcb;
-            this.currPCB.state = "Running";
-            this.readyQueue.enqueue(this.currPCB);
-            Utils.setStatus("Enjoying the delicious flavors");
-            _Control.updateCpuDisplay();
-            _Control.updatePcbDisplay(pcb);
+            //this.currPCB = pcb;
+            //this.currPCB.state = "Running";
+            pcb.state = "Running";
+            this.readyQueue.enqueue(pcb);
          }
+         else {
+            console.log("Adding to ready queue running all state ready PCB PID: ", pcb.pid);
+            pcb.state = "Ready";
+            this.readyQueue.enqueue(pcb);
+         }
+
+         Utils.setStatus("Enjoying the delicious flavors");
+         _Control.updateCpuDisplay();
+         _Control.updatePcbDisplay(pcb);
       }
 
       public readInstruction(partition: number, PC: number): string {
@@ -82,10 +77,9 @@ module TSOS {
          }
          pcb.state = "Terminated";
          pcb.location = "Black Hole";
-         _MemoryManager.partitions[pcb.partitionIndex].available = true;
+         _Memory.clearMemoryPartition(pcb.partitionIndex);
          _CPU.resetCpu();
          _Control.updatePcbDisplay(pcb);
-         _Memory.clearMemoryPartition(pcb.partitionIndex);
          _Console.advanceLine();
          _OsShell.putPrompt();
          Utils.setStatus("Still a little hungry...");
@@ -94,8 +88,7 @@ module TSOS {
       public runAllProccesses() {
          this.runningAll = true;
          while (this.waitQueue.getSize() > 0) {
-            //
-
+            this.runProcess(this.waitQueue.dequeue());
          }
       }
 

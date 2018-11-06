@@ -42,6 +42,8 @@ var TSOS;
             _Control = new TSOS.Control();
             // initilize process manager
             _ProcessManager = new TSOS.ProcessManager();
+            // init scheduler
+            _Scheduler = new TSOS.Scheduler();
             // Load the Keyboard Device Driver
             this.krnTrace("Loading the keyboard device driver.");
             _krnKeyboardDriver = new TSOS.DeviceDriverKeyboard(); // Construct it.
@@ -82,6 +84,15 @@ var TSOS;
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
                that it has to look for interrupts and process them if it finds any.                           */
             if (!_ProcessManager.readyQueue.isEmpty() && !_SingleStep) {
+                // run all processes
+                if (_ProcessManager.runningAll) {
+                    // eventually re organize based off of priortiy
+                }
+                // process is executed via a run cmd indicating PID
+                else {
+                    var pcb = _ProcessManager.readyQueue.dequeue();
+                    _ProcessManager.currPCB = pcb;
+                }
                 _CPU.isExecuting = true;
             }
             // Check for an interrupt, are any. Page 560
@@ -92,6 +103,9 @@ var TSOS;
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             }
             else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed. {
+                if (_ProcessManager.runningAll) {
+                    _Scheduler.validateScheduler();
+                }
                 _CPU.cycle();
                 _Control.updateMemoryDisplay();
                 _Control.updatePcbDisplay(_ProcessManager.currPCB);

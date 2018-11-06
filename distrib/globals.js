@@ -29,6 +29,8 @@ var _Memory;
 // Software (os)
 var _MemoryManager;
 var _ProcessManager;
+// Variable for Scheduler
+var _Scheduler;
 var _OSclock = 0; // Page 23.
 var _Mode = 0; // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
 // Adding Memory size here to be global and easy to change
@@ -66,6 +68,7 @@ var _Control;
 var _PID = -1;
 var _SingleStep = false;
 var _Quantum = 6;
+var _CurrSchedulingAlgo = "FirstComeFirstServe";
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };

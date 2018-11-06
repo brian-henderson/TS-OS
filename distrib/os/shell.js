@@ -413,7 +413,27 @@ var TSOS;
             }
         };
         Shell.prototype.shellClearMem = function (args) {
-            _Memory.clearMemory();
+            var p = args[0].toString();
+            switch (p) {
+                case '0':
+                    _StdOut.putText("Memory Partition Cleared: P:", p);
+                    _Memory.clearMemoryPartition(0);
+                    break;
+                case '1':
+                    _StdOut.putText("Memory Partition Cleared: P:", p);
+                    _Memory.clearMemoryPartition(1);
+                    break;
+                case '2':
+                    _StdOut.putText("Memory Partition Cleared: P:", p);
+                    _Memory.clearMemoryPartition(2);
+                    break;
+                default:
+                    _StdOut.putText("All memory partitions cleared");
+                    _Memory.clearMemory();
+            }
+            //if (args[0] == 1 || )
+            //_Memory.clearMemory();
+            //_StdOut.putText("All Memory partitions are cleared")
         };
         Shell.prototype.shellRunAll = function (args) {
             _ProcessManager.runAllProccesses();
