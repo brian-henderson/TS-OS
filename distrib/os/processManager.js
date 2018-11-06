@@ -41,18 +41,13 @@ var TSOS;
             else {
                 _StdOut.putText("Program not loaded to memory, no available partitions");
             }
-            console.log("Current Process List: ", this.processArray);
         };
         ProcessManager.prototype.runProcess = function (pcb) {
             if (!this.runningAll) {
-                console.log("Run Process with PCB PID: " + pcb.pid);
-                //this.currPCB = pcb;
-                //this.currPCB.state = "Running";
                 pcb.state = "Running";
                 this.readyQueue.enqueue(pcb);
             }
             else {
-                console.log("Adding to ready queue running all state ready PCB PID: ", pcb.pid);
                 pcb.state = "Ready";
                 this.readyQueue.enqueue(pcb);
             }
@@ -65,9 +60,7 @@ var TSOS;
         };
         ProcessManager.prototype.terminateProcess = function (pcb) {
             _CPU.isExecuting = false;
-            if (pcb.state == "Running" || pcb.state == "Ready") {
-                this.removeProcessFromReadyQueue(pcb.pid);
-            }
+            this.removeProcessFromReadyQueue(pcb.pid);
             pcb.state = "Terminated";
             pcb.location = "Black Hole";
             _Memory.clearMemoryPartition(pcb.partitionIndex);

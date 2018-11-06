@@ -157,13 +157,11 @@ module TSOS {
                 (<HTMLButtonElement>document.getElementById("btnSingleStep")).value = "Single Step: Off";
                 (<HTMLButtonElement>document.getElementById("btnSSExecute")).disabled = true;
                 _SingleStep = false;  
-                console.log("Setting Single Step to " + _SingleStep);
             }
             else {
                 (<HTMLButtonElement>document.getElementById("btnSingleStep")).value = "Single Step: On";
                 (<HTMLButtonElement>document.getElementById("btnSSExecute")).disabled = false;
                 _SingleStep = true;
-                console.log("Setting Single Step to " + _SingleStep);
             }
         }
 
@@ -219,7 +217,6 @@ module TSOS {
         }
 
         public addToPcbDisplay(pcb: ProcessControlBlock): void {
-            console.log("Adding pcb to display...");
             let table = (<HTMLTableElement>document.getElementById("tablePcbDisplay"));
 
             if (_PID == 0) {
@@ -251,32 +248,26 @@ module TSOS {
 
        public updatePcbDisplay(pcb: ProcessControlBlock): void {
 
-          let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
-          let tableLength = table.rows.length;
-          for (let i = 0; i < tableLength; i++) {
-             let row = table.rows[i].cells;
-             if (parseInt(row[0].innerHTML) == pcb.pid) {
-                row[1].innerHTML = pcb.priority.toString();
-                row[2].innerHTML = pcb.state;
-                row[3].innerHTML = Utils.formatHexDisplay(pcb.programCounter);
-                row[4].innerHTML = pcb.instructionReg;
-                row[5].innerHTML = pcb.accumulator.toString();
-                row[6].innerHTML = pcb.X.toString();
-                row[7].innerHTML = pcb.Y.toString();
-                row[8].innerHTML = pcb.Z.toString();
-                row[9].innerHTML = pcb.location;
-
-                if (pcb.state === "Running" || pcb.state === "Ready" ) {
-                  table.rows[i].bgColor = "#B0E0E6";
+             let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
+             let tableLength = table.rows.length;
+             for (let i = 0; i < tableLength; i++) {
+                let row = table.rows[i].cells;
+                if (parseInt(row[0].innerHTML) == pcb.pid) {
+                   if (pcb.state == "Terminated") {
+                      console.log("Termonaedeifenifen");
+                   }
+                   row[1].innerHTML = pcb.priority.toString();
+                   row[2].innerHTML = pcb.state;
+                   row[3].innerHTML = Utils.formatHexDisplay(pcb.programCounter);
+                   row[4].innerHTML = pcb.instructionReg;
+                   row[5].innerHTML = pcb.accumulator.toString();
+                   row[6].innerHTML = pcb.X.toString();
+                   row[7].innerHTML = pcb.Y.toString();
+                   row[8].innerHTML = pcb.Z.toString();
+                   row[9].innerHTML = pcb.location;
+                   break;
                 }
-                else {
-                  table.rows[i].bgColor = "white";  
-                }
-
-                break;
-             }
           }
-
        }
 
     }

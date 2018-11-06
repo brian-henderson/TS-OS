@@ -28,7 +28,6 @@ module TSOS {
       }
 
       public schedulerRR() {
-         console.log("Counter: "+this.counter+" -- Quantum: " +this.quantum);
          if (this.counter === 0) {
             let pcb = _ProcessManager.readyQueue.dequeue()
             pcb.state = "Running";
@@ -36,10 +35,15 @@ module TSOS {
          }
          else if (this.counter == this.quantum) {
             if ( !_ProcessManager.readyQueue.isEmpty() ) {
-               // get the curr pcb and put it to the back of the queue
-               _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
+               if ( _ProcessManager.currPCB.state != "Terminated" ) {
+                  // get the curr pcb and put it to the back of the queue
+                  _ProcessManager.currPCB.state = "Ready";
+                  _Control.updatePcbDisplay(_ProcessManager.currPCB);
+                  _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
+               }
                // set the new curr pcb to the next in the queue
                _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
+               _ProcessManager.currPCB.state = "Running";
             }
             this.counter = 0;
          }

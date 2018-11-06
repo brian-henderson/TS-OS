@@ -126,13 +126,11 @@ var TSOS;
                 document.getElementById("btnSingleStep").value = "Single Step: Off";
                 document.getElementById("btnSSExecute").disabled = true;
                 _SingleStep = false;
-                console.log("Setting Single Step to " + _SingleStep);
             }
             else {
                 document.getElementById("btnSingleStep").value = "Single Step: On";
                 document.getElementById("btnSSExecute").disabled = false;
                 _SingleStep = true;
-                console.log("Setting Single Step to " + _SingleStep);
             }
         };
         Control.hostBtnSSExecute_click = function (btn) {
@@ -182,7 +180,6 @@ var TSOS;
             row.insertCell(5).innerHTML = _CPU.Zflag.toString();
         };
         Control.prototype.addToPcbDisplay = function (pcb) {
-            console.log("Adding pcb to display...");
             var table = document.getElementById("tablePcbDisplay");
             if (_PID == 0) {
                 table.deleteRow(1);
@@ -215,6 +212,9 @@ var TSOS;
             for (var i = 0; i < tableLength; i++) {
                 var row = table.rows[i].cells;
                 if (parseInt(row[0].innerHTML) == pcb.pid) {
+                    if (pcb.state == "Terminated") {
+                        console.log("Termonaedeifenifen");
+                    }
                     row[1].innerHTML = pcb.priority.toString();
                     row[2].innerHTML = pcb.state;
                     row[3].innerHTML = TSOS.Utils.formatHexDisplay(pcb.programCounter);
@@ -224,12 +224,6 @@ var TSOS;
                     row[7].innerHTML = pcb.Y.toString();
                     row[8].innerHTML = pcb.Z.toString();
                     row[9].innerHTML = pcb.location;
-                    if (pcb.state === "Running" || pcb.state === "Ready") {
-                        table.rows[i].bgColor = "#B0E0E6";
-                    }
-                    else {
-                        table.rows[i].bgColor = "white";
-                    }
                     break;
                 }
             }

@@ -459,15 +459,12 @@ module TSOS {
 
             if (isValid) {
                 _ProcessManager.createProcess(inputArray);
-                console.log("Valid..");
             }
         }
 
         public shellRun(args) {
             if (args.length > 0 ) {
                 let pid = args[0];
-                console.log("Running PID: " + pid);
-                
                 let tempQueue: TSOS.Queue = new Queue();
                 let pcbToRun: ProcessControlBlock = null;
                 let pcbInQueue: boolean = false;
@@ -529,7 +526,6 @@ module TSOS {
 
        public shellKill(args) {
           if (args.length > 0) {
-            console.log("Killing process ", args[0] );
              _ProcessManager.killProcessByPid(args[0]);
           } else {
              _StdOut.putText("Usage: kill <PID> - Please supply a PID");

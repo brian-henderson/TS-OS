@@ -377,13 +377,11 @@ var TSOS;
             var inputArray = programInput.split(" ");
             if (isValid) {
                 _ProcessManager.createProcess(inputArray);
-                console.log("Valid..");
             }
         };
         Shell.prototype.shellRun = function (args) {
             if (args.length > 0) {
                 var pid = args[0];
-                console.log("Running PID: " + pid);
                 var tempQueue = new TSOS.Queue();
                 var pcbToRun = null;
                 var pcbInQueue = false;
@@ -440,7 +438,6 @@ var TSOS;
         };
         Shell.prototype.shellKill = function (args) {
             if (args.length > 0) {
-                console.log("Killing process ", args[0]);
                 _ProcessManager.killProcessByPid(args[0]);
             }
             else {

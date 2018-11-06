@@ -310,6 +310,7 @@ module TSOS {
                 _StdOut.putText(output);
             }
             this.increaseProgramCounter();
+
         }
 
         // OP CODE  - EE
