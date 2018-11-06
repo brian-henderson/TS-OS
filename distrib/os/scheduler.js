@@ -5,7 +5,7 @@ var TSOS;
         function Scheduler(quantum, counter, currAlgo, schedulingAlgos) {
             if (quantum === void 0) { quantum = _QuantumDefault; }
             if (counter === void 0) { counter = 0; }
-            if (currAlgo === void 0) { currAlgo = "rr"; }
+            if (currAlgo === void 0) { currAlgo = _SchedulerAlgoDefault; }
             if (schedulingAlgos === void 0) { schedulingAlgos = ["rr", "fcfs", "priority"]; }
             this.quantum = quantum;
             this.counter = counter;
@@ -14,6 +14,11 @@ var TSOS;
         }
         ;
         Scheduler.prototype.validateScheduler = function () {
+            // Check if the curr pcb is at state TERMINATED, if so, reset counter
+            if (_ProcessManager.currPCB != null) {
+                if (_ProcessManager.currPCB.state === "Terminated")
+                    this.counter = 0;
+            }
             switch (this.currAlgo) {
                 case "fcfs":
                     this.schedulerFCFS();

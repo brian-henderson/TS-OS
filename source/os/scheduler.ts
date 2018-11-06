@@ -7,12 +7,19 @@ module TSOS {
       constructor( 
          public quantum: number = _QuantumDefault,
          public counter: number = 0,
-         public currAlgo: string = "rr",
+         public currAlgo: string = _SchedulerAlgoDefault,
          public schedulingAlgos: string[] = ["rr", "fcfs", "priority"]
       ){};
 
       
       public validateScheduler() {
+
+         // Check if the curr pcb is at state TERMINATED, if so, reset counter
+         if (_ProcessManager.currPCB != null){
+            if (_ProcessManager.currPCB.state === "Terminated")
+               this.counter = 0;
+         }
+
          switch (this.currAlgo) { 
            case "fcfs":
                this.schedulerFCFS();
