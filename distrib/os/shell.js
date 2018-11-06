@@ -85,6 +85,9 @@ var TSOS;
             // set schedule
             sc = new TSOS.ShellCommand(this.shellSetSchedule, "setschedule", "<fcfs || rr || priority> - Sets scheduling algorithim");
             this.commandList[this.commandList.length] = sc;
+            // set quantum
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<int> - Sets the quantum");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // This adds all the shell commands to a globals list to be accessed in console
@@ -288,6 +291,9 @@ var TSOS;
                     case "setschedule":
                         _StdOut.putText("<fcfs || rr || priority> - Sets scheduling algorithim");
                         break;
+                    case "quantum":
+                        _StdOut.putText("<int> - Sets scheduling quantum");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -455,6 +461,14 @@ var TSOS;
             }
             else {
                 _StdOut.putText("Set the correct algo type dummy!");
+            }
+        };
+        Shell.prototype.shellQuantum = function (args) {
+            if (args.length > 0) {
+                _Scheduler.quantum = args[0];
+            }
+            else {
+                _StdOut.putText("Add a quantum number!");
             }
         };
         return Shell;

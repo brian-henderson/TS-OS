@@ -148,6 +148,12 @@ module TSOS {
                "<fcfs || rr || priority> - Sets scheduling algorithim");
             this.commandList[this.commandList.length] = sc;
 
+            // set quantum
+            sc = new ShellCommand(this.shellQuantum, 
+               "quantum",
+               "<int> - Sets the quantum");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -362,8 +368,11 @@ module TSOS {
                     case "kill":
                         _StdOut.putText("<PID> - Used to kill a specific process identified by PID");
                         break;
-                     case "setschedule":
+                    case "setschedule":
                         _StdOut.putText("<fcfs || rr || priority> - Sets scheduling algorithim");
+                        break;
+                    case "quantum":
+                        _StdOut.putText("<int> - Sets scheduling quantum");
                         break;
                 default:
                     _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -548,6 +557,15 @@ module TSOS {
              _StdOut.putText("Set the correct algo type dummy!");
           }
        }
+
+       public shellQuantum(args) {
+         if (args.length > 0 ) {
+            _Scheduler.quantum = args[0];
+         }
+         else {
+            _StdOut.putText("Add a quantum number!");
+         }
+      }
 
 
     }

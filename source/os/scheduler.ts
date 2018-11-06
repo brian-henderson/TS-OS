@@ -5,7 +5,7 @@ module TSOS {
    export class Scheduler {
 
       constructor( 
-         public quantum: number = 6,
+         public quantum: number = _QuantumDefault,
          public counter: number = 0,
          public currAlgo: string = "rr",
          public schedulingAlgos: string[] = ["rr", "fcfs", "priority"]

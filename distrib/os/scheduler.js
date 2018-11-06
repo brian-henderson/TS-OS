@@ -3,7 +3,7 @@ var TSOS;
 (function (TSOS) {
     var Scheduler = /** @class */ (function () {
         function Scheduler(quantum, counter, currAlgo, schedulingAlgos) {
-            if (quantum === void 0) { quantum = 6; }
+            if (quantum === void 0) { quantum = _QuantumDefault; }
             if (counter === void 0) { counter = 0; }
             if (currAlgo === void 0) { currAlgo = "rr"; }
             if (schedulingAlgos === void 0) { schedulingAlgos = ["rr", "fcfs", "priority"]; }

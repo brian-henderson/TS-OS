@@ -92,10 +92,8 @@ var _PID: number = -1;
 
 var _SingleStep: boolean = false;
 
-var _Quantum: number = 6;
-
-const ROUND_ROBIN = 'rr';
-const FIRST_COME_FIRST_SERVE = 'fcfc';
+var _QuantumDefault: number = 6;
+var _SchedulerAlgoDefault: string = "rr";
 
 
 var onDocumentLoad = function() {
