@@ -2,10 +2,12 @@
 var TSOS;
 (function (TSOS) {
     var Scheduler = /** @class */ (function () {
-        function Scheduler(quantum, counter, currAlgo) {
+        function Scheduler(quantum, counter, 
+        //public currAlgo: string = "ROUND_ROBIN",
+        currAlgo) {
             if (quantum === void 0) { quantum = 6; }
             if (counter === void 0) { counter = 0; }
-            if (currAlgo === void 0) { currAlgo = "ROUND_ROBIN"; }
+            if (currAlgo === void 0) { currAlgo = "FIRST_COME_FIRST_SERVE"; }
             this.quantum = quantum;
             this.counter = counter;
             this.currAlgo = currAlgo;
@@ -13,9 +15,9 @@ var TSOS;
         ;
         Scheduler.prototype.validateScheduler = function () {
             switch (this.currAlgo) {
-                /*     case "FirstComeFirstServe":
-                        this.schedulerFCFS();
-                        break; */
+                case "FIRST_COME_FIRST_SERVE":
+                    this.schedulerFCFS();
+                    break;
                 case "ROUND_ROBIN":
                     this.schedulerRR();
                     break;
@@ -46,6 +48,17 @@ var TSOS;
             }
         };
         Scheduler.prototype.schedulerFCFS = function () {
+            if (this.counter === 0) {
+                var pcb = _ProcessManager.readyQueue.dequeue();
+                pcb.state = "Running";
+                _ProcessManager.currPCB = pcb;
+            }
+            else {
+                if (_ProcessManager.currPCB.state === "Terminated") {
+                    _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
+                    _ProcessManager.currPCB.state = "Running";
+                }
+            }
         };
         return Scheduler;
     }());

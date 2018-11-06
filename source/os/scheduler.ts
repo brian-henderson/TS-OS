@@ -7,16 +7,17 @@ module TSOS {
       constructor( 
          public quantum: number = 6,
          public counter: number = 0,
-         public currAlgo: string = "ROUND_ROBIN",
+         //public currAlgo: string = "ROUND_ROBIN",
+         public currAlgo: string = "FIRST_COME_FIRST_SERVE",
       ){};
 
       
       public validateScheduler() {
 
          switch (this.currAlgo) { 
-       /*     case "FirstComeFirstServe":
+           case "FIRST_COME_FIRST_SERVE":
                this.schedulerFCFS();
-               break; */
+               break; 
             case "ROUND_ROBIN":
                this.schedulerRR();
                break;
@@ -51,7 +52,18 @@ module TSOS {
       }
 
       public schedulerFCFS() {
-
+         if (this.counter === 0) {
+            let pcb = _ProcessManager.readyQueue.dequeue()
+            pcb.state = "Running";
+            _ProcessManager.currPCB = pcb;
+         }
+         else {
+            if (_ProcessManager.currPCB.state === "Terminated") {
+               _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
+               _ProcessManager.currPCB.state = "Running";
+            }
+         }
+         
       }
 
 
