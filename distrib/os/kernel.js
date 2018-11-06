@@ -187,7 +187,7 @@ var TSOS;
         Kernel.prototype.krnTrapError = function (msg) {
             TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
             this.enableBSOD();
-            _StdOut.putText(msg);
+            _StdOut.putResponseText(msg);
             this.krnShutdown();
         };
         // used to set the canvas to be BSOD, simply clears the screen, resets the cursor, and styles it blue

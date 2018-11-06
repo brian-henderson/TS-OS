@@ -170,6 +170,32 @@ var TSOS;
                 // TODO: Write a case for Ctrl-C.
             }
         };
+        Console.prototype.putProgramOutputText = function (text) {
+            // My first inclination here was to write two functions: putChar() and putString().
+            // Then I remembered that JavaScript is (sadly) untyped and it won't differentiate
+            // between the two.  So rather than be like PHP and write two (or more) functions that
+            // do the same thing, thereby encouraging confusion and decreasing readability, I
+            // decided to write one function and use the term "text" to connote string or char.
+            //
+            // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
+            //         Consider fixing that.
+            if (text !== "") {
+                if (this.currentXPosition >= 450) {
+                    this.advanceLine();
+                }
+                // Draw the text at the current X and Y coordinates.
+                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                this.lastXPosition.push(this.currentXPosition);
+                // Move the current X position.
+                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                this.currentXPosition = this.currentXPosition + offset;
+            }
+        };
+        Console.prototype.putResponseText = function (text) {
+            var prompt = "> ";
+            text = prompt + text;
+            this.putText(text);
+        };
         Console.prototype.putText = function (text) {
             // My first inclination here was to write two functions: putChar() and putString().
             // Then I remembered that JavaScript is (sadly) untyped and it won't differentiate
@@ -180,6 +206,7 @@ var TSOS;
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
             if (text !== "") {
+                //text = "  > " + text;
                 if (this.currentXPosition >= 450) {
                     this.advanceLine();
                 }

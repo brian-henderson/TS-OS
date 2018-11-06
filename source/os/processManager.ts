@@ -36,12 +36,12 @@ module TSOS {
             // set the location to memory (no hard drive yet so this is static but getting ready for next iP)
             pcb.location = "Memory: P: " + (pcb.partitionIndex).toString();
             // output status to console
-            _StdOut.putText("Program loaded to memory with PID " + _PID);
+            _StdOut.putResponseText("Program loaded to memory with PID " + _PID);
             // add pcb to the pcb display list
             _Control.addToPcbDisplay(pcb);
          }
          else {
-            _StdOut.putText("Program not loaded to memory, no available partitions");
+            _StdOut.putResponseText("Program not loaded to memory, no available partitions");
          }
       }
 

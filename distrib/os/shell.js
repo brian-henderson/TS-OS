@@ -19,7 +19,7 @@ var TSOS;
     var Shell = /** @class */ (function () {
         function Shell() {
             // Properties
-            this.promptStr = ">";
+            this.promptStr = "hidalgOS$ ";
             this.commandList = [];
             this.curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
             this.apologies = "[sorry]";
@@ -87,6 +87,9 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             // set quantum
             sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<int> - Sets the quantum");
+            this.commandList[this.commandList.length] = sc;
+            // view all processes
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", "<state?> - Lists all the prcesses, optional state filter");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -184,45 +187,45 @@ var TSOS;
         // called from here, so kept here to avoid violating the law of least astonishment.
         //
         Shell.prototype.shellInvalidCommand = function () {
-            _StdOut.putText("Invalid Command. ");
+            _StdOut.putResponseText("Invalid Command. ");
             if (_SarcasticMode) {
-                _StdOut.putText("Unbelievable. You, [subject name here],");
+                _StdOut.putResponseText("Unbelievable. You, [subject name here],");
                 _StdOut.advanceLine();
-                _StdOut.putText("must be the pride of [subject hometown here].");
+                _StdOut.putResponseText("must be the pride of [subject hometown here].");
             }
             else {
-                _StdOut.putText("Type 'help' for, well... help.");
+                _StdOut.putResponseText("Type 'help' for, well... help.");
             }
         };
         Shell.prototype.shellCurse = function () {
-            _StdOut.putText("Oh, so that's how it's going to be, eh? Fine.");
+            _StdOut.putResponseText("Oh, so that's how it's going to be, eh? Fine.");
             _StdOut.advanceLine();
-            _StdOut.putText("Bitch.");
+            _StdOut.putResponseText("Bitch.");
             _SarcasticMode = true;
         };
         Shell.prototype.shellApology = function () {
             if (_SarcasticMode) {
-                _StdOut.putText("I think we can put our differences behind us.");
+                _StdOut.putResponseText("I think we can put our differences behind us.");
                 _StdOut.advanceLine();
-                _StdOut.putText("For science . . . You monster.");
+                _StdOut.putResponseText("For science . . . You monster.");
                 _SarcasticMode = false;
             }
             else {
-                _StdOut.putText("For what?");
+                _StdOut.putResponseText("For what?");
             }
         };
         Shell.prototype.shellVer = function (args) {
-            _StdOut.putText(APP_NAME + " version " + APP_VERSION);
+            _StdOut.putResponseText(APP_NAME + " version " + APP_VERSION);
         };
         Shell.prototype.shellHelp = function (args) {
-            _StdOut.putText("Commands:");
+            _StdOut.putResponseText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
-                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
+                _StdOut.putResponseText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
         };
         Shell.prototype.shellShutdown = function (args) {
-            _StdOut.putText("Shutting down...");
+            _StdOut.putResponseText("Shutting down...");
             // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
         };
@@ -235,71 +238,74 @@ var TSOS;
                 var topic = args[0];
                 switch (topic) {
                     case "help":
-                        _StdOut.putText("Help displays a list of (hopefully) valid commands.");
+                        _StdOut.putResponseText("Help displays a list of (hopefully) valid commands.");
                         break;
                     case "ver":
-                        _StdOut.putText("Displays the current version data.");
+                        _StdOut.putResponseText("Displays the current version data.");
                         break;
                     case "shutdown":
-                        _StdOut.putText("Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
+                        _StdOut.putResponseText("Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
                         break;
                     case "cls":
-                        _StdOut.putText("Clears the screen and resets the cursor position.");
+                        _StdOut.putResponseText("Clears the screen and resets the cursor position.");
                         break;
                     case "trace":
-                        _StdOut.putText("<on | off> - Turns the OS trace on or off.");
+                        _StdOut.putResponseText("<on | off> - Turns the OS trace on or off.");
                         break;
                     case "rot13":
-                        _StdOut.putText("Does rot13 obfuscation on <string>");
+                        _StdOut.putResponseText("Does rot13 obfuscation on <string>");
                         break;
                     case "prompt":
-                        _StdOut.putText("Sets the prompt character.");
+                        _StdOut.putResponseText("Sets the prompt character.");
                         break;
                     case "man":
-                        _StdOut.putText("Inception.");
+                        _StdOut.putResponseText("Inception.");
                         break;
                     case "date":
-                        _StdOut.putText("Gets the current date.");
+                        _StdOut.putResponseText("Gets the current date.");
                         break;
                     case "whereami":
-                        _StdOut.putText("Yoda knows all.");
+                        _StdOut.putResponseText("Yoda knows all.");
                         break;
                     case "coinflip":
-                        _StdOut.putText("Flips a standard double sided coin.. May the odds be ever in your favor.");
+                        _StdOut.putResponseText("Flips a standard double sided coin.. May the odds be ever in your favor.");
                         break;
                     case "status":
-                        _StdOut.putText("Sets the status in the status bar.");
+                        _StdOut.putResponseText("Sets the status in the status bar.");
                         break;
                     case "nuke":
-                        _StdOut.putText("BSOD testing command.");
+                        _StdOut.putResponseText("BSOD testing command.");
                         break;
                     case "load":
-                        _StdOut.putText("Validates user program code is well...valid");
+                        _StdOut.putResponseText("Validates user program code is well...valid");
                         break;
                     case "run":
-                        _StdOut.putText("<PID> - Used to run the loaded process given a PID");
+                        _StdOut.putResponseText("<PID> - Used to run the loaded process given a PID");
                         break;
                     case "clearmem":
-                        _StdOut.putText("Used to clear all memory partitions. Use wisely.");
+                        _StdOut.putResponseText("Used to clear all memory partitions. Use wisely.");
                         break;
                     case "runall":
-                        _StdOut.putText("Excutes all programs at once");
+                        _StdOut.putResponseText("Excutes all programs at once");
                         break;
                     case "kill":
-                        _StdOut.putText("<PID> - Used to kill a specific process identified by PID");
+                        _StdOut.putResponseText("<PID> - Used to kill a specific process identified by PID");
                         break;
                     case "setschedule":
-                        _StdOut.putText("<fcfs || rr || priority> - Sets scheduling algorithim");
+                        _StdOut.putResponseText("<fcfs || rr || priority> - Sets scheduling algorithim");
                         break;
                     case "quantum":
-                        _StdOut.putText("<int> - Sets scheduling quantum");
+                        _StdOut.putResponseText("<int> - Sets scheduling quantum");
+                        break;
+                    case "ps":
+                        _StdOut.putResponseText("<state?> - Lists all the processes, filter by state (optional)");
                         break;
                     default:
-                        _StdOut.putText("No manual entry for " + args[0] + ".");
+                        _StdOut.putResponseText("No manual entry for " + args[0] + ".");
                 }
             }
             else {
-                _StdOut.putText("Usage: man <topic>  Please supply a topic.");
+                _StdOut.putResponseText("Usage: man <topic>  Please supply a topic.");
             }
         };
         Shell.prototype.shellTrace = function (args) {
@@ -308,32 +314,32 @@ var TSOS;
                 switch (setting) {
                     case "on":
                         if (_Trace && _SarcasticMode) {
-                            _StdOut.putText("Trace is already on, doofus.");
+                            _StdOut.putResponseText("Trace is already on, doofus.");
                         }
                         else {
                             _Trace = true;
-                            _StdOut.putText("Trace ON");
+                            _StdOut.putResponseText("Trace ON");
                         }
                         break;
                     case "off":
                         _Trace = false;
-                        _StdOut.putText("Trace OFF");
+                        _StdOut.putResponseText("Trace OFF");
                         break;
                     default:
-                        _StdOut.putText("Invalid arguement.  Usage: trace <on | off>.");
+                        _StdOut.putResponseText("Invalid arguement.  Usage: trace <on | off>.");
                 }
             }
             else {
-                _StdOut.putText("Usage: trace <on | off>");
+                _StdOut.putResponseText("Usage: trace <on | off>");
             }
         };
         Shell.prototype.shellRot13 = function (args) {
             if (args.length > 0) {
                 // Requires Utils.ts for rot13() function.
-                _StdOut.putText(args.join(' ') + " = '" + TSOS.Utils.rot13(args.join(' ')) + "'");
+                _StdOut.putResponseText(args.join(' ') + " = '" + TSOS.Utils.rot13(args.join(' ')) + "'");
             }
             else {
-                _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
+                _StdOut.putResponseText("Usage: rot13 <string>  Please supply a string.");
             }
         };
         Shell.prototype.shellPrompt = function (args) {
@@ -341,22 +347,22 @@ var TSOS;
                 _OsShell.promptStr = args[0];
             }
             else {
-                _StdOut.putText("Usage: prompt <string>  Please supply a string.");
+                _StdOut.putResponseText("Usage: prompt <string>  Please supply a string.");
             }
         };
         Shell.prototype.shellDate = function (args) {
             var d = new Date();
-            _StdOut.putText(d.toString());
+            _StdOut.putResponseText(d.toString());
         };
         Shell.prototype.shellWhereAmI = function (args) {
-            _StdOut.putText("Campus Deli.");
+            _StdOut.putResponseText("Campus Deli.");
         };
         Shell.prototype.shellCoinFlip = function (args) {
             var randomNum = Math.floor(Math.random() * 10);
             if ((randomNum % 2) == 0)
-                _StdOut.putText("Heads");
+                _StdOut.putResponseText("Heads");
             else
-                _StdOut.putText("Tails");
+                _StdOut.putResponseText("Tails");
         };
         Shell.prototype.shellStatus = function (args) {
             var status = '';
@@ -380,7 +386,7 @@ var TSOS;
                     // grab the char code and use that in custom utils function, if not valid then the flag changes and breaks out
                     var c = programInput.charCodeAt(i);
                     if (!TSOS.Utils.isCharCodeValidHex(c)) {
-                        _StdOut.putText("Invalid Program Input at index: " + i);
+                        _StdOut.putResponseText("Invalid Program Input at index: " + i);
                         isValid = false;
                         break;
                     }
@@ -415,30 +421,30 @@ var TSOS;
                     _ProcessManager.runProcess(pcbToRun);
                 }
                 else {
-                    _StdOut.putText("PID not found");
+                    _StdOut.putResponseText("PID not found");
                 }
             }
             else {
-                _StdOut.putText("Please supply PID");
+                _StdOut.putResponseText("Please supply PID");
             }
         };
         Shell.prototype.shellClearMem = function (args) {
             var p = args[0].toString();
             switch (p) {
                 case '0':
-                    _StdOut.putText("Memory Partition Cleared: P:", p);
+                    _StdOut.putResponseText("Memory Partition Cleared: P:", p);
                     _Memory.clearMemoryPartition(0);
                     break;
                 case '1':
-                    _StdOut.putText("Memory Partition Cleared: P:", p);
+                    _StdOut.putResponseText("Memory Partition Cleared: P:", p);
                     _Memory.clearMemoryPartition(1);
                     break;
                 case '2':
-                    _StdOut.putText("Memory Partition Cleared: P:", p);
+                    _StdOut.putResponseText("Memory Partition Cleared: P:", p);
                     _Memory.clearMemoryPartition(2);
                     break;
                 default:
-                    _StdOut.putText("All memory partitions cleared");
+                    _StdOut.putResponseText("All memory partitions cleared");
                     _Memory.clearMemory();
             }
         };
@@ -450,7 +456,7 @@ var TSOS;
                 _ProcessManager.killProcessByPid(args[0]);
             }
             else {
-                _StdOut.putText("Usage: kill <PID> - Please supply a PID");
+                _StdOut.putResponseText("Usage: kill <PID> - Please supply a PID");
             }
         };
         Shell.prototype.shellSetSchedule = function (args) {
@@ -460,7 +466,7 @@ var TSOS;
                 }
             }
             else {
-                _StdOut.putText("Set the correct algo type dummy!");
+                _StdOut.putResponseText("Set the correct algo type dummy!");
             }
         };
         Shell.prototype.shellQuantum = function (args) {
@@ -468,7 +474,16 @@ var TSOS;
                 _Scheduler.quantum = args[0];
             }
             else {
-                _StdOut.putText("Add a quantum number!");
+                _StdOut.putResponseText("Add a quantum number!");
+            }
+        };
+        Shell.prototype.shellPS = function (args) {
+            console.log("PCB Arr: ", _ProcessManager.processArray);
+            for (var i = 0; i < _ProcessManager.processArray.length; i++) {
+                var pcb = _ProcessManager.processArray[i];
+                if (pcb.state != "Terminated") {
+                    console.log("PID: " + pcb.pid + " State: " + pcb.state);
+                }
             }
         };
         return Shell;

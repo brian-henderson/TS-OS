@@ -217,7 +217,7 @@ module TSOS {
         public krnTrapError(msg) {
             Control.hostLog("OS ERROR - TRAP: " + msg);
             this.enableBSOD();
-            _StdOut.putText(msg);
+            _StdOut.putResponseText(msg);
             this.krnShutdown();
         }
 

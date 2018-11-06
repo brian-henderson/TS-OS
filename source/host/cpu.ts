@@ -114,7 +114,7 @@ module TSOS {
                     break;
                 default:
                     // invalid op code
-                    _StdOut.putText("Invalid OP code...terminating");
+                    _StdOut.putResponseText("Invalid OP code...terminating");
                     _ProcessManager.terminateProcess(pcb);
             }
             
