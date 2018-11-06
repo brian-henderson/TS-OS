@@ -108,7 +108,7 @@ var TSOS;
                 }
                 _CPU.cycle();
                 _Control.updateMemoryDisplay();
-                _Control.updatePcbDisplay(_ProcessManager.currPCB);
+                //_Control.updatePcbDisplay(_ProcessManager.currPCB);
             }
             else { // If there are no interrupts and there is nothing being executed then just be idle. {
                 this.krnTrace("Idle");

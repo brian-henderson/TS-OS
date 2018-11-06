@@ -72,7 +72,8 @@ module TSOS {
          pcb.location = "Black Hole";
          _Memory.clearMemoryPartition(pcb.partitionIndex);
          _CPU.resetCpu();
-         _Control.updatePcbDisplay(pcb);
+         //_Control.updatePcbDisplay(pcb);
+         _Control.removePcbDisplay(pcb);
          _Console.advanceLine();
          _OsShell.putPrompt();
          Utils.setStatus("Still a little hungry...");

@@ -207,24 +207,33 @@ var TSOS;
             row.insertCell(9).innerHTML = pcb.location;
         };
         Control.prototype.updatePcbDisplay = function (pcb) {
+            if (pcb.state != "Terminated") {
+                var table = document.getElementById("tablePcbDisplay");
+                var tableLength = table.rows.length;
+                for (var i = 0; i < tableLength; i++) {
+                    var row = table.rows[i].cells;
+                    if (parseInt(row[0].innerHTML) == pcb.pid) {
+                        row[1].innerHTML = pcb.priority.toString();
+                        row[2].innerHTML = pcb.state;
+                        row[3].innerHTML = TSOS.Utils.formatHexDisplay(pcb.programCounter);
+                        row[4].innerHTML = pcb.instructionReg;
+                        row[5].innerHTML = pcb.accumulator.toString();
+                        row[6].innerHTML = pcb.X.toString();
+                        row[7].innerHTML = pcb.Y.toString();
+                        row[8].innerHTML = pcb.Z.toString();
+                        row[9].innerHTML = pcb.location;
+                        break;
+                    }
+                }
+            }
+        };
+        Control.prototype.removePcbDisplay = function (pcb) {
             var table = document.getElementById("tablePcbDisplay");
             var tableLength = table.rows.length;
             for (var i = 0; i < tableLength; i++) {
                 var row = table.rows[i].cells;
                 if (parseInt(row[0].innerHTML) == pcb.pid) {
-                    if (pcb.state == "Terminated") {
-                        console.log("Termonaedeifenifen");
-                    }
-                    row[1].innerHTML = pcb.priority.toString();
-                    row[2].innerHTML = pcb.state;
-                    row[3].innerHTML = TSOS.Utils.formatHexDisplay(pcb.programCounter);
-                    row[4].innerHTML = pcb.instructionReg;
-                    row[5].innerHTML = pcb.accumulator.toString();
-                    row[6].innerHTML = pcb.X.toString();
-                    row[7].innerHTML = pcb.Y.toString();
-                    row[8].innerHTML = pcb.Z.toString();
-                    row[9].innerHTML = pcb.location;
-                    break;
+                    table.deleteRow(i);
                 }
             }
         };
