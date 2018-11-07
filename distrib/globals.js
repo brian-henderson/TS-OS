@@ -13,11 +13,13 @@
 var APP_NAME = "HidalgOS"; // Popular sandwich at Campus Deli: Open faced sub w/chicken cutlet, american cheese,
 // fries, mozz sticks, hot sauce, ranch dressing, chipolote mayo.
 // Also spanish for "gentlemen" as I am a gentlemen.
-var APP_VERSION = "2.0"; // lab 01
+var APP_VERSION = "3.0";
 var CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 second.
 var TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 var KEYBOARD_IRQ = 1;
+var LOAD_PROCESS_SWITCH_IRQ = 2;
+var UNLOAD_PROCESS_SWITCH_IRQ = 3;
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.

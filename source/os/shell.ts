@@ -515,11 +515,11 @@ module TSOS {
                     _ProcessManager.runProcess(pcbToRun);
                 }
                 else {
-                    _StdOut.putResponseText("PID not found");
+                    _StdOut.putResponseText("Given PID not found, run `ps` to see valid PIDs");
                 }
             }
             else {
-                _StdOut.putResponseText("Please supply PID");
+                _StdOut.putResponseText("Please supply PID, run `ps` to see all loaded PIDs");
             }
         }
 
@@ -560,19 +560,21 @@ module TSOS {
           if (args.length > 0 ) {
             if (_Scheduler.isVaildScheduler(args[0])) {
                _Scheduler.currAlgo = args[0];
+               _StdOut.putResponseText("Scheduling algorithim set to: " + args[0]);
             }
           }
           else {
-             _StdOut.putResponseText("Set the correct algo type dummy!");
+             _StdOut.putResponseText("Invalid scheduling algorithim, use : <fcfs || rr>");
           }
        }
 
        public shellQuantum(args) {
          if (args.length > 0 ) {
             _Scheduler.quantum = args[0];
+            _StdOut.putResponseText("Quantum set to: " + args[0]);
          }
          else {
-            _StdOut.putResponseText("Add a quantum number!");
+            _StdOut.putResponseText("Invalid command usage, proper usage: quantum <int>");
          }
       }
 
@@ -581,7 +583,7 @@ module TSOS {
          for (let i=0; i < _ProcessManager.processArray.length; i++) {
             let pcb: ProcessControlBlock = _ProcessManager.processArray[i];
             if (pcb.state != "Terminated" || displayAll ) {
-               _StdOut.putResponseText("PID: {"+pcb.pid+"} State: {"+pcb.state+"} Location: {"+pcb.location+"}");
+               _StdOut.putResponseText("[ PID: {"+pcb.pid+"} State: {"+pcb.state+"} Location: {"+pcb.location+"} ]");
                _StdOut.advanceLine();
             }
          }

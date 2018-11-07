@@ -15,13 +15,16 @@ const APP_NAME: string    = "HidalgOS";   // Popular sandwich at Campus Deli: Op
                                           // fries, mozz sticks, hot sauce, ranch dressing, chipolote mayo.
                                           // Also spanish for "gentlemen" as I am a gentlemen.
 
-const APP_VERSION: string = "2.0";   // lab 01
+const APP_VERSION: string = "3.0"; 
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
 const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ: number = 1;
+
+const LOAD_PROCESS_SWITCH_IRQ: number = 2;
+const UNLOAD_PROCESS_SWITCH_IRQ: number = 3;
 
 
 //

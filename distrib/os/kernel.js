@@ -143,6 +143,12 @@ var TSOS;
                     _krnKeyboardDriver.isr(params); // Kernel mode device driver
                     _StdIn.handleInput();
                     break;
+                case LOAD_PROCESS_SWITCH_IRQ:
+                    _Scheduler.loadProcessToReadyQueue();
+                    break;
+                case UNLOAD_PROCESS_SWITCH_IRQ:
+                    _Scheduler.unloadProcessFromReadyQueue();
+                    break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }

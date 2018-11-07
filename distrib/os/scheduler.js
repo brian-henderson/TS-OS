@@ -31,6 +31,17 @@ var TSOS;
             }
             this.counter++;
         };
+        Scheduler.prototype.switchProcess = function () {
+        };
+        Scheduler.prototype.unloadProcessFromReadyQueue = function () {
+            _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
+            _ProcessManager.currPCB.state = "Running";
+        };
+        Scheduler.prototype.loadProcessToReadyQueue = function () {
+            _ProcessManager.currPCB.state = "Ready";
+            _Control.updatePcbDisplay(_ProcessManager.currPCB);
+            _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
+        };
         Scheduler.prototype.isVaildScheduler = function (arg) {
             for (var i = 0; i < this.schedulingAlgos.length; i++) {
                 if (this.schedulingAlgos[i] === arg) {
@@ -40,35 +51,30 @@ var TSOS;
         };
         Scheduler.prototype.schedulerRR = function () {
             if (this.counter === 0) {
-                var pcb = _ProcessManager.readyQueue.dequeue();
-                pcb.state = "Running";
-                _ProcessManager.currPCB = pcb;
+                //this.unloadProcessFromReadyQueue();
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
             }
             else if (this.counter == this.quantum) {
                 if (!_ProcessManager.readyQueue.isEmpty()) {
                     if (_ProcessManager.currPCB.state != "Terminated") {
                         // get the curr pcb and put it to the back of the queue
-                        _ProcessManager.currPCB.state = "Ready";
-                        _Control.updatePcbDisplay(_ProcessManager.currPCB);
-                        _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
+                        //this.loadProcessToReadyQueue();
+                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(LOAD_PROCESS_SWITCH_IRQ, 0));
                     }
                     // set the new curr pcb to the next in the queue
-                    _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
-                    _ProcessManager.currPCB.state = "Running";
+                    //this.unloadProcessFromReadyQueue();
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
                 }
                 this.counter = 0;
             }
         };
         Scheduler.prototype.schedulerFCFS = function () {
             if (this.counter === 0) {
-                var pcb = _ProcessManager.readyQueue.dequeue();
-                pcb.state = "Running";
-                _ProcessManager.currPCB = pcb;
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
             }
             else {
                 if (_ProcessManager.currPCB.state === "Terminated") {
-                    _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
-                    _ProcessManager.currPCB.state = "Running";
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
                 }
             }
         };
