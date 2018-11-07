@@ -65,8 +65,8 @@ var TSOS;
             pcb.location = "Black Hole";
             _Memory.clearMemoryPartition(pcb.partitionIndex);
             _CPU.resetCpu();
-            //_Control.updatePcbDisplay(pcb);
             _Control.removePcbDisplay(pcb);
+            this.printProcessTime(pcb);
             _Console.advanceLine();
             _OsShell.putPrompt();
             TSOS.Utils.setStatus("Still a little hungry...");
@@ -102,6 +102,27 @@ var TSOS;
         ProcessManager.prototype.killProcessByPid = function (pid) {
             var pcb = this.getPCBfromPid(pid);
             this.terminateProcess(pcb);
+        };
+        ProcessManager.prototype.updateWaitTime = function () {
+            for (var i = 0; i < this.readyQueue.getSize(); i++) {
+                this.readyQueue.q[i].waitTime++;
+            }
+        };
+        ProcessManager.prototype.updateTurnAroundTime = function () {
+            for (var i = 0; i < this.readyQueue.getSize(); i++) {
+                this.readyQueue.q[i].turnAroundTime++;
+            }
+            this.currPCB.turnAroundTime++;
+        };
+        ProcessManager.prototype.printProcessTime = function (pcb) {
+            _StdOut.advanceLine();
+            _StdOut.advanceLine();
+            _StdOut.putResponseText("PID: " + pcb.pid);
+            _StdOut.advanceLine();
+            _StdOut.putResponseText("Wait Time: " + pcb.waitTime);
+            _StdOut.advanceLine();
+            _StdOut.putResponseText("Turnaround Time: " + pcb.turnAroundTime);
+            _StdOut.advanceLine();
         };
         return ProcessManager;
     }());

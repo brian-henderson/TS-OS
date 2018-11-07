@@ -45,7 +45,6 @@ module TSOS {
          }
       }
 
-
       public runProcess(pcb: ProcessControlBlock): void {
          if (! this.runningAll) {
             pcb.state = "Running";
@@ -72,8 +71,8 @@ module TSOS {
          pcb.location = "Black Hole";
          _Memory.clearMemoryPartition(pcb.partitionIndex);
          _CPU.resetCpu();
-         //_Control.updatePcbDisplay(pcb);
          _Control.removePcbDisplay(pcb);
+         this.printProcessTime(pcb);
          _Console.advanceLine();
          _OsShell.putPrompt();
          Utils.setStatus("Still a little hungry...");
@@ -116,6 +115,29 @@ module TSOS {
          this.terminateProcess(pcb);
       }
 
+      public updateWaitTime(): void {
+         for (let i=0; i < this.readyQueue.getSize(); i ++) {
+            this.readyQueue.q[i].waitTime ++;
+         }
+      }
+
+      public updateTurnAroundTime(): void {
+         for (let i=0; i < this.readyQueue.getSize(); i ++) {
+            this.readyQueue.q[i].turnAroundTime ++;
+         }
+         this.currPCB.turnAroundTime ++;
+      }
+
+      public printProcessTime(pcb: ProcessControlBlock): void {
+         _StdOut.advanceLine();
+         _StdOut.advanceLine();
+         _StdOut.putResponseText("PID: " + pcb.pid);
+         _StdOut.advanceLine();
+         _StdOut.putResponseText("Wait Time: " + pcb.waitTime);
+         _StdOut.advanceLine();
+         _StdOut.putResponseText("Turnaround Time: " + pcb.turnAroundTime);
+         _StdOut.advanceLine();
+      }
 
    }
 

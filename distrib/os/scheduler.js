@@ -31,16 +31,20 @@ var TSOS;
             }
             this.counter++;
         };
-        Scheduler.prototype.switchProcess = function () {
-        };
+        // Grab the next process in the ready queue and set it to the curr PCB
         Scheduler.prototype.unloadProcessFromReadyQueue = function () {
             _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
             _ProcessManager.currPCB.state = "Running";
+            var log = "Switching context to PID " + _ProcessManager.currPCB.pid;
+            _Kernel.krnTrace(log);
         };
+        // set the curr PCB to ready and throw it in the back
         Scheduler.prototype.loadProcessToReadyQueue = function () {
+            var log = "Switching context out of PID" + _ProcessManager.currPCB.pid;
             _ProcessManager.currPCB.state = "Ready";
             _Control.updatePcbDisplay(_ProcessManager.currPCB);
             _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
+            _Kernel.krnTrace(log);
         };
         Scheduler.prototype.isVaildScheduler = function (arg) {
             for (var i = 0; i < this.schedulingAlgos.length; i++) {
@@ -51,18 +55,15 @@ var TSOS;
         };
         Scheduler.prototype.schedulerRR = function () {
             if (this.counter === 0) {
-                //this.unloadProcessFromReadyQueue();
                 _KernelInterruptQueue.enqueue(new TSOS.Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
             }
             else if (this.counter == this.quantum) {
                 if (!_ProcessManager.readyQueue.isEmpty()) {
                     if (_ProcessManager.currPCB.state != "Terminated") {
                         // get the curr pcb and put it to the back of the queue
-                        //this.loadProcessToReadyQueue();
                         _KernelInterruptQueue.enqueue(new TSOS.Interrupt(LOAD_PROCESS_SWITCH_IRQ, 0));
                     }
                     // set the new curr pcb to the next in the queue
-                    //this.unloadProcessFromReadyQueue();
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
                 }
                 this.counter = 0;

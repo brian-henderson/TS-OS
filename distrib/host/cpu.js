@@ -46,6 +46,8 @@ var TSOS;
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             this.executeProgram(_ProcessManager.currPCB);
+            _ProcessManager.updateTurnAroundTime();
+            _ProcessManager.updateWaitTime();
             _Control.updateCpuDisplay();
             _Control.updatePcbDisplay(_ProcessManager.currPCB);
         };

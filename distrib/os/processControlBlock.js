@@ -14,7 +14,7 @@ var TSOS;
             this.location = null;
             this.partitionIndex = 0;
             this.waitTime = 0;
-            this.responseTime = 0;
+            this.turnAroundTime = 0;
             this.pid = p;
         }
         ;

@@ -33,15 +33,21 @@ module TSOS {
          this.counter ++;
       }
 
+      // Grab the next process in the ready queue and set it to the curr PCB
       public unloadProcessFromReadyQueue(): void {
          _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue()
          _ProcessManager.currPCB.state = "Running"
+         let log: string = "Switching context to PID "+_ProcessManager.currPCB.pid;
+         _Kernel.krnTrace(log)
       }
 
+      // set the curr PCB to ready and throw it in the back
       public loadProcessToReadyQueue(): void {
+         let log: string = "Switching context out of PID"+_ProcessManager.currPCB.pid;
          _ProcessManager.currPCB.state = "Ready";
          _Control.updatePcbDisplay(_ProcessManager.currPCB);
          _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
+         _Kernel.krnTrace(log)
       }
 
 
