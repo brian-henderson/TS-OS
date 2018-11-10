@@ -119,6 +119,14 @@ module TSOS {
                     _StdOut.putResponseText("Invalid OP code...terminating");
                     _ProcessManager.terminateProcess(pcb);
             }
+
+            console.log("~~~~~~~~~~~~~~~~~~~~~~~~");
+            console.log(this.IR);
+            console.log(this.Acc);
+            console.log(this.PC);
+            console.log(this.Xreg);
+            console.log(this.Yreg);
+            console.log(this.Zflag);
             
             // Update the current process control block
             this.updateCurrentPCB();
@@ -179,12 +187,8 @@ module TSOS {
             // increase program counter
             this.increaseProgramCounter();
             let memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
-            // increase program counter again
             this.increaseProgramCounter();
-            memoryLocHex += _ProcessManager.readInstruction(pcb.partitionIndex, this.PC) + memoryLocHex;
-            // convert to decimal address
             let memoryLoc = parseInt(memoryLocHex, 16);
-            // load into the accumulator reading 
             this.Acc = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
             // update program counter to next program
             this.increaseProgramCounter();
