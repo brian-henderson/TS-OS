@@ -35,6 +35,7 @@ const UNLOAD_PROCESS_SWITCH_IRQ: number = 3;
 var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
 var _Memory: TSOS.Memory;
 //var _MemoryAccessor: TSOS.MemoryAccessor;
+var _HDD: TSOS.hdd;
 
 // Software (os)
 var _MemoryManager: TSOS.MemoryManager;
