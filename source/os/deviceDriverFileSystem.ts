@@ -144,26 +144,91 @@
          public krnFSWriteFile(fileName, fileData): void {
             let data = fileData.split("");
             let fileDataHexArray = new Array();
+
             for (let i = 0; i < fileData.length; i++) {
                fileDataHexArray.push(data[i].charCodeAt(0).toString(16));
             }
+
             let fileDataHexString = fileDataHexArray.join("");
             let linkCount = fileDataHexString.length > 0 ? Math.ceil(fileDataHexString.length/60) : 1;
             fileDataHexArray = fileDataHexString.split("");
 
-            let tsb = this.krnGetNewBlock()
+            let tsb = this.krnGetFileBlock(fileName);
+            let currTSBdata = _HDD.readFromHDD(tsb);
+            let currTSBdataArray = currTSBdata.split("");
+            tsb = '';
+            tsb += currTSBdataArray[1];
+            tsb += currTSBdataArray[2];
+            tsb += currTSBdataArray[3];
+            
+            let copyOfTsb = tsb;
+            let tsbArr = [copyOfTsb];
 
+            while(true) {
+               let tsbData = _HDD.readFromHDD(copyOfTsb);
+               if ( tsbData.split("")[1] != "-") {
+                  copyOfTsb = "";
+                  copyOfTsb += tsbData.split("")[1];
+                  copyOfTsb += tsbData.split("")[2];
+                  copyOfTsb += tsbData.split("")[3];
+                  tsbArr.push(copyOfTsb)
+               }
+               else {
+                  break;
+               }
+            }
+
+            if (tsbArr.length != 0) {
+               for (let i = 0; i < tsbArr.length; i++) {
+                  this.krnClearTSB(tsbArr[i]);
+               }
+            }
+
+            let hexIndex = 0;
+
+            for (let i = 0; i < linkCount; i++) {
+               currTSBdata = _HDD.readFromHDD(tsb);
+               currTSBdataArray = currTSBdata.split("");
+               currTSBdataArray[0] = "1";
+               _HDD.writeToHDD(tsb, currTSBdataArray.join(""));
+               let inputData = "1";
+               inputData += (i === linkCount-1) ? "---" : this.krnGetNewBlock();
+
+               for (let j = 0; j < 60; j++) {
+                  if (hexIndex >= fileDataHexArray.length) {
+                     inputData += "0";
+                  }
+                  else {
+                     inputData += fileDataHexArray[hexIndex];
+                     hexIndex++;
+                  }
+               }
+               _HDD.writeToHDD(tsb, inputData);
+               tsb = this.krnGetNewBlock();
+            }
+            /**
+             * UPDATE HTML HERE
+             */
          }
 
          public krnFSReadFile(): void {
                  
          }
 
+         public krnClearTSB(tsb) {
+            let data = "";
+            for (let i = 0; i < 64; i++) {
+               data += (i >= 1 && i <= 3) ? "-" : "0";
+            }
+            _HDD.writeToHDD(tsb, data);
+         }
+
          public krnGetNewBlock() {
             let start = 0;
             for (let i = 0; i < _HDD.tsbArray.length; i ++ ) {
                start = _HDD.tsbArray[i] == "100" ? i : 0;
-               break;
+               if (_HDD.tsbArray[i] == "100")
+                  break;
             }
             for (let i = start; _HDD.tsbArray.length; i++) {
                if (_HDD.readFromHDD(_HDD.tsbArray[i].split("")[0] == "0")) {
