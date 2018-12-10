@@ -84,8 +84,6 @@
 
          }
 
-         
-
          public krnFSCreateFile(fileName) {
             let fileNameCharArray = fileName.split("");
             let fileNameHexArray = new Array();
@@ -257,6 +255,42 @@
             return finalDataString;
 
          }
+
+
+         public krnFSDeleteFile(fileName) {
+            let tsb = this.krnGetFileBlock(fileName);
+            let fileDataArray = _HDD.readFromHDD(tsb).split("");
+            
+            let fileDataString = "";
+            fileDataString += fileDataArray[1];
+            fileDataString += fileDataArray[2];
+            fileDataString += fileDataArray[3];
+
+            let tsbDataArray = [tsb, fileDataString];
+            while (true) {
+               let fileData = _HDD.readFromHDD(tsb);
+               if (fileData.split("")[1] != "-") {
+                  fileDataString = "";
+                  fileDataString += fileData.split("")[1];
+                  fileDataString += fileData.split("")[2];
+                  fileDataString += fileData.split("")[3];
+                  tsbDataArray.push(fileDataString);
+               }
+               else {
+                  break;
+               }
+            }
+
+            for (let i = 0; i < tsbDataArray.length; i++) {
+               this.krnClearTSB(tsbDataArray[i]);
+            }
+            /**
+             * UDPDATE HTML CODE HERE
+             */
+         }
+
+
+
 
          public krnClearTSB(tsb) {
             let data = "";
