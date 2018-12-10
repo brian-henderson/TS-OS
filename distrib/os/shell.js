@@ -536,6 +536,23 @@ var TSOS;
                 }
             }
         };
+        Shell.prototype.shellWriteFile = function (args) {
+            if (!_krnFileSystemDriver.formatted) {
+                _StdOut.putResponseText("Format the hard drive first!!");
+            }
+            else {
+                var data = "";
+                for (var i = 0; i < args.length; i++) {
+                    data += args[i];
+                    if (args.length > 2 && i != args.length - 1) {
+                        data += " ";
+                    }
+                }
+                data = data.substring(1, data.length - 1);
+                _krnFileSystemDriver.krnFSWriteFile(args[0].toString(), data);
+                _StdOut.putResponseText("Data written to the file");
+            }
+        };
         return Shell;
     }());
     TSOS.Shell = Shell;
