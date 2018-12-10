@@ -553,6 +553,33 @@ var TSOS;
                 _StdOut.putResponseText("Data written to the file");
             }
         };
+        Shell.prototype.shellReadFile = function (args) {
+            if (!_krnFileSystemDriver.formatted) {
+                _StdOut.putResponseText("Format the hard drive first!!");
+            }
+            else {
+                var data = _krnFileSystemDriver.krnFSReadFile(args[0].toString());
+                var output = data == '' ? "File is empty, nothing to read" : data;
+                _StdOut.putResponseText(output);
+            }
+        };
+        Shell.prototype.shellDeleteFile = function (args) {
+            if (!_krnFileSystemDriver.formatted) {
+                _StdOut.putResponseText("Format the hard drive first!!");
+            }
+            else {
+                _krnFileSystemDriver.krnFSDeleteFile(args[0].toString());
+                _StdOut.putResponseText("Deleted file");
+            }
+        };
+        Shell.prototype.shellListFiles = function (args) {
+            if (!_krnFileSystemDriver.formatted) {
+                _StdOut.putResponseText("Format the hard drive first!!");
+            }
+            else {
+                _krnFileSystemDriver.krnFSList();
+            }
+        };
         return Shell;
     }());
     TSOS.Shell = Shell;

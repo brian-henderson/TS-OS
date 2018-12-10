@@ -678,6 +678,36 @@ module TSOS {
          }
       }
 
+      public shellReadFile(args): void {
+         if (! _krnFileSystemDriver.formatted) {
+            _StdOut.putResponseText("Format the hard drive first!!");
+         }
+         else {
+            let data = _krnFileSystemDriver.krnFSReadFile(args[0].toString());
+            let output = data  == '' ? "File is empty, nothing to read" : data;
+            _StdOut.putResponseText(output);
+         }
+      }
+
+      public shellDeleteFile(args): void {
+         if (! _krnFileSystemDriver.formatted) {
+            _StdOut.putResponseText("Format the hard drive first!!");
+         }
+         else {
+            _krnFileSystemDriver.krnFSDeleteFile(args[0].toString());
+            _StdOut.putResponseText("Deleted file");
+         }
+      }
+
+      public shellListFiles(args): void {
+         if (! _krnFileSystemDriver.formatted) {
+            _StdOut.putResponseText("Format the hard drive first!!");
+         }
+         else {
+            _krnFileSystemDriver.krnFSList();
+         }
+      }
+
 
 
    }
