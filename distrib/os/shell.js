@@ -91,8 +91,19 @@ var TSOS;
             // view all processes
             sc = new TSOS.ShellCommand(this.shellPS, "ps", "<state?> - Lists all the prcesses, optional state filter");
             this.commandList[this.commandList.length] = sc;
-            // ps  - list the running processes and their IDs
-            // kill <id> - kills the specified process id.
+            sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "- returns current schedule");
+            this.commandList[this.commandList.length] = sc;
+            /*
+                     sc = new ShellCommand(this.shellGetSchedule,
+                        "getschedule",
+                        "- returns current schedule");
+                     this.commandList[this.commandList.length] = sc;
+            
+                     sc = new ShellCommand(this.shellGetSchedule,
+                        "getschedule",
+                        "- returns current schedule");
+                     this.commandList[this.commandList.length] = sc;
+            */
             // This adds all the shell commands to a globals list to be accessed in console
             for (var i = 0; i < this.commandList.length; i++) {
                 _commandList[i] = this.commandList[i].command;
@@ -488,6 +499,9 @@ var TSOS;
                     _StdOut.advanceLine();
                 }
             }
+        };
+        Shell.prototype.shellGetSchedule = function (args) {
+            _StdOut.putText("Current Scheduling Algorithim: " + _Scheduler.currAlgo);
         };
         return Shell;
     }());
