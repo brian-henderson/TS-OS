@@ -268,6 +268,37 @@ var TSOS;
              * UDPDATE HTML CODE HERE
              */
         };
+        DeviceDriverFS.prototype.krnFSList = function () {
+            var tsbFiles = new Array();
+            for (var i = 0; i < _HDD.tsbArray.length; i++) {
+                if (_HDD.tsbArray[i] == "100") {
+                    break;
+                }
+                tsbFiles.push(_HDD.tsbArray[i]);
+            }
+            var activeFileNames = new Array();
+            for (var i = 0; i < tsbFiles.length; i++) {
+                if (_HDD.readFromHDD(tsbFiles[i].split("")[0] == "1")) {
+                    var name_1 = "";
+                    var hexString = _HDD.readFromHDD(tsbFiles[i]).split("").slice(4).join("");
+                    for (var j = 0; j < hexString.length; j++) {
+                        name_1 += String.fromCharCode(parseInt(hexString.substring(j, j + 2), 16));
+                    }
+                    activeFileNames.push(name_1);
+                }
+            }
+            if (activeFileNames.length != 0) {
+                for (var i = 0; i < activeFileNames.length; i++) {
+                    _StdOut.putText(activeFileNames[i]);
+                    if (i != activeFileNames.length - 1) {
+                        _StdOut.advanceLine();
+                    }
+                }
+            }
+            else {
+                _StdOut.putText("No Files in the Hard Drive");
+            }
+        };
         DeviceDriverFS.prototype.krnClearTSB = function (tsb) {
             var data = "";
             for (var i = 0; i < 64; i++) {

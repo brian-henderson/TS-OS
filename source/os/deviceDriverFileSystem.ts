@@ -289,6 +289,39 @@
              */
          }
 
+         public krnFSList() {
+            let tsbFiles = new Array();
+            for (let i = 0; i < _HDD.tsbArray.length; i++) {
+               if (_HDD.tsbArray[i] == "100") {
+                  break;
+               }
+               tsbFiles.push(_HDD.tsbArray[i]);
+            }
+
+            let activeFileNames = new Array();
+            for (let i = 0; i < tsbFiles.length; i++) {
+               if (_HDD.readFromHDD(tsbFiles[i].split("")[0] == "1")) {
+                  let name = "";
+                  let hexString = _HDD.readFromHDD(tsbFiles[i]).split("").slice(4).join("");
+                  for (let j = 0; j < hexString.length; j++) {
+                     name += String.fromCharCode(parseInt(hexString.substring(j, j+2), 16))
+                  }
+                  activeFileNames.push(name);
+               }
+            }
+
+            if (activeFileNames.length != 0) {
+               for (let i = 0; i < activeFileNames.length; i++) {
+                  _StdOut.putText(activeFileNames[i]);
+                  if (i != activeFileNames.length-1) {
+                     _StdOut.advanceLine();
+                  }
+               }
+            }
+            else {
+               _StdOut.putText("No Files in the Hard Drive");
+            }
+         }
 
 
 
