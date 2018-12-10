@@ -22,7 +22,7 @@ var TSOS;
             if (formatted === void 0) { formatted = false; }
             var _this = _super.call(this) || this;
             _this.formatted = formatted;
-            _this.driverEntry = _this.krnFSDriverEntry();
+            _this.driverEntry = _this.krnFSDriverEntry;
             return _this;
         }
         DeviceDriverFS.prototype.krnFSDriverEntry = function () {
@@ -32,7 +32,7 @@ var TSOS;
             return t.toString() + s.toString() + b.toString();
         };
         DeviceDriverFS.prototype.krnFSFormat = function () {
-            var inititalTSB = "1---MBR";
+            var inititalTSB = "1---MASTER_BOOT_RECORD";
             var track = 0;
             var sector = 0;
             var block = 0;
@@ -90,6 +90,7 @@ var TSOS;
                 /**
                  * Update the HTML HDD table with all the tsbs that went through loop
                 */
+                //this.logHardDrive();
             }
         };
         DeviceDriverFS.prototype.krnFSCreateFile = function (fileName) {
@@ -136,6 +137,7 @@ var TSOS;
                     /**
                      * UPDATE HTML HERE
                      */
+                    this.logHardDrive();
                     return 1;
                 }
             }
@@ -199,6 +201,7 @@ var TSOS;
             /**
              * UPDATE HTML HERE
              */
+            this.logHardDrive();
         };
         DeviceDriverFS.prototype.krnFSReadFile = function (fileName) {
             var tsb = this.krnGetFileBlock(fileName);
@@ -267,6 +270,7 @@ var TSOS;
             /**
              * UDPDATE HTML CODE HERE
              */
+            this.logHardDrive();
         };
         DeviceDriverFS.prototype.krnFSList = function () {
             var tsbFiles = new Array();
@@ -309,12 +313,18 @@ var TSOS;
         DeviceDriverFS.prototype.krnGetNewBlock = function () {
             var start = 0;
             for (var i = 0; i < _HDD.tsbArray.length; i++) {
-                start = _HDD.tsbArray[i] == "100" ? i : 0;
-                if (_HDD.tsbArray[i] == "100")
+                //start = _HDD.tsbArray[i] == "100" ? i : 0;
+                if (_HDD.tsbArray[i] == "100") {
+                    start = i;
                     break;
+                }
             }
-            for (var i = start; _HDD.tsbArray.length; i++) {
-                if (_HDD.readFromHDD(_HDD.tsbArray[i].split("")[0] == "0")) {
+            for (var i = start; i < _HDD.tsbArray.length; i++) {
+                console.log("Outside: " + _HDD.tsbArray[i].split("")[0]);
+                console.log("Outside readding hdd: " + _HDD.readFromHDD(_HDD.tsbArray[i].split("")[0]));
+                if (_HDD.readFromHDD(_HDD.tsbArray[i]).split("")[0] == "0") {
+                    console.log("Inner: " + _HDD.tsbArray[i].split("")[0]);
+                    console.log("Return: " + _HDD.tsbArray[i]);
                     return _HDD.tsbArray[i];
                 }
             }
@@ -338,6 +348,13 @@ var TSOS;
                 if (data.join("") == dataCheck) {
                     return tsb;
                 }
+            }
+        };
+        DeviceDriverFS.prototype.logHardDrive = function () {
+            for (var i = 0; i < _HDD.tsbArray.length; i++) {
+                var tsb = _HDD.tsbArray[i];
+                var output = _HDD.readFromHDD(tsb);
+                console.log(tsb + "  " + output);
             }
         };
         return DeviceDriverFS;

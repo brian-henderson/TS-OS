@@ -8,9 +8,9 @@
          
          constructor ( public formatted: boolean = false ) {
             super();
-            this.driverEntry = this.krnFSDriverEntry();
+            this.driverEntry = this.krnFSDriverEntry;
          }
-
+         
          public krnFSDriverEntry(): void {
             this.status = "loaded";
          }
@@ -20,7 +20,7 @@
          }
 
          public krnFSFormat(): void {
-            let inititalTSB: string = "1---MBR";
+            let inititalTSB: string = "1---MASTER_BOOT_RECORD";
             let track: number = 0;
             let sector: number = 0;
             let block: number = 0;
@@ -80,6 +80,7 @@
                /**
                 * Update the HTML HDD table with all the tsbs that went through loop
                */
+              //this.logHardDrive();
             }
 
          }
@@ -134,6 +135,7 @@
                   /**
                    * UPDATE HTML HERE
                    */
+                  this.logHardDrive();
                   return 1;
                }
             }
@@ -207,6 +209,7 @@
             /**
              * UPDATE HTML HERE
              */
+            this.logHardDrive();
          }
 
          public krnFSReadFile(fileName): string {
@@ -287,6 +290,7 @@
             /**
              * UDPDATE HTML CODE HERE
              */
+            this.logHardDrive();
          }
 
          public krnFSList() {
@@ -336,12 +340,19 @@
          public krnGetNewBlock() {
             let start = 0;
             for (let i = 0; i < _HDD.tsbArray.length; i ++ ) {
-               start = _HDD.tsbArray[i] == "100" ? i : 0;
-               if (_HDD.tsbArray[i] == "100")
+               //start = _HDD.tsbArray[i] == "100" ? i : 0;
+               if (_HDD.tsbArray[i] == "100") {
+                  start = i;
                   break;
+               }
             }
-            for (let i = start; _HDD.tsbArray.length; i++) {
-               if (_HDD.readFromHDD(_HDD.tsbArray[i].split("")[0] == "0")) {
+
+            for (let i = start; i < _HDD.tsbArray.length; i++) {
+               console.log("Outside: " + _HDD.tsbArray[i].split("")[0]);
+               console.log("Outside readding hdd: " + _HDD.readFromHDD(_HDD.tsbArray[i].split("")[0]));
+               if (_HDD.readFromHDD(_HDD.tsbArray[i]).split("")[0] == "0") {
+                  console.log("Inner: " + _HDD.tsbArray[i].split("")[0]);
+                  console.log("Return: " +_HDD.tsbArray[i]);
                   return _HDD.tsbArray[i];
                }
             }
@@ -369,13 +380,17 @@
                }
             }
 
-
          }
 
+         public logHardDrive(): void {
 
+            for (let i = 0; i < _HDD.tsbArray.length; i ++) {
+               let tsb = _HDD.tsbArray[i]
+               let output = _HDD.readFromHDD(tsb);
+               console.log( tsb + "  " + output);
+            }
+         }
 
-        
-  
       }
   }
       
