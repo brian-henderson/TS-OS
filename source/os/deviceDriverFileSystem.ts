@@ -211,8 +211,51 @@
              */
          }
 
-         public krnFSReadFile(): void {
-                 
+         public krnFSReadFile(fileName): string {
+            let tsb = this.krnGetFileBlock(fileName);
+            let fileArray = _HDD.readFromHDD(tsb).split("");
+            
+            let data = "";
+            data += fileArray[1];
+            data += fileArray[2];
+            data += fileArray[3];
+            
+            let dataArray = [data];
+            while (true) {
+               let tmpData = _HDD.readFromHDD(tsb);
+               if (tmpData.split("")[1] != "-") {
+                  data = "";
+                  data += tmpData.split("")[1];
+                  data += tmpData.split("")[2];
+                  data += tmpData.split("")[3];
+                  dataArray.push(data);
+               }
+               else {
+                  break;
+               }
+            }
+
+            let hexDataArray = [];
+            for (let i = 0; i < hexDataArray.length; i++) {
+               hexDataArray.push(_HDD.readFromHDD(dataArray[i].split("").slice(4)));
+            }
+
+            let hexDataString = "";
+            for (let i = 0; i < hexDataArray.length; i++) {
+               for (let j = 0; j < hexDataArray[i].length; j++) {
+                  hexDataString += hexDataArray[i][j];
+               }
+            }
+            
+            let finalDataString = ""
+            for (let i = 0; i < hexDataString.length; i += 2) {
+               if (hexDataString.substring(i, i+2) == "00") {
+                  break;
+               }
+               finalDataString += String.fromCharCode(parseInt(hexDataString.substring(i, i+2), 16));
+            }
+            return finalDataString;
+
          }
 
          public krnClearTSB(tsb) {
