@@ -7,6 +7,7 @@
 ///<reference path="processManager.ts" />
 
 
+
 /* ------------
    Shell.ts
 
@@ -160,21 +161,48 @@ module TSOS {
             "<state?> - Lists all the prcesses, optional state filter");
          this.commandList[this.commandList.length] = sc;
 
-         sc = new ShellCommand(this.shellGetSchedule,
-            "getschedule",
-            "- returns current schedule");
-         this.commandList[this.commandList.length] = sc;
-/*
+         // gets the current scheduling algo
          sc = new ShellCommand(this.shellGetSchedule,
             "getschedule",
             "- returns current schedule");
          this.commandList[this.commandList.length] = sc;
 
-         sc = new ShellCommand(this.shellGetSchedule,
-            "getschedule",
-            "- returns current schedule");
+         // formats HDD
+         sc = new ShellCommand(this.shellFormat,
+            "format",
+            "- Formats the hard drive");
          this.commandList[this.commandList.length] = sc;
-*/
+
+         // creates a file
+         sc = new ShellCommand(this.shellCreateFile,
+            "create",
+            "<filename> - Creates a file with given filename");
+         this.commandList[this.commandList.length] = sc;
+
+         // reads a file
+         sc = new ShellCommand(this.shellReadFile,
+            "read",
+            "<filename> - Reads a file with given filename");
+         this.commandList[this.commandList.length] = sc;
+
+         // writes to a file
+         sc = new ShellCommand(this.shellWriteFile,
+            "write",
+            "<filename> <'data'> - Writes the data to the file");
+         this.commandList[this.commandList.length] = sc;
+
+         // deletes a file
+         sc = new ShellCommand(this.shellDeleteFile,
+            "delete",
+            "<filename> - Removes the file from the session storage");
+         this.commandList[this.commandList.length] = sc;
+
+         // lists all the files in the session storage
+         sc = new ShellCommand(this.shellListFiles,
+            "ls",
+            "- lists files currently on the disk");
+         this.commandList[this.commandList.length] = sc;
+
 
          // This adds all the shell commands to a globals list to be accessed in console
          for (var i = 0; i < this.commandList.length; i++) {
@@ -602,7 +630,34 @@ module TSOS {
       }
 
       public shellGetSchedule(args): void {
-         _StdOut.putText("Current Scheduling Algorithim: " + _Scheduler.currAlgo);
+         _StdOut.putResponseText("Current Scheduling Algorithim: " + _Scheduler.currAlgo);
+      }
+
+      public shellFormat(args): void {
+         _krnFileSystemDriver.krnFSFormat();
+         _StdOut.putResponseText("File system formatted");
+      }
+
+      public shellCreateFile(args): void {
+         if (! _krnFileSystemDriver.formatted) {
+            _StdOut.putResponseText("Format the hard drive first!!");
+         }
+         else {
+            let responseCode = _krnFileSystemDriver.krnFSCreateFile(args.toString());
+            switch(responseCode) {
+               case -1:
+                  _StdOut.putResponseText("ERROR CODE -1: NO SPACE IN FILE SYSTEM");
+                  break;
+               case 0:
+                  _StdOut.putResponseText("File is already in file system");
+                  break;
+               case 1:
+                  _StdOut.putResponseText("File " + args + " successfully created");
+                  break;
+               default:
+                  console.log("something went terribly wrong");
+            }
+         }
       }
 
 

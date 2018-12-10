@@ -91,19 +91,27 @@ var TSOS;
             // view all processes
             sc = new TSOS.ShellCommand(this.shellPS, "ps", "<state?> - Lists all the prcesses, optional state filter");
             this.commandList[this.commandList.length] = sc;
+            // gets the current scheduling algo
             sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "- returns current schedule");
             this.commandList[this.commandList.length] = sc;
-            /*
-                     sc = new ShellCommand(this.shellGetSchedule,
-                        "getschedule",
-                        "- returns current schedule");
-                     this.commandList[this.commandList.length] = sc;
-            
-                     sc = new ShellCommand(this.shellGetSchedule,
-                        "getschedule",
-                        "- returns current schedule");
-                     this.commandList[this.commandList.length] = sc;
-            */
+            // formats HDD
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "- Formats the hard drive");
+            this.commandList[this.commandList.length] = sc;
+            // creates a file
+            sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "<filename> - Creates a file with given filename");
+            this.commandList[this.commandList.length] = sc;
+            // reads a file
+            sc = new TSOS.ShellCommand(this.shellReadFile, "read", "<filename> - Reads a file with given filename");
+            this.commandList[this.commandList.length] = sc;
+            // writes to a file
+            sc = new TSOS.ShellCommand(this.shellWriteFile, "write", "<filename> <'data'> - Writes the data to the file");
+            this.commandList[this.commandList.length] = sc;
+            // deletes a file
+            sc = new TSOS.ShellCommand(this.shellDeleteFile, "delete", "<filename> - Removes the file from the session storage");
+            this.commandList[this.commandList.length] = sc;
+            // lists all the files in the session storage
+            sc = new TSOS.ShellCommand(this.shellListFiles, "ls", "- lists files currently on the disk");
+            this.commandList[this.commandList.length] = sc;
             // This adds all the shell commands to a globals list to be accessed in console
             for (var i = 0; i < this.commandList.length; i++) {
                 _commandList[i] = this.commandList[i].command;
@@ -501,7 +509,32 @@ var TSOS;
             }
         };
         Shell.prototype.shellGetSchedule = function (args) {
-            _StdOut.putText("Current Scheduling Algorithim: " + _Scheduler.currAlgo);
+            _StdOut.putResponseText("Current Scheduling Algorithim: " + _Scheduler.currAlgo);
+        };
+        Shell.prototype.shellFormat = function (args) {
+            _krnFileSystemDriver.krnFSFormat();
+            _StdOut.putResponseText("File system formatted");
+        };
+        Shell.prototype.shellCreateFile = function (args) {
+            if (!_krnFileSystemDriver.formatted) {
+                _StdOut.putResponseText("Format the hard drive first!!");
+            }
+            else {
+                var responseCode = _krnFileSystemDriver.krnFSCreateFile(args.toString());
+                switch (responseCode) {
+                    case -1:
+                        _StdOut.putResponseText("ERROR CODE -1: NO SPACE IN FILE SYSTEM");
+                        break;
+                    case 0:
+                        _StdOut.putResponseText("File is already in file system");
+                        break;
+                    case 1:
+                        _StdOut.putResponseText("File " + args + " successfully created");
+                        break;
+                    default:
+                        console.log("something went terribly wrong");
+                }
+            }
         };
         return Shell;
     }());

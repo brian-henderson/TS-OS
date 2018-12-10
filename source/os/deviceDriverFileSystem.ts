@@ -84,7 +84,7 @@
 
          }
 
-         public krnFSCreateFile(fileName) {
+         public krnFSCreateFile(fileName): number {
             let fileNameCharArray = fileName.split("");
             let fileNameHexArray = new Array();
             for (let i = 0; i < fileNameCharArray.length; i ++) {
