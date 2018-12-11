@@ -74,25 +74,10 @@ module TSOS {
             this.rolledOutAlready = true;
          } 
 
-
          _Control.updatePcbDisplay(_ProcessManager.currPCB);
          _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
          _Kernel.krnTrace(log)
       }
-
-      /**
-       * 
-        if (! _MemoryManager.checkForFreePartitions()) {
-                  let pcbOut = _MemoryManager.getPcbFromPartition(2);
-                  _krnFileSystemDriver.krnRollOut(pcbOut, _Memory.getProgramFromMemory(2, pcbOut.programCounter));
-                  _krnFileSystemDriver.krnRollIn(pcb);
-               }
-               // theres a free partiton, roll into it
-               else {
-                  _krnFileSystemDriver.krnRollIn(pcb);
-               }
-       */
-
 
       public isVaildScheduler(arg: string): boolean {
          for (let i=0; i< this.schedulingAlgos.length; i++) {

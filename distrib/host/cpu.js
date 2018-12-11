@@ -124,6 +124,18 @@ var TSOS;
             if (_SingleStep) {
                 this.isExecuting = false;
             }
+            /*
+            if (isNaN(this.Acc))
+               console.log("NaN Acc: " + this.IR);
+            if (isNaN(this.PC))
+               console.log("NaN PC: " + this.IR);
+            if (isNaN(this.Xreg))
+               console.log("NaN X: " + this.IR);
+            if (isNaN(this.Yreg))
+               console.log("NaN Y: " + this.IR);
+            if (isNaN(this.Zflag))
+               console.log("NaN Z: " + this.IR);
+               */
         };
         Cpu.prototype.updateCurrentPCB = function () {
             _ProcessManager.currPCB.accumulator = this.Acc;
@@ -166,17 +178,16 @@ var TSOS;
         // OP CODE  - AD
         // Purpose: Load the accumultaor with a specific memory address
         Cpu.prototype.loadAccFromMemory = function (pcb) {
-            // increase program counter
+            // Increase program counter
             this.increaseProgramCounter();
+            // Fetch the memory location where we want to load the Accumulator with
             var memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
-            // increase program counter again
+            // Pass over current Op Code
             this.increaseProgramCounter();
-            memoryLocHex += _ProcessManager.readInstruction(pcb.partitionIndex, this.PC) + memoryLocHex;
-            // convert to decimal address
-            var memoryLoc = parseInt(memoryLocHex, 16);
+            // convert to decimal address for partition index
+            var memoryloc = parseInt(memoryLocHex, 16);
             // load into the accumulator reading 
-            this.Acc = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
-            // update program counter to next program
+            this.Acc = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryloc));
             this.increaseProgramCounter();
         };
         // OP CODE  - A2
