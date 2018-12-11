@@ -123,7 +123,7 @@ function Glados() {
 								     _KernelInputQueue.enqueue('d');
 								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);           	   				
 									}, 3000);
-/*
+
 		setTimeout(function(){ document.getElementById("taProgramInput").value = code4;
 								     _KernelInputQueue.enqueue('l');
 								     _KernelInputQueue.enqueue('o');
@@ -131,7 +131,7 @@ function Glados() {
 								     _KernelInputQueue.enqueue('d');
 								     TSOS.Kernel.prototype.krnInterruptHandler(KEYBOARD_IRQ, [13, false]);           	   				
 									}, 3000);
-*/
+
 		setTimeout(function(){ _KernelInputQueue.enqueue('r');
 								     _KernelInputQueue.enqueue('u');
 								     _KernelInputQueue.enqueue('n');
