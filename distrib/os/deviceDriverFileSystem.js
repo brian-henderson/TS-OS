@@ -82,15 +82,9 @@ var TSOS;
                         _HDD.writeToHDD(tsb, emptyTSB);
                         block++;
                     }
-                    /**
-                     * Initialize HDD HTML table with data here from TSB
-                    */
-                    this.formatted = true;
                 }
-                /**
-                 * Update the HTML HDD table with all the tsbs that went through loop
-                */
-                //this.logHardDrive();
+                this.initHDDdisplay();
+                this.formatted = true;
             }
         };
         DeviceDriverFS.prototype.krnFSCreateFile = function (fileName) {
@@ -134,25 +128,27 @@ var TSOS;
                         fileData += "0";
                     }
                     _HDD.writeToHDD(tsb, fileData);
-                    /**
-                     * UPDATE HTML HERE
-                     */
-                    this.logHardDrive();
+                    this.updateHDDdisplay();
                     return 1;
                 }
             }
         };
         DeviceDriverFS.prototype.krnFSWriteFile = function (fileName, fileData) {
+            console.log("FD: " + fileData);
             var data = fileData.split("");
-            var fileDataHexArray = new Array();
+            var fileDataHexArray = [];
             for (var i = 0; i < fileData.length; i++) {
                 fileDataHexArray.push(data[i].charCodeAt(0).toString(16));
             }
             var fileDataHexString = fileDataHexArray.join("");
+            console.log("Split string: " + fileDataHexString);
             var linkCount = fileDataHexString.length > 0 ? Math.ceil(fileDataHexString.length / 60) : 1;
             fileDataHexArray = fileDataHexString.split("");
+            console.log("arr string: " + fileDataHexArray);
             var tsb = this.krnGetFileBlock(fileName);
+            console.log("tsb: " + tsb);
             var currTSBdata = _HDD.readFromHDD(tsb);
+            console.log("currTSB data: " + currTSBdata);
             var currTSBdataArray = currTSBdata.split("");
             tsb = '';
             tsb += currTSBdataArray[1];
@@ -198,10 +194,7 @@ var TSOS;
                 _HDD.writeToHDD(tsb, inputData);
                 tsb = this.krnGetNewBlock();
             }
-            /**
-             * UPDATE HTML HERE
-             */
-            this.logHardDrive();
+            this.updateHDDdisplay();
         };
         DeviceDriverFS.prototype.krnFSReadFile = function (fileName) {
             var tsb = this.krnGetFileBlock(fileName);
@@ -267,10 +260,7 @@ var TSOS;
             for (var i = 0; i < tsbDataArray.length; i++) {
                 this.krnClearTSB(tsbDataArray[i]);
             }
-            /**
-             * UDPDATE HTML CODE HERE
-             */
-            this.logHardDrive();
+            this.updateHDDdisplay();
         };
         DeviceDriverFS.prototype.krnFSList = function () {
             var tsbFiles = new Array();
@@ -320,31 +310,39 @@ var TSOS;
                 }
             }
             for (var i = start; i < _HDD.tsbArray.length; i++) {
-                console.log("Outside: " + _HDD.tsbArray[i].split("")[0]);
-                console.log("Outside readding hdd: " + _HDD.readFromHDD(_HDD.tsbArray[i].split("")[0]));
+                //console.log("Outside: " + _HDD.tsbArray[i].split("")[0]);
+                //console.log("Outside readding hdd: " + _HDD.readFromHDD(_HDD.tsbArray[i].split("")[0]));
                 if (_HDD.readFromHDD(_HDD.tsbArray[i]).split("")[0] == "0") {
-                    console.log("Inner: " + _HDD.tsbArray[i].split("")[0]);
-                    console.log("Return: " + _HDD.tsbArray[i]);
+                    // console.log("Inner: " + _HDD.tsbArray[i].split("")[0]);
+                    // console.log("Return: " +_HDD.tsbArray[i]);
                     return _HDD.tsbArray[i];
                 }
             }
         };
         DeviceDriverFS.prototype.krnGetFileBlock = function (fileName) {
             var newFileName = fileName.split("");
-            var fileDataHexArray = new Array();
+            console.log("nfn: " + newFileName);
+            var fileDataHexArray = [];
             for (var i = 0; i < newFileName.length; i++) {
                 fileDataHexArray.push(newFileName[i].charCodeAt(0).toString(16));
             }
+            console.log("fileDataHexArray: " + fileDataHexArray);
             for (var i = 0; i < _HDD.tsbArray.length; i++) {
+                console.log("----------------------------------");
                 var tsb = _HDD.tsbArray[i];
+                console.log("tsb:" + tsb);
                 var data = _HDD.readFromHDD(tsb).split("").slice(4);
+                console.log("data:" + data);
                 var dataCheck = "";
                 for (var j = 0; j < fileDataHexArray.length; j++) {
                     dataCheck += fileDataHexArray[i];
                 }
+                console.log("dataCheck:" + dataCheck);
                 for (var j = dataCheck.length - 1; j < 59; j++) {
                     dataCheck += "0";
                 }
+                console.log("dataCheck:" + dataCheck);
+                console.log('data.join("")' + data.join(""));
                 if (data.join("") == dataCheck) {
                     return tsb;
                 }
@@ -354,7 +352,42 @@ var TSOS;
             for (var i = 0; i < _HDD.tsbArray.length; i++) {
                 var tsb = _HDD.tsbArray[i];
                 var output = _HDD.readFromHDD(tsb);
-                console.log(tsb + "  " + output);
+                // console.log( tsb + "  " + output);
+            }
+        };
+        DeviceDriverFS.prototype.initHDDdisplay = function () {
+            var table = document.getElementById("tableHDD");
+            var t = 0;
+            var s = 0;
+            var b = 0;
+            var index = 1;
+            while (!(t == 3 && s == 7 && b == 8)) {
+                var row = table.insertRow(index);
+                var tsbCell = row.insertCell(0);
+                var dataCell = row.insertCell(1);
+                if (b == 8) {
+                    s++;
+                    b = 0;
+                }
+                if (s == 8) {
+                    t++;
+                    s = 0;
+                    b = 0;
+                }
+                var tsbFormatted = t.toString() + ":" + s.toString() + ":" + b.toString();
+                tsbCell.innerHTML = tsbFormatted;
+                var tsb = this.concatTSB(t, s, b);
+                dataCell.innerHTML = _HDD.readFromHDD(tsb);
+                b++;
+                index++;
+            }
+        };
+        DeviceDriverFS.prototype.updateHDDdisplay = function () {
+            var table = document.getElementById("tableHDD");
+            for (var i = 0; i < _HDD.tsbArray.length; i++) {
+                var row = table.getElementsByTagName("tr")[i + 1];
+                var tsb = _HDD.tsbArray[i];
+                row.cells[1].innerHTML = _HDD.readFromHDD(tsb);
             }
         };
         return DeviceDriverFS;

@@ -72,15 +72,9 @@
                      _HDD.writeToHDD(tsb, emptyTSB);
                      block ++;
                   }
-               /**
-                * Initialize HDD HTML table with data here from TSB
-               */
-               this.formatted = true;
                }
-               /**
-                * Update the HTML HDD table with all the tsbs that went through loop
-               */
-              //this.logHardDrive();
+               this.initHDDdisplay();
+               this.formatted = true;
             }
 
          }
@@ -132,29 +126,32 @@
                      fileData += "0";
                   }
                   _HDD.writeToHDD(tsb, fileData);
-                  /**
-                   * UPDATE HTML HERE
-                   */
-                  this.logHardDrive();
+                  this.updateHDDdisplay();
                   return 1;
                }
             }
           }
 
          public krnFSWriteFile(fileName, fileData): void {
+            console.log("FD: " + fileData);
             let data = fileData.split("");
-            let fileDataHexArray = new Array();
+            let fileDataHexArray = [];
 
             for (let i = 0; i < fileData.length; i++) {
                fileDataHexArray.push(data[i].charCodeAt(0).toString(16));
             }
 
             let fileDataHexString = fileDataHexArray.join("");
+            console.log("Split string: " + fileDataHexString);
             let linkCount = fileDataHexString.length > 0 ? Math.ceil(fileDataHexString.length/60) : 1;
             fileDataHexArray = fileDataHexString.split("");
+            console.log("arr string: " + fileDataHexArray);
+
 
             let tsb = this.krnGetFileBlock(fileName);
+            console.log("tsb: " + tsb);
             let currTSBdata = _HDD.readFromHDD(tsb);
+            console.log("currTSB data: " + currTSBdata);
             let currTSBdataArray = currTSBdata.split("");
             tsb = '';
             tsb += currTSBdataArray[1];
@@ -206,10 +203,7 @@
                _HDD.writeToHDD(tsb, inputData);
                tsb = this.krnGetNewBlock();
             }
-            /**
-             * UPDATE HTML HERE
-             */
-            this.logHardDrive();
+            this.updateHDDdisplay();
          }
 
          public krnFSReadFile(fileName): string {
@@ -287,10 +281,7 @@
             for (let i = 0; i < tsbDataArray.length; i++) {
                this.krnClearTSB(tsbDataArray[i]);
             }
-            /**
-             * UDPDATE HTML CODE HERE
-             */
-            this.logHardDrive();
+            this.updateHDDdisplay();
          }
 
          public krnFSList() {
@@ -348,11 +339,11 @@
             }
 
             for (let i = start; i < _HDD.tsbArray.length; i++) {
-               console.log("Outside: " + _HDD.tsbArray[i].split("")[0]);
-               console.log("Outside readding hdd: " + _HDD.readFromHDD(_HDD.tsbArray[i].split("")[0]));
+               //console.log("Outside: " + _HDD.tsbArray[i].split("")[0]);
+               //console.log("Outside readding hdd: " + _HDD.readFromHDD(_HDD.tsbArray[i].split("")[0]));
                if (_HDD.readFromHDD(_HDD.tsbArray[i]).split("")[0] == "0") {
-                  console.log("Inner: " + _HDD.tsbArray[i].split("")[0]);
-                  console.log("Return: " +_HDD.tsbArray[i]);
+                 // console.log("Inner: " + _HDD.tsbArray[i].split("")[0]);
+                 // console.log("Return: " +_HDD.tsbArray[i]);
                   return _HDD.tsbArray[i];
                }
             }
@@ -360,24 +351,38 @@
 
          public krnGetFileBlock(fileName) {
             let newFileName = fileName.split("");
-            let fileDataHexArray = new Array();
+            console.log("nfn: " + newFileName)
+            let fileDataHexArray = [];
             for (let i = 0; i < newFileName.length; i++) {
                fileDataHexArray.push(newFileName[i].charCodeAt(0).toString(16));
             }
+            console.log("fileDataHexArray: " + fileDataHexArray)
 
             for (let i = 0; i < _HDD.tsbArray.length; i++) {
+               console.log("----------------------------------");
+               
                let tsb = _HDD.tsbArray[i];
+               console.log("tsb:" + tsb);
+
                let data = _HDD.readFromHDD(tsb).split("").slice(4);
+               console.log("data:" + data);
+               
                let dataCheck = "";
                for (let j = 0; j < fileDataHexArray.length; j++) {
                   dataCheck += fileDataHexArray[i];
                }
+               console.log("dataCheck:" + dataCheck);
+               
                for (let j = dataCheck.length-1; j < 59; j++) {
                   dataCheck += "0";
                }
+               
+               console.log("dataCheck:" + dataCheck);
+               console.log('data.join("")' + data.join(""));
                if (data.join("") == dataCheck) {
                   return tsb;
                }
+
             }
 
          }
@@ -387,8 +392,51 @@
             for (let i = 0; i < _HDD.tsbArray.length; i ++) {
                let tsb = _HDD.tsbArray[i]
                let output = _HDD.readFromHDD(tsb);
-               console.log( tsb + "  " + output);
+              // console.log( tsb + "  " + output);
             }
+         }
+
+         public initHDDdisplay(): void {
+            let table = (<HTMLTableElement>document.getElementById("tableHDD"));
+            let t = 0; 
+            let s = 0; 
+            let b = 0;
+            let index = 1;
+
+            while ( ! (t == 3 && s == 7 && b == 8) ) {
+               let row = table.insertRow(index);
+               let tsbCell = row.insertCell(0);
+               let dataCell = row.insertCell(1);
+
+               if (b == 8) {
+                  s ++;
+                  b = 0;
+               }
+               
+               if (s == 8) {
+                  t ++;
+                  s = 0;
+                  b = 0;
+               }
+
+               let tsbFormatted = t.toString() + ":" + s.toString() + ":" + b.toString();
+               tsbCell.innerHTML = tsbFormatted;
+               let tsb = this.concatTSB(t, s, b);
+               dataCell.innerHTML = _HDD.readFromHDD(tsb);
+               
+               b++;
+               index++;
+            }
+         }
+
+         public updateHDDdisplay(): void {
+            let table = (<HTMLTableElement>document.getElementById("tableHDD"));
+            for (let i = 0; i < _HDD.tsbArray.length; i ++) {
+               let row = table.getElementsByTagName("tr")[i+1]
+               let tsb = _HDD.tsbArray[i];
+               row.cells[1].innerHTML = _HDD.readFromHDD(tsb);
+            }
+
          }
 
       }

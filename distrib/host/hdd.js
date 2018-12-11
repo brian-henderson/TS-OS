@@ -10,8 +10,8 @@ var TSOS;
             sessionStorage[tsb] = data;
         };
         hdd.prototype.readFromHDD = function (tsb) {
-            console.log("tsb in ss:" + tsb);
-            console.log("ss: " + sessionStorage[tsb]);
+            //console.log("tsb in ss:" + tsb);
+            //console.log("ss: " + sessionStorage[tsb])
             return sessionStorage[tsb];
         };
         return hdd;

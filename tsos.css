@@ -94,7 +94,10 @@ h3 {
 
 #tableMemoryDisplay {
    width: 505px;
+   height: 300px;
+   border-collapse: collapse;
    overflow-y: scroll;
+   display: block;  
 }
 
 #tableCpuDisplay {
@@ -112,4 +115,12 @@ h3 {
 
 #divContainer {
    padding-top: 10px;
+}
+
+#tableHDD {
+   font-size: 77%;
+   height: 300px;
+   border-collapse: collapse;
+   overflow-y: scroll;
+   display: block;  
 }
