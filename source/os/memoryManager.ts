@@ -49,9 +49,13 @@
                   return this.partitions[2].index;
                }
                else {
-                  console.log("No available partitions");
+                  // no available partitions
                   return -1;
                }
+            }
+
+            public freePartition(partition:number):void {
+               this.partitions[partition].available = true;
             }
 
 

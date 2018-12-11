@@ -33,15 +33,37 @@ var TSOS;
                 this.waitQueue.enqueue(pcb);
                 // get the instruction registry and set it 
                 pcb.instructionReg = _Memory.readMemory(pcb.partitionIndex, pcb.programCounter);
-                // set the location to memory (no hard drive yet so this is static but getting ready for next iP)
-                pcb.location = "Memory: P: " + (pcb.partitionIndex).toString();
+                // set the location 
+                pcb.location = "MEMORY";
                 // output status to console
                 _StdOut.putResponseText("Program loaded to memory with PID " + _PID);
                 // add pcb to the pcb display list
                 _Control.addToPcbDisplay(pcb);
             }
+            else if (_krnFileSystemDriver.formatted) {
+                // update to new Process ID 
+                _PID++;
+                // create new process control block
+                var pcb = new TSOS.ProcessControlBlock(_PID);
+                // add pcb to process list
+                this.processArray.push(pcb);
+                // assign the process a priority
+                pcb.priority = priority != null ? Number(priority) : 64;
+                // add this process to the list of upcoming processes
+                this.waitQueue.enqueue(pcb);
+                // get the instruction registry and set it 
+                pcb.instructionReg = program[0];
+                // set the location 
+                pcb.location = "HDD";
+                //save to HDD
+                _krnFileSystemDriver.krnRollOut(pcb, program);
+                // output status to console
+                _StdOut.putResponseText("Program loaded to the HDD with PID " + _PID);
+                // add pcb to the pcb display list
+                _Control.addToPcbDisplay(pcb);
+            }
             else {
-                _StdOut.putResponseText("Program not loaded to memory, no available partitions");
+                _StdOut.putResponseText("Program not loaded to memory, no available partitions, try formatting the HDD");
             }
         };
         ProcessManager.prototype.runProcess = function (pcb) {

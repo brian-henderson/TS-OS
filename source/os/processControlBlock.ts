@@ -15,6 +15,7 @@
             public partitionIndex: number = 0;
             public waitTime: number = 0;
             public turnAroundTime: number = 0;
+            public hddTSB: string = null;
             
             constructor(p) {
                 this.pid = p;

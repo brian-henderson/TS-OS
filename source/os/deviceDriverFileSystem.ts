@@ -19,6 +19,21 @@
             return t.toString() + s.toString() + b.toString();
          }
 
+         public getEmptyTSB(): string {
+            let emptyTSB: string = '';
+
+            for (let i = 0; i < 64; i++) {
+               if (i >= 1 && i <= 3) {
+                  emptyTSB += '-';
+               }
+               else {
+                  emptyTSB += '0';
+               }
+            }
+            return emptyTSB;
+
+         }
+
          public krnFSFormat(): void {
             let inititalTSB: string = "1---MASTER_BOOT_RECORD";
             let track: number = 0;
@@ -112,7 +127,7 @@
                   }
                }
                else if (validBitStatus == "0" && i > 0) {
-                  let newDataTSB = this.krnGetNewBlock();
+                  let newDataTSB = this.krnGetNextFreeBlock();
                   let newData = _HDD.readFromHDD(newDataTSB);
                   let newDataArr = newData.split("");
                   newDataArr[0] = "1";
@@ -188,7 +203,7 @@
                _HDD.writeToHDD(tsb, TSBdataArray.join(""));
                
                let inputData = "1";
-               inputData += (i === linkCount-1) ? "---" : this.krnGetNewBlock();
+               inputData += (i === linkCount-1) ? "---" : this.krnGetNextFreeBlock();
                //console.log(inputData);
                for (let j = 0; j < 60; j++) {
                   if (hexIndex >= fileDataHexArray.length) {
@@ -202,34 +217,13 @@
                console.log("writing to tsb: " + tsb);
                console.log("with data: " + inputData);
                _HDD.writeToHDD(tsb, inputData);
-               tsb = this.krnGetNewBlock();
+               tsb = this.krnGetNextFreeBlock();
             }
             this.updateHDDdisplay();
          }
 
          public krnFSReadFile(fileName): string {
-         /*   let tsbFileBlock = this.krnGetFileBlock(fileName);
-            let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
 
-            let data = "";
-            data += fileArray[1];
-            data += fileArray[2];
-            data += fileArray[3];
-            
-            let dataArray = [data];
-            while (true) {
-               let tmpData = _HDD.readFromHDD(data);
-               if (tmpData.split("")[1] != "-") {
-                  data = "";
-                  data += tmpData.split("")[1];
-                  data += tmpData.split("")[2];
-                  data += tmpData.split("")[3];
-                  dataArray.push(data);
-               }
-               else {
-                  break;
-               }
-            } */
             let dataArray = this.getTSBDataBlock(fileName);
 
             let hexDataArray = [];
@@ -290,31 +284,7 @@
 
 
          public krnFSDeleteFile(fileName) {
-           /*
-           let tsbFileBlock = this.krnGetFileBlock(fileName);
-           let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
-
-           let data = "";
-           data += fileArray[1];
-           data += fileArray[2];
-           data += fileArray[3];
-           
-           let dataArray = [data];
-
-           while (true) {
-              let tmpData = _HDD.readFromHDD(data);
-              if (tmpData.split("")[1] != "-") {
-                 data = "";
-                 data += tmpData.split("")[1];
-                 data += tmpData.split("")[2];
-                 data += tmpData.split("")[3];
-                 dataArray.push(data);
-              }
-              else {
-                 break;
-              }
-           }
-           */
+     
           let dataArray = this.getTSBDataBlock(fileName);
 
             for (let i = 0; i < dataArray.length; i++) {
@@ -372,7 +342,7 @@
             _HDD.writeToHDD(tsb, data);
          }
 
-         public krnGetNewBlock() {
+         public krnGetNextFreeBlock() {
             let start = 0;
             for (let i = 0; i < _HDD.tsbArray.length; i ++ ) {
                //start = _HDD.tsbArray[i] == "100" ? i : 0;
@@ -423,7 +393,6 @@
 
          }
 
-
          public initHDDdisplay(): void {
             let table = (<HTMLTableElement>document.getElementById("tableHDD"));
             let t = 0; 
@@ -467,6 +436,44 @@
 
          }
 
+         public krnRollOut(pcb: ProcessControlBlock, program) {
+            
+            let programData = program.join("");
+            let programDataArray = programData.split("");
+            console.log("PD:"+ programData);
+            console.log("PD::"+ programData.length);
+
+            if (pcb.location === "MEMORY") {
+               _MemoryManager.freePartition(pcb.partitionIndex);
+            }
+            let tsb = this.krnGetNextFreeBlock();
+            pcb.hddTSB = tsb;
+            pcb.location = "HDD";
+
+            _HDD.writeToHDD(pcb.hddTSB, this.getEmptyTSB());
+
+            let linkCount = programData.length > 0 ? Math.ceil(programData.length/60) : 1;
+            console.log("link count: " + linkCount);
+            let hexIndex = 0;
+            for (let i = 0; i < linkCount; i++) {
+               let inputData = "1";
+               inputData += (i === linkCount-1) ? "---" : this.krnGetNextFreeBlock();
+
+               for (let j = 0; j < 60; j++) {
+                  if (hexIndex >= programDataArray.length) {
+                     inputData += "0";
+                  }
+                  else {
+                     inputData += programDataArray[hexIndex];
+                     hexIndex++;
+                  }
+               }
+               _HDD.writeToHDD(tsb, inputData);
+               tsb = this.krnGetNextFreeBlock();
+            }
+            console.log(pcb.hddTSB)
+            this.updateHDDdisplay();
+         }
+
       }
   }
-      

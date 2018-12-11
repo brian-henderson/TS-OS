@@ -46,9 +46,12 @@ var TSOS;
                 return this.partitions[2].index;
             }
             else {
-                console.log("No available partitions");
+                // no available partitions
                 return -1;
             }
+        };
+        MemoryManager.prototype.freePartition = function (partition) {
+            this.partitions[partition].available = true;
         };
         return MemoryManager;
     }());
