@@ -437,23 +437,22 @@
          }
 
          public krnRollOut(pcb: ProcessControlBlock, program) {
-            
             let programData = program.join("");
             let programDataArray = programData.split("");
-            console.log("PD:"+ programData);
-            console.log("PD::"+ programData.length);
-
+            console.log("p2 trail: 0 " + _MemoryManager.partitions[2].available)
             if (pcb.location === "MEMORY") {
                _MemoryManager.freePartition(pcb.partitionIndex);
+               console.log("freeing partition: " + pcb.partitionIndex )
             }
+            console.log("p2 trail: 00 " + _MemoryManager.partitions[2].available)
             let tsb = this.krnGetNextFreeBlock();
             pcb.hddTSB = tsb;
             pcb.location = "HDD";
+            console.log("p2 trail: 1 " + _MemoryManager.partitions[2].available)
 
             _HDD.writeToHDD(pcb.hddTSB, this.getEmptyTSB());
 
             let linkCount = programData.length > 0 ? Math.ceil(programData.length/60) : 1;
-            console.log("link count: " + linkCount);
             let hexIndex = 0;
             for (let i = 0; i < linkCount; i++) {
                let inputData = "1";
@@ -471,15 +470,17 @@
                _HDD.writeToHDD(tsb, inputData);
                tsb = this.krnGetNextFreeBlock();
             }
-            console.log(pcb.hddTSB)
+            console.log("p2 trail: 2 " + _MemoryManager.partitions[2].available)
+            _Control.updatePcbDisplay(pcb);
             this.updateHDDdisplay();
+            console.log("p2 trail: 3 " + _MemoryManager.partitions[2].available)
             
          }
 
          public krnRollIn(pcb: ProcessControlBlock): void {
             let tsb = pcb.hddTSB;
             let program = "";
-
+            console.log("p2 trail 4: " + _MemoryManager.partitions[2].available)
             while (tsb != "---") {
                let tsbData = _HDD.readFromHDD(tsb);
                program += tsbData.slice(4);
@@ -496,11 +497,12 @@
                let instruction = program.charAt(i) + program.charAt(i+1);
                programArray.push(instruction);
             }
-            console.log(programArray);
+            console.log("p2 trail 5: " + _MemoryManager.partitions[2].available)
             pcb.location = "MEMORY";
             pcb.hddTSB = null;
+            //console.log("Part")
             _MemoryManager.loadProgramFromHDD(pcb, programArray);
-
+            _Control.updatePcbDisplay(pcb);
             
          }
 

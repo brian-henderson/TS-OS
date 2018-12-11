@@ -51,10 +51,15 @@ var TSOS;
             }
         };
         MemoryManager.prototype.freePartition = function (partition) {
+            console.log("free partition: " + partition);
             this.partitions[partition].available = true;
         };
         MemoryManager.prototype.loadProgramFromHDD = function (pcb, program) {
+            console.log("p0 in load: " + this.partitions[0].available);
+            console.log("p1 in load: " + this.partitions[1].available);
+            console.log("p2 in load: " + this.partitions[2].available);
             var partition = this.getAvailablePartition();
+            console.log("free partition:" + partition);
             if (partition != -1) {
                 this.partitions[partition].available = false;
                 pcb.partitionIndex = partition;
@@ -65,6 +70,7 @@ var TSOS;
             else {
                 console.log('uh oh');
             }
+            console.log("p2 trail: p6" + _MemoryManager.partitions[2].available);
         };
         MemoryManager.prototype.getPcbFromPartition = function (partitionIndex) {
             for (var i = 0; i < _ProcessManager.processArray.length; i++) {
@@ -73,6 +79,9 @@ var TSOS;
                 }
             }
             return null;
+        };
+        MemoryManager.prototype.checkForFreePartitions = function () {
+            return this.partitions[0].available || this.partitions[1].available || this.partitions[2].available;
         };
         return MemoryManager;
     }());

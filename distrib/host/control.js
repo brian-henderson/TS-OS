@@ -208,7 +208,10 @@ var TSOS;
             row.insertCell(9).innerHTML = pcb.location;
         };
         Control.prototype.updatePcbDisplay = function (pcb) {
-            if (pcb.state != "Terminated") {
+            /**
+             * if (pcb.state != "Terminated")
+             */
+            if (pcb.state != "") {
                 var table = document.getElementById("tablePcbDisplay");
                 var tableLength = table.rows.length;
                 for (var i = 0; i < tableLength; i++) {

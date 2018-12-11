@@ -244,7 +244,10 @@ module TSOS {
       }
 
       public updatePcbDisplay(pcb: ProcessControlBlock): void {
-         if (pcb.state != "Terminated") {
+         /**
+          * if (pcb.state != "Terminated")
+          */
+         if (pcb.state != "") {
             let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
             let tableLength = table.rows.length;
             for (let i = 0; i < tableLength; i++) {

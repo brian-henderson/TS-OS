@@ -67,18 +67,22 @@ var TSOS;
             }
         };
         ProcessManager.prototype.runProcess = function (pcb) {
+            // check if the OS is running all
             if (!this.runningAll) {
+                // check if the location of the pcb is in the hard drive
                 if (pcb.location === "HDD") {
-                    var memoryPartition = _MemoryManager.getAvailablePartition();
-                    if (memoryPartition === -1) {
+                    // lets check for available partitiions, if none available then roll out a process to the hdd
+                    if (!_MemoryManager.checkForFreePartitions()) {
                         var pcbOut = _MemoryManager.getPcbFromPartition(2);
                         _krnFileSystemDriver.krnRollOut(pcbOut, _Memory.getProgramFromMemory(2, pcbOut.programCounter));
                         _krnFileSystemDriver.krnRollIn(pcb);
                     }
+                    // theres a free partiton, roll into it
                     else {
                         _krnFileSystemDriver.krnRollIn(pcb);
                     }
                 }
+                // set the pcb state and enqueue to the ready queue
                 pcb.state = "Running";
                 this.readyQueue.enqueue(pcb);
             }
@@ -100,6 +104,7 @@ var TSOS;
             pcb.location = "Black Hole";
             _Memory.clearMemoryPartition(pcb.partitionIndex);
             _CPU.resetCpu();
+            _Control.updatePcbDisplay(pcb);
             _Control.removePcbDisplay(pcb);
             this.printProcessTime(pcb);
             _Console.advanceLine();
