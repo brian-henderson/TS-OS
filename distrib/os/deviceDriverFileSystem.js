@@ -172,6 +172,7 @@ var TSOS;
             }
             var hexIndex = 2;
             for (var i = 0; i < linkCount; i++) {
+                console.log("link count = " + linkCount);
                 //console.log("lc:"  + linkCount)
                 currTSBdata = _HDD.readFromHDD(tsb);
                 var TSBdataArray = currTSBdata.split("");
@@ -189,23 +190,30 @@ var TSOS;
                         hexIndex++;
                     }
                 }
-                //console.log(tsb);
-                //console.log(inputData);
+                console.log("writing to tsb: " + tsb);
+                console.log("with data: " + inputData);
                 _HDD.writeToHDD(tsb, inputData);
                 tsb = this.krnGetNewBlock();
             }
             this.updateHDDdisplay();
         };
         DeviceDriverFS.prototype.krnFSReadFile = function (fileName) {
-            var tsb = this.krnGetFileBlock(fileName);
-            var fileArray = _HDD.readFromHDD(tsb).split("");
+            var tsbFileBlock = this.krnGetFileBlock(fileName);
+            console.log("tsbFileBlock:" + tsbFileBlock);
+            var fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
+            console.log("file array: " + fileArray);
             var data = "";
             data += fileArray[1];
             data += fileArray[2];
             data += fileArray[3];
+            console.log("data: " + data);
             var dataArray = [data];
+            //console.log("FROM HDD:" +_HDD.readFromHDD(data));
             while (true) {
-                var tmpData = _HDD.readFromHDD(tsb);
+                var tmpData = _HDD.readFromHDD(data);
+                //console.log("tsb:" + data);
+                //console.log("tmp data:" + tmpData );
+                //console.log("hud: - " + tmpData.split("")[1]);
                 if (tmpData.split("")[1] != "-") {
                     data = "";
                     data += tmpData.split("")[1];
@@ -217,16 +225,21 @@ var TSOS;
                     break;
                 }
             }
+            //console.log("data array: " + dataArray);
             var hexDataArray = [];
-            for (var i = 0; i < hexDataArray.length; i++) {
-                hexDataArray.push(_HDD.readFromHDD(dataArray[i].split("").slice(4)));
+            for (var i = 0; i < dataArray.length; i++) {
+                console.log("data array: " + dataArray[i]);
+                console.log('to push: ' + _HDD.readFromHDD(dataArray[i]).split("").slice(4));
+                hexDataArray.push(_HDD.readFromHDD(dataArray[i]).split("").slice(4));
             }
+            console.log("hda: " + hexDataArray[0]);
             var hexDataString = "";
             for (var i = 0; i < hexDataArray.length; i++) {
                 for (var j = 0; j < hexDataArray[i].length; j++) {
                     hexDataString += hexDataArray[i][j];
                 }
             }
+            console.log("hexDataString: " + hexDataString);
             var finalDataString = "";
             for (var i = 0; i < hexDataString.length; i += 2) {
                 if (hexDataString.substring(i, i + 2) == "00") {
@@ -234,6 +247,7 @@ var TSOS;
                 }
                 finalDataString += String.fromCharCode(parseInt(hexDataString.substring(i, i + 2), 16));
             }
+            console.log("fds: " + finalDataString);
             return finalDataString;
         };
         DeviceDriverFS.prototype.krnFSDeleteFile = function (fileName) {
@@ -284,7 +298,7 @@ var TSOS;
             }
             if (activeFileNames.length != 0) {
                 for (var i = 1; i < activeFileNames.length; i++) {
-                    console.log("active file name: " + activeFileNames[i]);
+                    //console.log("active file name: " + activeFileNames[i]);
                     _StdOut.putResponseText(activeFileNames[i]);
                     if (i != activeFileNames.length - 1) {
                         _StdOut.advanceLine();
@@ -339,7 +353,6 @@ var TSOS;
                     dataCheck += "0";
                 }
                 if (data.join("") == dataCheck) {
-                    console.log("true");
                     return tsb;
                 }
             }

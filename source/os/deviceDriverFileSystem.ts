@@ -179,7 +179,9 @@
 
             let hexIndex = 2;
 
+            
             for (let i = 0; i < linkCount; i++) {
+               console.log("link count = " + linkCount)
                //console.log("lc:"  + linkCount)
                currTSBdata = _HDD.readFromHDD(tsb);
                let TSBdataArray = currTSBdata.split("");
@@ -198,8 +200,8 @@
                      hexIndex++;
                   }
                }
-               //console.log(tsb);
-               //console.log(inputData);
+               console.log("writing to tsb: " + tsb);
+               console.log("with data: " + inputData);
                _HDD.writeToHDD(tsb, inputData);
                tsb = this.krnGetNewBlock();
             }
@@ -207,17 +209,24 @@
          }
 
          public krnFSReadFile(fileName): string {
-            let tsb = this.krnGetFileBlock(fileName);
-            let fileArray = _HDD.readFromHDD(tsb).split("");
-            
+            let tsbFileBlock = this.krnGetFileBlock(fileName);
+            console.log("tsbFileBlock:" + tsbFileBlock);
+            let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
+            console.log("file array: " + fileArray);
+
             let data = "";
             data += fileArray[1];
             data += fileArray[2];
             data += fileArray[3];
+            console.log("data: " + data);
             
             let dataArray = [data];
+            //console.log("FROM HDD:" +_HDD.readFromHDD(data));
             while (true) {
-               let tmpData = _HDD.readFromHDD(tsb);
+               let tmpData = _HDD.readFromHDD(data);
+               //console.log("tsb:" + data);
+               //console.log("tmp data:" + tmpData );
+               //console.log("hud: - " + tmpData.split("")[1]);
                if (tmpData.split("")[1] != "-") {
                   data = "";
                   data += tmpData.split("")[1];
@@ -230,10 +239,15 @@
                }
             }
 
+            //console.log("data array: " + dataArray);
+
             let hexDataArray = [];
-            for (let i = 0; i < hexDataArray.length; i++) {
-               hexDataArray.push(_HDD.readFromHDD(dataArray[i].split("").slice(4)));
+            for (let i = 0; i < dataArray.length; i++) {
+               console.log("data array: " + dataArray[i]);
+               console.log('to push: ' + _HDD.readFromHDD(dataArray[i]).split("").slice(4));
+               hexDataArray.push(_HDD.readFromHDD(dataArray[i]).split("").slice(4));
             }
+            console.log("hda: " + hexDataArray[0]);
 
             let hexDataString = "";
             for (let i = 0; i < hexDataArray.length; i++) {
@@ -241,6 +255,7 @@
                   hexDataString += hexDataArray[i][j];
                }
             }
+            console.log("hexDataString: " + hexDataString);
             
             let finalDataString = ""
             for (let i = 0; i < hexDataString.length; i += 2) {
@@ -249,6 +264,7 @@
                }
                finalDataString += String.fromCharCode(parseInt(hexDataString.substring(i, i+2), 16));
             }
+            console.log("fds: " + finalDataString);
             return finalDataString;
 
          }
@@ -304,7 +320,7 @@
                   }
                   activeFileNames.push(name);
                }
-            }s
+            }
 
             if (activeFileNames.length != 0) {
                for (let i = 1; i < activeFileNames.length; i++) {
@@ -374,7 +390,6 @@
                }
 
                if (data.join("") == dataCheck) {
-                  console.log("true");
                   return tsb;
                }
 
