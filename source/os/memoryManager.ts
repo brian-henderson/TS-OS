@@ -58,6 +58,23 @@
                this.partitions[partition].available = true;
             }
 
+            public loadProgramFromHDD(pcb: ProcessControlBlock, program): void {
+               let partition = this.getAvailablePartition();
+
+               if (partition != -1) {
+                  this.partitions[partition].available = false;
+                  pcb.partitionIndex = partition;
+                  this.writeProgramToMemory(partition, program);  
+                  // update display
+                  _Control.updatePcbDisplay(pcb);
+               }
+               else {
+                  console.log('uh oh');
+               }
+
+
+            }
+
 
 
 

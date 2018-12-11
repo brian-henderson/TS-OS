@@ -417,6 +417,44 @@ var TSOS;
             }
             console.log(pcb.hddTSB);
             this.updateHDDdisplay();
+            this.krnRollIn(pcb);
+        };
+        DeviceDriverFS.prototype.krnRollIn = function (pcb) {
+            var tsb = pcb.hddTSB;
+            var program = "";
+            while (tsb != "---") {
+                var tsbData = _HDD.readFromHDD(tsb);
+                program += tsbData.slice(4);
+                tsb = tsbData.slice(1, 4) != "---" ? this.getNextTSB(tsb) : "---";
+            }
+            program = program.substring(0, 512);
+            if (program.length % 2 != 0) {
+                program += "0";
+            }
+            var programArray = [];
+            for (var i = 0; i < program.length; i += 2) {
+                var instruction = program.charAt(i) + program.charAt(i + 1);
+                programArray.push(instruction);
+            }
+            console.log(programArray);
+        };
+        DeviceDriverFS.prototype.getNextTSB = function (tsb) {
+            var t = tsb.charAt(0);
+            var s = tsb.charAt(1);
+            var b = tsb.charAt(2);
+            if (b == 7) {
+                s++;
+                b = 0;
+            }
+            else {
+                b++;
+            }
+            if (s == 7) {
+                t++;
+                s = 0;
+                b = 0;
+            }
+            return this.concatTSB(t, s, b);
         };
         return DeviceDriverFS;
     }(TSOS.DeviceDriver));

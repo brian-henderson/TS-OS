@@ -53,6 +53,17 @@ var TSOS;
         MemoryManager.prototype.freePartition = function (partition) {
             this.partitions[partition].available = true;
         };
+        MemoryManager.prototype.loadProgramFromHDD = function (pcb, program) {
+            var partition = this.getAvailablePartition();
+            if (partition != -1) {
+                this.partitions[partition].available = false;
+                pcb.partitionIndex = partition;
+                this.writeProgramToMemory(partition, program);
+            }
+            else {
+                console.log('uh oh');
+            }
+        };
         return MemoryManager;
     }());
     TSOS.MemoryManager = MemoryManager;

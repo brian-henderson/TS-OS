@@ -473,6 +473,58 @@
             }
             console.log(pcb.hddTSB)
             this.updateHDDdisplay();
+            
+            this.krnRollIn(pcb);
+         }
+
+         public krnRollIn(pcb: ProcessControlBlock): void {
+            let tsb = pcb.hddTSB;
+            let program = "";
+
+            while (tsb != "---") {
+               let tsbData = _HDD.readFromHDD(tsb);
+               program += tsbData.slice(4);
+               tsb = tsbData.slice(1, 4) != "---" ? this.getNextTSB(tsb) : "---";
+            }
+            program = program.substring(0, 512);
+            
+            if (program.length % 2 != 0) {
+               program += "0";
+            }
+
+            let programArray = [];
+            for (let i = 0; i < program.length; i+=2) {
+               let instruction = program.charAt(i) + program.charAt(i+1);
+               programArray.push(instruction);
+            }
+            console.log(programArray);
+            pcb.location = "MEMORY";
+            pcb.hddTSB = null;
+            _krnFileSystemDriver._loadProgramFromHDD(pcb, programArray);
+
+            
+         }
+
+         public getNextTSB(tsb): string {
+            let t = tsb.charAt(0);
+            let s = tsb.charAt(1);
+            let b = tsb.charAt(2);
+
+            if (b == 7) {
+               s ++;
+               b = 0;
+            }
+            else {
+               b++;
+            }
+            
+            if (s == 7) {
+               t ++;
+               s = 0;
+               b = 0;
+            }
+
+            return this.concatTSB(t, s, b);
          }
 
       }
