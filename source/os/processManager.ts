@@ -181,6 +181,17 @@ module TSOS {
          _StdOut.advanceLine();
       }
 
+      public getPCBfromHDD(): ProcessControlBlock {
+         let pcb: ProcessControlBlock = null;
+         for (let i =0; i < this.readyQueue.q.length; i++) {
+            if (this.readyQueue.q[i].location == "HDD") {
+               pcb = this.readyQueue.q[i];
+               break
+            }
+         }
+         return pcb;
+      }
+
    }
 
 }

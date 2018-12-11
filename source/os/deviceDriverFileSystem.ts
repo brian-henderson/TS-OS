@@ -142,7 +142,6 @@
                   }
                   _HDD.writeToHDD(tsb, fileData);
                   this.updateHDDdisplay();
-                  console.log("created filename: " + fileName);
                   return 1;
                }
             }
@@ -195,7 +194,6 @@
             let hexIndex = 2;
             
             for (let i = 0; i < linkCount; i++) {
-               console.log("link count = " + linkCount)
                //console.log("lc:"  + linkCount)
                currTSBdata = _HDD.readFromHDD(tsb);
                let TSBdataArray = currTSBdata.split("");
@@ -214,8 +212,6 @@
                      hexIndex++;
                   }
                }
-               console.log("writing to tsb: " + tsb);
-               console.log("with data: " + inputData);
                _HDD.writeToHDD(tsb, inputData);
                tsb = this.krnGetNextFreeBlock();
             }
@@ -301,7 +297,6 @@
                }
                tsbFiles.push(_HDD.tsbArray[i]);
             }
-            console.log("tsb files:" + tsbFiles);
 
             let activeFileNames = [];
             for (let i = 0; i < tsbFiles.length; i++) {
@@ -337,8 +332,6 @@
             for (let i = 0; i < 64; i++) {
                data += (i >= 1 && i <= 3) ? "-" : "0";
             }
-            console.log('clearing:');
-            console.log(tsb, data);
             _HDD.writeToHDD(tsb, data);
          }
 
@@ -436,19 +429,19 @@
 
          }
 
+
+         // WRITE TO HARDDRIVE
          public krnRollOut(pcb: ProcessControlBlock, program) {
             let programData = program.join("");
             let programDataArray = programData.split("");
-            console.log("p2 trail: 0 " + _MemoryManager.partitions[2].available)
+
             if (pcb.location === "MEMORY") {
                _MemoryManager.freePartition(pcb.partitionIndex);
-               console.log("freeing partition: " + pcb.partitionIndex )
             }
-            console.log("p2 trail: 00 " + _MemoryManager.partitions[2].available)
+
             let tsb = this.krnGetNextFreeBlock();
             pcb.hddTSB = tsb;
             pcb.location = "HDD";
-            console.log("p2 trail: 1 " + _MemoryManager.partitions[2].available)
 
             _HDD.writeToHDD(pcb.hddTSB, this.getEmptyTSB());
 
@@ -470,17 +463,16 @@
                _HDD.writeToHDD(tsb, inputData);
                tsb = this.krnGetNextFreeBlock();
             }
-            console.log("p2 trail: 2 " + _MemoryManager.partitions[2].available)
+            console.log("writing data to tsb: " + pcb.hddTSB);
             _Control.updatePcbDisplay(pcb);
             this.updateHDDdisplay();
-            console.log("p2 trail: 3 " + _MemoryManager.partitions[2].available)
             
          }
 
+         // GET PCB FROM HARDDRIVE AND PUT IN MEMORY
          public krnRollIn(pcb: ProcessControlBlock): void {
             let tsb = pcb.hddTSB;
             let program = "";
-            console.log("p2 trail 4: " + _MemoryManager.partitions[2].available)
             while (tsb != "---") {
                let tsbData = _HDD.readFromHDD(tsb);
                program += tsbData.slice(4);
@@ -497,7 +489,7 @@
                let instruction = program.charAt(i) + program.charAt(i+1);
                programArray.push(instruction);
             }
-            console.log("p2 trail 5: " + _MemoryManager.partitions[2].available)
+         
             pcb.location = "MEMORY";
             pcb.hddTSB = null;
             //console.log("Part")

@@ -84,8 +84,6 @@ var TSOS;
                     console.log("Failed to clear memory partition");
             }
             _MemoryManager.partitions[partition].available = true;
-            console.log("MM pa: " + partition);
-            console.log("MM part: " + _MemoryManager.partitions[partition].available);
         };
         return Memory;
     }());

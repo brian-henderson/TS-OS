@@ -141,7 +141,6 @@ var TSOS;
                     }
                     _HDD.writeToHDD(tsb, fileData);
                     this.updateHDDdisplay();
-                    console.log("created filename: " + fileName);
                     return 1;
                 }
             }
@@ -185,7 +184,6 @@ var TSOS;
             }
             var hexIndex = 2;
             for (var i = 0; i < linkCount; i++) {
-                console.log("link count = " + linkCount);
                 //console.log("lc:"  + linkCount)
                 currTSBdata = _HDD.readFromHDD(tsb);
                 var TSBdataArray = currTSBdata.split("");
@@ -203,8 +201,6 @@ var TSOS;
                         hexIndex++;
                     }
                 }
-                console.log("writing to tsb: " + tsb);
-                console.log("with data: " + inputData);
                 _HDD.writeToHDD(tsb, inputData);
                 tsb = this.krnGetNextFreeBlock();
             }
@@ -274,7 +270,6 @@ var TSOS;
                 }
                 tsbFiles.push(_HDD.tsbArray[i]);
             }
-            console.log("tsb files:" + tsbFiles);
             var activeFileNames = [];
             for (var i = 0; i < tsbFiles.length; i++) {
                 if (_HDD.readFromHDD(tsbFiles[i]).split("")[0] == "1") {
@@ -305,8 +300,6 @@ var TSOS;
             for (var i = 0; i < 64; i++) {
                 data += (i >= 1 && i <= 3) ? "-" : "0";
             }
-            console.log('clearing:');
-            console.log(tsb, data);
             _HDD.writeToHDD(tsb, data);
         };
         DeviceDriverFS.prototype.krnGetNextFreeBlock = function () {
@@ -385,19 +378,16 @@ var TSOS;
                 row.cells[1].innerHTML = _HDD.readFromHDD(tsb);
             }
         };
+        // WRITE TO HARDDRIVE
         DeviceDriverFS.prototype.krnRollOut = function (pcb, program) {
             var programData = program.join("");
             var programDataArray = programData.split("");
-            console.log("p2 trail: 0 " + _MemoryManager.partitions[2].available);
             if (pcb.location === "MEMORY") {
                 _MemoryManager.freePartition(pcb.partitionIndex);
-                console.log("freeing partition: " + pcb.partitionIndex);
             }
-            console.log("p2 trail: 00 " + _MemoryManager.partitions[2].available);
             var tsb = this.krnGetNextFreeBlock();
             pcb.hddTSB = tsb;
             pcb.location = "HDD";
-            console.log("p2 trail: 1 " + _MemoryManager.partitions[2].available);
             _HDD.writeToHDD(pcb.hddTSB, this.getEmptyTSB());
             var linkCount = programData.length > 0 ? Math.ceil(programData.length / 60) : 1;
             var hexIndex = 0;
@@ -416,15 +406,14 @@ var TSOS;
                 _HDD.writeToHDD(tsb, inputData);
                 tsb = this.krnGetNextFreeBlock();
             }
-            console.log("p2 trail: 2 " + _MemoryManager.partitions[2].available);
+            console.log("writing data to tsb: " + pcb.hddTSB);
             _Control.updatePcbDisplay(pcb);
             this.updateHDDdisplay();
-            console.log("p2 trail: 3 " + _MemoryManager.partitions[2].available);
         };
+        // GET PCB FROM HARDDRIVE AND PUT IN MEMORY
         DeviceDriverFS.prototype.krnRollIn = function (pcb) {
             var tsb = pcb.hddTSB;
             var program = "";
-            console.log("p2 trail 4: " + _MemoryManager.partitions[2].available);
             while (tsb != "---") {
                 var tsbData = _HDD.readFromHDD(tsb);
                 program += tsbData.slice(4);
@@ -439,7 +428,6 @@ var TSOS;
                 var instruction = program.charAt(i) + program.charAt(i + 1);
                 programArray.push(instruction);
             }
-            console.log("p2 trail 5: " + _MemoryManager.partitions[2].available);
             pcb.location = "MEMORY";
             pcb.hddTSB = null;
             //console.log("Part")

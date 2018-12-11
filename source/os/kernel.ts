@@ -107,6 +107,7 @@ module TSOS {
                // run all processes
                if ( _ProcessManager.runningAll ) {
                   // eventually re organize based off of priortiy
+                  
                } 
                // process is executed via a run cmd indicating PID
                else {

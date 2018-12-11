@@ -164,6 +164,16 @@ var TSOS;
             _StdOut.putResponseText("Turnaround Time: " + pcb.turnAroundTime);
             _StdOut.advanceLine();
         };
+        ProcessManager.prototype.getPCBfromHDD = function () {
+            var pcb = null;
+            for (var i = 0; i < this.readyQueue.q.length; i++) {
+                if (this.readyQueue.q[i].location == "HDD") {
+                    pcb = this.readyQueue.q[i];
+                    break;
+                }
+            }
+            return pcb;
+        };
         return ProcessManager;
     }());
     TSOS.ProcessManager = ProcessManager;
