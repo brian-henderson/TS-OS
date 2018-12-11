@@ -129,26 +129,22 @@ var TSOS;
                     }
                     _HDD.writeToHDD(tsb, fileData);
                     this.updateHDDdisplay();
+                    console.log("created filename: " + fileName);
                     return 1;
                 }
             }
         };
         DeviceDriverFS.prototype.krnFSWriteFile = function (fileName, fileData) {
-            console.log("FD: " + fileData);
             var data = fileData.split("");
             var fileDataHexArray = [];
             for (var i = 0; i < fileData.length; i++) {
                 fileDataHexArray.push(data[i].charCodeAt(0).toString(16));
             }
             var fileDataHexString = fileDataHexArray.join("");
-            console.log("Split string: " + fileDataHexString);
             var linkCount = fileDataHexString.length > 0 ? Math.ceil(fileDataHexString.length / 60) : 1;
             fileDataHexArray = fileDataHexString.split("");
-            console.log("arr string: " + fileDataHexArray);
             var tsb = this.krnGetFileBlock(fileName);
-            console.log("tsb: " + tsb);
             var currTSBdata = _HDD.readFromHDD(tsb);
-            console.log("currTSB data: " + currTSBdata);
             var currTSBdataArray = currTSBdata.split("");
             tsb = '';
             tsb += currTSBdataArray[1];
@@ -174,14 +170,16 @@ var TSOS;
                     this.krnClearTSB(tsbArr[i]);
                 }
             }
-            var hexIndex = 0;
+            var hexIndex = 2;
             for (var i = 0; i < linkCount; i++) {
+                //console.log("lc:"  + linkCount)
                 currTSBdata = _HDD.readFromHDD(tsb);
-                currTSBdataArray = currTSBdata.split("");
-                currTSBdataArray[0] = "1";
-                _HDD.writeToHDD(tsb, currTSBdataArray.join(""));
+                var TSBdataArray = currTSBdata.split("");
+                TSBdataArray[0] = "1";
+                _HDD.writeToHDD(tsb, TSBdataArray.join(""));
                 var inputData = "1";
                 inputData += (i === linkCount - 1) ? "---" : this.krnGetNewBlock();
+                //console.log(inputData);
                 for (var j = 0; j < 60; j++) {
                     if (hexIndex >= fileDataHexArray.length) {
                         inputData += "0";
@@ -191,6 +189,8 @@ var TSOS;
                         hexIndex++;
                     }
                 }
+                //console.log(tsb);
+                //console.log(inputData);
                 _HDD.writeToHDD(tsb, inputData);
                 tsb = this.krnGetNewBlock();
             }
@@ -270,20 +270,22 @@ var TSOS;
                 }
                 tsbFiles.push(_HDD.tsbArray[i]);
             }
-            var activeFileNames = new Array();
+            var activeFileNames = [];
             for (var i = 0; i < tsbFiles.length; i++) {
-                if (_HDD.readFromHDD(tsbFiles[i].split("")[0] == "1")) {
+                if (_HDD.readFromHDD(tsbFiles[i]).split("")[0] == "1") {
                     var name_1 = "";
                     var hexString = _HDD.readFromHDD(tsbFiles[i]).split("").slice(4).join("");
-                    for (var j = 0; j < hexString.length; j++) {
+                    //console.log("hex string: " + hexString);
+                    for (var j = 0; j < hexString.length; j += 2) {
                         name_1 += String.fromCharCode(parseInt(hexString.substring(j, j + 2), 16));
                     }
                     activeFileNames.push(name_1);
                 }
             }
             if (activeFileNames.length != 0) {
-                for (var i = 0; i < activeFileNames.length; i++) {
-                    _StdOut.putText(activeFileNames[i]);
+                for (var i = 1; i < activeFileNames.length; i++) {
+                    console.log("active file name: " + activeFileNames[i]);
+                    _StdOut.putResponseText(activeFileNames[i]);
                     if (i != activeFileNames.length - 1) {
                         _StdOut.advanceLine();
                     }
@@ -320,30 +322,24 @@ var TSOS;
             }
         };
         DeviceDriverFS.prototype.krnGetFileBlock = function (fileName) {
-            var newFileName = fileName.split("");
-            console.log("nfn: " + newFileName);
-            var fileDataHexArray = [];
-            for (var i = 0; i < newFileName.length; i++) {
-                fileDataHexArray.push(newFileName[i].charCodeAt(0).toString(16));
+            var name = fileName.split("");
+            var fileNameHexArray = [];
+            // creates an array of the file name into hex chars
+            for (var i = 0; i < name.length; i++) {
+                fileNameHexArray.push(name[i].charCodeAt(0).toString(16));
             }
-            console.log("fileDataHexArray: " + fileDataHexArray);
             for (var i = 0; i < _HDD.tsbArray.length; i++) {
-                console.log("----------------------------------");
                 var tsb = _HDD.tsbArray[i];
-                console.log("tsb:" + tsb);
                 var data = _HDD.readFromHDD(tsb).split("").slice(4);
-                console.log("data:" + data);
                 var dataCheck = "";
-                for (var j = 0; j < fileDataHexArray.length; j++) {
-                    dataCheck += fileDataHexArray[i];
+                for (var j = 0; j < fileNameHexArray.length; j++) {
+                    dataCheck += fileNameHexArray[j];
                 }
-                console.log("dataCheck:" + dataCheck);
                 for (var j = dataCheck.length - 1; j < 59; j++) {
                     dataCheck += "0";
                 }
-                console.log("dataCheck:" + dataCheck);
-                console.log('data.join("")' + data.join(""));
                 if (data.join("") == dataCheck) {
+                    console.log("true");
                     return tsb;
                 }
             }

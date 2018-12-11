@@ -127,13 +127,13 @@
                   }
                   _HDD.writeToHDD(tsb, fileData);
                   this.updateHDDdisplay();
+                  console.log("created filename: " + fileName);
                   return 1;
                }
             }
           }
 
          public krnFSWriteFile(fileName, fileData): void {
-            console.log("FD: " + fileData);
             let data = fileData.split("");
             let fileDataHexArray = [];
 
@@ -142,17 +142,13 @@
             }
 
             let fileDataHexString = fileDataHexArray.join("");
-            console.log("Split string: " + fileDataHexString);
             let linkCount = fileDataHexString.length > 0 ? Math.ceil(fileDataHexString.length/60) : 1;
             fileDataHexArray = fileDataHexString.split("");
-            console.log("arr string: " + fileDataHexArray);
-
-
+            
             let tsb = this.krnGetFileBlock(fileName);
-            console.log("tsb: " + tsb);
             let currTSBdata = _HDD.readFromHDD(tsb);
-            console.log("currTSB data: " + currTSBdata);
             let currTSBdataArray = currTSBdata.split("");
+            
             tsb = '';
             tsb += currTSBdataArray[1];
             tsb += currTSBdataArray[2];
@@ -181,16 +177,18 @@
                }
             }
 
-            let hexIndex = 0;
+            let hexIndex = 2;
 
             for (let i = 0; i < linkCount; i++) {
+               //console.log("lc:"  + linkCount)
                currTSBdata = _HDD.readFromHDD(tsb);
-               currTSBdataArray = currTSBdata.split("");
-               currTSBdataArray[0] = "1";
-               _HDD.writeToHDD(tsb, currTSBdataArray.join(""));
+               let TSBdataArray = currTSBdata.split("");
+               TSBdataArray[0] = "1";
+               _HDD.writeToHDD(tsb, TSBdataArray.join(""));
+               
                let inputData = "1";
                inputData += (i === linkCount-1) ? "---" : this.krnGetNewBlock();
-
+               //console.log(inputData);
                for (let j = 0; j < 60; j++) {
                   if (hexIndex >= fileDataHexArray.length) {
                      inputData += "0";
@@ -200,6 +198,8 @@
                      hexIndex++;
                   }
                }
+               //console.log(tsb);
+               //console.log(inputData);
                _HDD.writeToHDD(tsb, inputData);
                tsb = this.krnGetNewBlock();
             }
@@ -293,21 +293,23 @@
                tsbFiles.push(_HDD.tsbArray[i]);
             }
 
-            let activeFileNames = new Array();
+            let activeFileNames = [];
             for (let i = 0; i < tsbFiles.length; i++) {
-               if (_HDD.readFromHDD(tsbFiles[i].split("")[0] == "1")) {
+               if (_HDD.readFromHDD(tsbFiles[i]).split("")[0] == "1") {
                   let name = "";
                   let hexString = _HDD.readFromHDD(tsbFiles[i]).split("").slice(4).join("");
-                  for (let j = 0; j < hexString.length; j++) {
+                  //console.log("hex string: " + hexString);
+                  for (let j = 0; j < hexString.length; j+= 2) {
                      name += String.fromCharCode(parseInt(hexString.substring(j, j+2), 16))
                   }
                   activeFileNames.push(name);
                }
-            }
+            }s
 
             if (activeFileNames.length != 0) {
-               for (let i = 0; i < activeFileNames.length; i++) {
-                  _StdOut.putText(activeFileNames[i]);
+               for (let i = 1; i < activeFileNames.length; i++) {
+                  //console.log("active file name: " + activeFileNames[i]);
+                  _StdOut.putResponseText(activeFileNames[i]);
                   if (i != activeFileNames.length-1) {
                      _StdOut.advanceLine();
                   }
@@ -349,37 +351,30 @@
             }
          }
 
-         public krnGetFileBlock(fileName) {
-            let newFileName = fileName.split("");
-            console.log("nfn: " + newFileName)
-            let fileDataHexArray = [];
-            for (let i = 0; i < newFileName.length; i++) {
-               fileDataHexArray.push(newFileName[i].charCodeAt(0).toString(16));
+         public krnGetFileBlock(fileName): string {
+            let name = fileName.split("");
+            let fileNameHexArray = [];
+            
+            // creates an array of the file name into hex chars
+            for (let i = 0; i < name.length; i++) {
+               fileNameHexArray.push(name[i].charCodeAt(0).toString(16));
             }
-            console.log("fileDataHexArray: " + fileDataHexArray)
 
             for (let i = 0; i < _HDD.tsbArray.length; i++) {
-               console.log("----------------------------------");
-               
                let tsb = _HDD.tsbArray[i];
-               console.log("tsb:" + tsb);
-
                let data = _HDD.readFromHDD(tsb).split("").slice(4);
-               console.log("data:" + data);
                
                let dataCheck = "";
-               for (let j = 0; j < fileDataHexArray.length; j++) {
-                  dataCheck += fileDataHexArray[i];
+               for (let j = 0; j < fileNameHexArray.length; j++) {
+                  dataCheck += fileNameHexArray[j];
                }
-               console.log("dataCheck:" + dataCheck);
                
                for (let j = dataCheck.length-1; j < 59; j++) {
                   dataCheck += "0";
                }
-               
-               console.log("dataCheck:" + dataCheck);
-               console.log('data.join("")' + data.join(""));
+
                if (data.join("") == dataCheck) {
+                  console.log("true");
                   return tsb;
                }
 
