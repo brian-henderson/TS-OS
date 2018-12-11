@@ -199,21 +199,15 @@ var TSOS;
         };
         DeviceDriverFS.prototype.krnFSReadFile = function (fileName) {
             var tsbFileBlock = this.krnGetFileBlock(fileName);
-            console.log("tsbFileBlock:" + tsbFileBlock);
             var fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
-            console.log("file array: " + fileArray);
             var data = "";
             data += fileArray[1];
             data += fileArray[2];
             data += fileArray[3];
-            console.log("data: " + data);
             var dataArray = [data];
             //console.log("FROM HDD:" +_HDD.readFromHDD(data));
             while (true) {
                 var tmpData = _HDD.readFromHDD(data);
-                //console.log("tsb:" + data);
-                //console.log("tmp data:" + tmpData );
-                //console.log("hud: - " + tmpData.split("")[1]);
                 if (tmpData.split("")[1] != "-") {
                     data = "";
                     data += tmpData.split("")[1];
@@ -225,7 +219,6 @@ var TSOS;
                     break;
                 }
             }
-            //console.log("data array: " + dataArray);
             var hexDataArray = [];
             for (var i = 0; i < dataArray.length; i++) {
                 console.log("data array: " + dataArray[i]);
@@ -251,28 +244,53 @@ var TSOS;
             return finalDataString;
         };
         DeviceDriverFS.prototype.krnFSDeleteFile = function (fileName) {
-            var tsb = this.krnGetFileBlock(fileName);
-            var fileDataArray = _HDD.readFromHDD(tsb).split("");
-            var fileDataString = "";
+            /*
+            let tsb = this.krnGetFileBlock(fileName);
+            let fileDataArray = _HDD.readFromHDD(tsb).split("");
+            
+            let fileDataString = "";
             fileDataString += fileDataArray[1];
             fileDataString += fileDataArray[2];
             fileDataString += fileDataArray[3];
-            var tsbDataArray = [tsb, fileDataString];
+
+            let tsbDataArray = [tsb, fileDataString];
             while (true) {
-                var fileData = _HDD.readFromHDD(tsb);
-                if (fileData.split("")[1] != "-") {
-                    fileDataString = "";
-                    fileDataString += fileData.split("")[1];
-                    fileDataString += fileData.split("")[2];
-                    fileDataString += fileData.split("")[3];
-                    tsbDataArray.push(fileDataString);
+               let fileData = _HDD.readFromHDD(fileDataString);
+               if (fileData.split("")[1] != "-") {
+                  fileDataString = "";
+                  fileDataString += fileData.split("")[1];
+                  fileDataString += fileData.split("")[2];
+                  fileDataString += fileData.split("")[3];
+                  tsbDataArray.push(fileDataString);
+               }
+               else {
+                  break;
+               }
+            }
+            */
+            var tsbFileBlock = this.krnGetFileBlock(fileName);
+            var fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
+            var data = "";
+            data += fileArray[1];
+            data += fileArray[2];
+            data += fileArray[3];
+            var dataArray = [data];
+            //console.log("FROM HDD:" +_HDD.readFromHDD(data));
+            while (true) {
+                var tmpData = _HDD.readFromHDD(data);
+                if (tmpData.split("")[1] != "-") {
+                    data = "";
+                    data += tmpData.split("")[1];
+                    data += tmpData.split("")[2];
+                    data += tmpData.split("")[3];
+                    dataArray.push(data);
                 }
                 else {
                     break;
                 }
             }
-            for (var i = 0; i < tsbDataArray.length; i++) {
-                this.krnClearTSB(tsbDataArray[i]);
+            for (var i = 0; i < dataArray.length; i++) {
+                this.krnClearTSB(dataArray[i]);
             }
             this.updateHDDdisplay();
         };

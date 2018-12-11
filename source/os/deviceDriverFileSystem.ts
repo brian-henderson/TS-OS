@@ -210,23 +210,17 @@
 
          public krnFSReadFile(fileName): string {
             let tsbFileBlock = this.krnGetFileBlock(fileName);
-            console.log("tsbFileBlock:" + tsbFileBlock);
             let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
-            console.log("file array: " + fileArray);
 
             let data = "";
             data += fileArray[1];
             data += fileArray[2];
             data += fileArray[3];
-            console.log("data: " + data);
             
             let dataArray = [data];
             //console.log("FROM HDD:" +_HDD.readFromHDD(data));
             while (true) {
                let tmpData = _HDD.readFromHDD(data);
-               //console.log("tsb:" + data);
-               //console.log("tmp data:" + tmpData );
-               //console.log("hud: - " + tmpData.split("")[1]);
                if (tmpData.split("")[1] != "-") {
                   data = "";
                   data += tmpData.split("")[1];
@@ -238,8 +232,6 @@
                   break;
                }
             }
-
-            //console.log("data array: " + dataArray);
 
             let hexDataArray = [];
             for (let i = 0; i < dataArray.length; i++) {
@@ -271,31 +263,33 @@
 
 
          public krnFSDeleteFile(fileName) {
-            let tsb = this.krnGetFileBlock(fileName);
-            let fileDataArray = _HDD.readFromHDD(tsb).split("");
-            
-            let fileDataString = "";
-            fileDataString += fileDataArray[1];
-            fileDataString += fileDataArray[2];
-            fileDataString += fileDataArray[3];
+           
+           let tsbFileBlock = this.krnGetFileBlock(fileName);
+           let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
 
-            let tsbDataArray = [tsb, fileDataString];
-            while (true) {
-               let fileData = _HDD.readFromHDD(tsb);
-               if (fileData.split("")[1] != "-") {
-                  fileDataString = "";
-                  fileDataString += fileData.split("")[1];
-                  fileDataString += fileData.split("")[2];
-                  fileDataString += fileData.split("")[3];
-                  tsbDataArray.push(fileDataString);
-               }
-               else {
-                  break;
-               }
-            }
+           let data = "";
+           data += fileArray[1];
+           data += fileArray[2];
+           data += fileArray[3];
+           
+           let dataArray = [data];
 
-            for (let i = 0; i < tsbDataArray.length; i++) {
-               this.krnClearTSB(tsbDataArray[i]);
+           while (true) {
+              let tmpData = _HDD.readFromHDD(data);
+              if (tmpData.split("")[1] != "-") {
+                 data = "";
+                 data += tmpData.split("")[1];
+                 data += tmpData.split("")[2];
+                 data += tmpData.split("")[3];
+                 dataArray.push(data);
+              }
+              else {
+                 break;
+              }
+           }
+
+            for (let i = 0; i < dataArray.length; i++) {
+               this.krnClearTSB(dataArray[i]);
             }
             this.updateHDDdisplay();
          }
