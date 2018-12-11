@@ -27,6 +27,16 @@ var TSOS;
             return this.memoryStorage[loc];
         };
         ;
+        Memory.prototype.getProgramFromMemory = function (partition, PC) {
+            var loc = PC;
+            if (partition === 1) {
+                loc += 256;
+            }
+            if (partition === 2) {
+                loc += 512;
+            }
+            return this.memoryStorage.slice(loc, loc + 255);
+        };
         Memory.prototype.writeMemory = function (partition, program) {
             for (var i = 0; i < program.length; i++) {
                 //this.memoryStorage[i] = program[i];

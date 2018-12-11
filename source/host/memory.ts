@@ -29,6 +29,17 @@
                return this.memoryStorage[loc];
             };
 
+            public getProgramFromMemory(partition: number, PC: number) {
+               let loc = PC;
+               if (partition === 1){
+                  loc += 256;
+               }
+               if (partition === 2){
+                  loc += 512;
+               } 
+               return this.memoryStorage.slice(loc, loc + 255);
+            }
+
             public writeMemory(partition: number, program): void {
                 for (let i = 0; i < program.length; i++) {
                     //this.memoryStorage[i] = program[i];

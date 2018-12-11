@@ -75,6 +75,16 @@
 
             }
 
+            public getPcbFromPartition(partitionIndex): ProcessControlBlock {
+
+               for (let i = 0; i < _ProcessManager.processArray.length; i ++) {
+                  if (_ProcessManager.processArray[i].partitionIndex === partitionIndex && _ProcessManager.processArray[i].state != "Terminated") {
+                     return _ProcessManager.processArray[i];
+                  }
+               }
+               return null;
+            }
+
 
 
 

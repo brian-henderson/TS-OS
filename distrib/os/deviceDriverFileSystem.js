@@ -417,7 +417,6 @@ var TSOS;
             }
             console.log(pcb.hddTSB);
             this.updateHDDdisplay();
-            this.krnRollIn(pcb);
         };
         DeviceDriverFS.prototype.krnRollIn = function (pcb) {
             var tsb = pcb.hddTSB;
@@ -437,6 +436,9 @@ var TSOS;
                 programArray.push(instruction);
             }
             console.log(programArray);
+            pcb.location = "MEMORY";
+            pcb.hddTSB = null;
+            _MemoryManager.loadProgramFromHDD(pcb, programArray);
         };
         DeviceDriverFS.prototype.getNextTSB = function (tsb) {
             var t = tsb.charAt(0);

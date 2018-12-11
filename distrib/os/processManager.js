@@ -68,6 +68,17 @@ var TSOS;
         };
         ProcessManager.prototype.runProcess = function (pcb) {
             if (!this.runningAll) {
+                if (pcb.location === "HDD") {
+                    var memoryPartition = _MemoryManager.getAvailablePartition();
+                    if (memoryPartition === -1) {
+                        var pcbOut = _MemoryManager.getPcbFromPartition(2);
+                        _krnFileSystemDriver.krnRollOut(pcbOut, _Memory.getProgramFromMemory(2, pcbOut.programCounter));
+                        _krnFileSystemDriver.krnRollIn(pcb);
+                    }
+                    else {
+                        _krnFileSystemDriver.krnRollIn(pcb);
+                    }
+                }
                 pcb.state = "Running";
                 this.readyQueue.enqueue(pcb);
             }

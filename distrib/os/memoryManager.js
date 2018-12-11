@@ -59,10 +59,20 @@ var TSOS;
                 this.partitions[partition].available = false;
                 pcb.partitionIndex = partition;
                 this.writeProgramToMemory(partition, program);
+                // update display
+                _Control.updatePcbDisplay(pcb);
             }
             else {
                 console.log('uh oh');
             }
+        };
+        MemoryManager.prototype.getPcbFromPartition = function (partitionIndex) {
+            for (var i = 0; i < _ProcessManager.processArray.length; i++) {
+                if (_ProcessManager.processArray[i].partitionIndex === partitionIndex && _ProcessManager.processArray[i].state != "Terminated") {
+                    return _ProcessManager.processArray[i];
+                }
+            }
+            return null;
         };
         return MemoryManager;
     }());

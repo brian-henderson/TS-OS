@@ -474,7 +474,6 @@
             console.log(pcb.hddTSB)
             this.updateHDDdisplay();
             
-            this.krnRollIn(pcb);
          }
 
          public krnRollIn(pcb: ProcessControlBlock): void {
@@ -500,7 +499,7 @@
             console.log(programArray);
             pcb.location = "MEMORY";
             pcb.hddTSB = null;
-            _krnFileSystemDriver._loadProgramFromHDD(pcb, programArray);
+            _MemoryManager.loadProgramFromHDD(pcb, programArray);
 
             
          }
