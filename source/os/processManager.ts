@@ -15,7 +15,7 @@ module TSOS {
 
       public currPCB: TSOS.ProcessControlBlock;
 
-      public createProcess(program: Array<string>): void {
+      public createProcess(program: Array<string>, priority?): void {
          let partitionID = _MemoryManager.getAvailablePartition();
 
          if (partitionID != -1) {
@@ -27,6 +27,8 @@ module TSOS {
             this.processArray.push(pcb);
             // assign the available partiton to the pcb and process
             pcb.partitionIndex = partitionID;
+            // assign the process a priority
+            pcb.priority = priority != null ? Number(priority) : 64;
             // write the program to the memory, given user input already split into array
             _MemoryManager.writeProgramToMemory(pcb.partitionIndex, program);
             // add this process to the list of upcoming processes

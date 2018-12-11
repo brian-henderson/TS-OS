@@ -27,6 +27,9 @@ module TSOS {
             case "rr":
                this.schedulerRR();
                break;
+            case "priority":
+               this.schedulerPRIORITY();
+               break;
             default:
                console.log("Broken scheduler");
          }
@@ -78,7 +81,6 @@ module TSOS {
 
       }
 
-
       public schedulerFCFS() {
          if (this.counter === 0) {
             _KernelInterruptQueue.enqueue(new Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
@@ -88,6 +90,30 @@ module TSOS {
                _KernelInterruptQueue.enqueue(new Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
             }
          }  
+      }
+
+      public schedulerPRIORITY() {
+         _ProcessManager.readyQueue.q.sort(function(a, b) {
+            if (a.priority < b.priority) {
+               return -1;
+            }
+            if (a.priority > b.priority) {
+               return 1;
+            }
+            if (a.priority == b.priority) {
+               return 0;
+            }
+         });
+
+         if (this.counter === 0) {
+            _KernelInterruptQueue.enqueue(new Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
+         }
+         else {
+            if (_ProcessManager.currPCB.state === "Terminated") {
+               _KernelInterruptQueue.enqueue(new Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
+            }
+         }  
+         
       }
 
 

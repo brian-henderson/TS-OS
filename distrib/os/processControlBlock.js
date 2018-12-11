@@ -4,7 +4,7 @@ var TSOS;
     var ProcessControlBlock = /** @class */ (function () {
         function ProcessControlBlock(p) {
             this.state = "New";
-            this.priority = 0;
+            this.priority = 64;
             this.programCounter = 0;
             this.instructionReg = null;
             this.accumulator = 0;

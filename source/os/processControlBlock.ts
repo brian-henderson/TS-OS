@@ -4,7 +4,7 @@
         export class ProcessControlBlock { 
             public pid: number;
             public state: string = "New";
-            public priority: number = 0;
+            public priority: number = 64;
             public programCounter : number = 0;
             public instructionReg: string = null;
             public accumulator: number = 0;

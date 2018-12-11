@@ -171,14 +171,13 @@
                }
             }
 
+            // clear the tsb
             if (tsbArr.length != 0) {
                for (let i = 0; i < tsbArr.length; i++) {
                   this.krnClearTSB(tsbArr[i]);
                }
             }
-
             let hexIndex = 2;
-
             
             for (let i = 0; i < linkCount; i++) {
                console.log("link count = " + linkCount)
@@ -209,7 +208,7 @@
          }
 
          public krnFSReadFile(fileName): string {
-            let tsbFileBlock = this.krnGetFileBlock(fileName);
+         /*   let tsbFileBlock = this.krnGetFileBlock(fileName);
             let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
 
             let data = "";
@@ -218,7 +217,6 @@
             data += fileArray[3];
             
             let dataArray = [data];
-            //console.log("FROM HDD:" +_HDD.readFromHDD(data));
             while (true) {
                let tmpData = _HDD.readFromHDD(data);
                if (tmpData.split("")[1] != "-") {
@@ -231,15 +229,16 @@
                else {
                   break;
                }
-            }
+            } */
+            let dataArray = this.getTSBDataBlock(fileName);
 
             let hexDataArray = [];
             for (let i = 0; i < dataArray.length; i++) {
-               console.log("data array: " + dataArray[i]);
-               console.log('to push: ' + _HDD.readFromHDD(dataArray[i]).split("").slice(4));
+               //console.log("data array: " + dataArray[i]);
+               //console.log('to push: ' + _HDD.readFromHDD(dataArray[i]).split("").slice(4));
                hexDataArray.push(_HDD.readFromHDD(dataArray[i]).split("").slice(4));
             }
-            console.log("hda: " + hexDataArray[0]);
+            //console.log("hda: " + hexDataArray[0]);
 
             let hexDataString = "";
             for (let i = 0; i < hexDataArray.length; i++) {
@@ -247,7 +246,7 @@
                   hexDataString += hexDataArray[i][j];
                }
             }
-            console.log("hexDataString: " + hexDataString);
+            //console.log("hexDataString: " + hexDataString);
             
             let finalDataString = ""
             for (let i = 0; i < hexDataString.length; i += 2) {
@@ -256,14 +255,12 @@
                }
                finalDataString += String.fromCharCode(parseInt(hexDataString.substring(i, i+2), 16));
             }
-            console.log("fds: " + finalDataString);
+            //console.log("fds: " + finalDataString);
             return finalDataString;
 
          }
 
-
-         public krnFSDeleteFile(fileName) {
-           
+         public getTSBDataBlock(fileName): string[] {
            let tsbFileBlock = this.krnGetFileBlock(fileName);
            let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
 
@@ -287,6 +284,38 @@
                  break;
               }
            }
+           return dataArray;
+
+         }
+
+
+         public krnFSDeleteFile(fileName) {
+           /*
+           let tsbFileBlock = this.krnGetFileBlock(fileName);
+           let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
+
+           let data = "";
+           data += fileArray[1];
+           data += fileArray[2];
+           data += fileArray[3];
+           
+           let dataArray = [data];
+
+           while (true) {
+              let tmpData = _HDD.readFromHDD(data);
+              if (tmpData.split("")[1] != "-") {
+                 data = "";
+                 data += tmpData.split("")[1];
+                 data += tmpData.split("")[2];
+                 data += tmpData.split("")[3];
+                 dataArray.push(data);
+              }
+              else {
+                 break;
+              }
+           }
+           */
+          let dataArray = this.getTSBDataBlock(fileName);
 
             for (let i = 0; i < dataArray.length; i++) {
                this.krnClearTSB(dataArray[i]);
@@ -302,6 +331,7 @@
                }
                tsbFiles.push(_HDD.tsbArray[i]);
             }
+            console.log("tsb files:" + tsbFiles);
 
             let activeFileNames = [];
             for (let i = 0; i < tsbFiles.length; i++) {
@@ -337,6 +367,8 @@
             for (let i = 0; i < 64; i++) {
                data += (i >= 1 && i <= 3) ? "-" : "0";
             }
+            console.log('clearing:');
+            console.log(tsb, data);
             _HDD.writeToHDD(tsb, data);
          }
 
@@ -391,14 +423,6 @@
 
          }
 
-         public logHardDrive(): void {
-
-            for (let i = 0; i < _HDD.tsbArray.length; i ++) {
-               let tsb = _HDD.tsbArray[i]
-               let output = _HDD.readFromHDD(tsb);
-              // console.log( tsb + "  " + output);
-            }
-         }
 
          public initHDDdisplay(): void {
             let table = (<HTMLTableElement>document.getElementById("tableHDD"));

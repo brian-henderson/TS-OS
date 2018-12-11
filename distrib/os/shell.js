@@ -68,7 +68,7 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellNuke, "nuke", "- Thermo-nuclear BSOD warefare enabled. ");
             this.commandList[this.commandList.length] = sc;
             // load
-            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Used to validate HTML code in User Program Input ");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "<priority?>- Used to validate HTML code in User Program Input ");
             this.commandList[this.commandList.length] = sc;
             // run
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<PID> - Used to run the loaded process given a PID");
@@ -413,7 +413,12 @@ var TSOS;
             }
             var inputArray = programInput.split(" ");
             if (isValid) {
-                _ProcessManager.createProcess(inputArray);
+                if (args.length > 0) {
+                    _ProcessManager.createProcess(inputArray, args[0]);
+                }
+                else {
+                    _ProcessManager.createProcess(inputArray);
+                }
             }
         };
         Shell.prototype.shellRun = function (args) {

@@ -26,6 +26,9 @@ var TSOS;
                 case "rr":
                     this.schedulerRR();
                     break;
+                case "priority":
+                    this.schedulerPRIORITY();
+                    break;
                 default:
                     console.log("Broken scheduler");
             }
@@ -70,6 +73,27 @@ var TSOS;
             }
         };
         Scheduler.prototype.schedulerFCFS = function () {
+            if (this.counter === 0) {
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
+            }
+            else {
+                if (_ProcessManager.currPCB.state === "Terminated") {
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
+                }
+            }
+        };
+        Scheduler.prototype.schedulerPRIORITY = function () {
+            _ProcessManager.readyQueue.q.sort(function (a, b) {
+                if (a.priority < b.priority) {
+                    return -1;
+                }
+                if (a.priority > b.priority) {
+                    return 1;
+                }
+                if (a.priority == b.priority) {
+                    return 0;
+                }
+            });
             if (this.counter === 0) {
                 _KernelInterruptQueue.enqueue(new TSOS.Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
             }

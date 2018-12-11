@@ -116,7 +116,7 @@ module TSOS {
          // load
          sc = new ShellCommand(this.shellLoad,
             "load",
-            "- Used to validate HTML code in User Program Input ");
+            "<priority?>- Used to validate HTML code in User Program Input ");
          this.commandList[this.commandList.length] = sc;
 
          // run
@@ -525,7 +525,12 @@ module TSOS {
          let inputArray = programInput.split(" ");
 
          if (isValid) {
-            _ProcessManager.createProcess(inputArray);
+            if (args.length > 0 ) {
+               _ProcessManager.createProcess(inputArray, args[0]);
+            }
+            else {
+               _ProcessManager.createProcess(inputArray);
+            }
          }
       }
 

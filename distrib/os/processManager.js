@@ -14,7 +14,7 @@ var TSOS;
             this.runningAll = runningAll;
         }
         ;
-        ProcessManager.prototype.createProcess = function (program) {
+        ProcessManager.prototype.createProcess = function (program, priority) {
             var partitionID = _MemoryManager.getAvailablePartition();
             if (partitionID != -1) {
                 // update to new Process ID 
@@ -25,6 +25,8 @@ var TSOS;
                 this.processArray.push(pcb);
                 // assign the available partiton to the pcb and process
                 pcb.partitionIndex = partitionID;
+                // assign the process a priority
+                pcb.priority = priority != null ? Number(priority) : 64;
                 // write the program to the memory, given user input already split into array
                 _MemoryManager.writeProgramToMemory(pcb.partitionIndex, program);
                 // add this process to the list of upcoming processes

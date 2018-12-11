@@ -165,6 +165,7 @@ var TSOS;
                     break;
                 }
             }
+            // clear the tsb
             if (tsbArr.length != 0) {
                 for (var i = 0; i < tsbArr.length; i++) {
                     this.krnClearTSB(tsbArr[i]);
@@ -198,41 +199,43 @@ var TSOS;
             this.updateHDDdisplay();
         };
         DeviceDriverFS.prototype.krnFSReadFile = function (fileName) {
-            var tsbFileBlock = this.krnGetFileBlock(fileName);
-            var fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
-            var data = "";
-            data += fileArray[1];
-            data += fileArray[2];
-            data += fileArray[3];
-            var dataArray = [data];
-            //console.log("FROM HDD:" +_HDD.readFromHDD(data));
-            while (true) {
-                var tmpData = _HDD.readFromHDD(data);
-                if (tmpData.split("")[1] != "-") {
-                    data = "";
-                    data += tmpData.split("")[1];
-                    data += tmpData.split("")[2];
-                    data += tmpData.split("")[3];
-                    dataArray.push(data);
-                }
-                else {
-                    break;
-                }
-            }
+            /*   let tsbFileBlock = this.krnGetFileBlock(fileName);
+               let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
+   
+               let data = "";
+               data += fileArray[1];
+               data += fileArray[2];
+               data += fileArray[3];
+               
+               let dataArray = [data];
+               while (true) {
+                  let tmpData = _HDD.readFromHDD(data);
+                  if (tmpData.split("")[1] != "-") {
+                     data = "";
+                     data += tmpData.split("")[1];
+                     data += tmpData.split("")[2];
+                     data += tmpData.split("")[3];
+                     dataArray.push(data);
+                  }
+                  else {
+                     break;
+                  }
+               } */
+            var dataArray = this.getTSBDataBlock(fileName);
             var hexDataArray = [];
             for (var i = 0; i < dataArray.length; i++) {
-                console.log("data array: " + dataArray[i]);
-                console.log('to push: ' + _HDD.readFromHDD(dataArray[i]).split("").slice(4));
+                //console.log("data array: " + dataArray[i]);
+                //console.log('to push: ' + _HDD.readFromHDD(dataArray[i]).split("").slice(4));
                 hexDataArray.push(_HDD.readFromHDD(dataArray[i]).split("").slice(4));
             }
-            console.log("hda: " + hexDataArray[0]);
+            //console.log("hda: " + hexDataArray[0]);
             var hexDataString = "";
             for (var i = 0; i < hexDataArray.length; i++) {
                 for (var j = 0; j < hexDataArray[i].length; j++) {
                     hexDataString += hexDataArray[i][j];
                 }
             }
-            console.log("hexDataString: " + hexDataString);
+            //console.log("hexDataString: " + hexDataString);
             var finalDataString = "";
             for (var i = 0; i < hexDataString.length; i += 2) {
                 if (hexDataString.substring(i, i + 2) == "00") {
@@ -240,34 +243,10 @@ var TSOS;
                 }
                 finalDataString += String.fromCharCode(parseInt(hexDataString.substring(i, i + 2), 16));
             }
-            console.log("fds: " + finalDataString);
+            //console.log("fds: " + finalDataString);
             return finalDataString;
         };
-        DeviceDriverFS.prototype.krnFSDeleteFile = function (fileName) {
-            /*
-            let tsb = this.krnGetFileBlock(fileName);
-            let fileDataArray = _HDD.readFromHDD(tsb).split("");
-            
-            let fileDataString = "";
-            fileDataString += fileDataArray[1];
-            fileDataString += fileDataArray[2];
-            fileDataString += fileDataArray[3];
-
-            let tsbDataArray = [tsb, fileDataString];
-            while (true) {
-               let fileData = _HDD.readFromHDD(fileDataString);
-               if (fileData.split("")[1] != "-") {
-                  fileDataString = "";
-                  fileDataString += fileData.split("")[1];
-                  fileDataString += fileData.split("")[2];
-                  fileDataString += fileData.split("")[3];
-                  tsbDataArray.push(fileDataString);
-               }
-               else {
-                  break;
-               }
-            }
-            */
+        DeviceDriverFS.prototype.getTSBDataBlock = function (fileName) {
             var tsbFileBlock = this.krnGetFileBlock(fileName);
             var fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
             var data = "";
@@ -275,7 +254,6 @@ var TSOS;
             data += fileArray[2];
             data += fileArray[3];
             var dataArray = [data];
-            //console.log("FROM HDD:" +_HDD.readFromHDD(data));
             while (true) {
                 var tmpData = _HDD.readFromHDD(data);
                 if (tmpData.split("")[1] != "-") {
@@ -289,6 +267,35 @@ var TSOS;
                     break;
                 }
             }
+            return dataArray;
+        };
+        DeviceDriverFS.prototype.krnFSDeleteFile = function (fileName) {
+            /*
+            let tsbFileBlock = this.krnGetFileBlock(fileName);
+            let fileArray = _HDD.readFromHDD(tsbFileBlock).split("");
+ 
+            let data = "";
+            data += fileArray[1];
+            data += fileArray[2];
+            data += fileArray[3];
+            
+            let dataArray = [data];
+ 
+            while (true) {
+               let tmpData = _HDD.readFromHDD(data);
+               if (tmpData.split("")[1] != "-") {
+                  data = "";
+                  data += tmpData.split("")[1];
+                  data += tmpData.split("")[2];
+                  data += tmpData.split("")[3];
+                  dataArray.push(data);
+               }
+               else {
+                  break;
+               }
+            }
+            */
+            var dataArray = this.getTSBDataBlock(fileName);
             for (var i = 0; i < dataArray.length; i++) {
                 this.krnClearTSB(dataArray[i]);
             }
@@ -302,6 +309,7 @@ var TSOS;
                 }
                 tsbFiles.push(_HDD.tsbArray[i]);
             }
+            console.log("tsb files:" + tsbFiles);
             var activeFileNames = [];
             for (var i = 0; i < tsbFiles.length; i++) {
                 if (_HDD.readFromHDD(tsbFiles[i]).split("")[0] == "1") {
@@ -332,6 +340,8 @@ var TSOS;
             for (var i = 0; i < 64; i++) {
                 data += (i >= 1 && i <= 3) ? "-" : "0";
             }
+            console.log('clearing:');
+            console.log(tsb, data);
             _HDD.writeToHDD(tsb, data);
         };
         DeviceDriverFS.prototype.krnGetNewBlock = function () {
@@ -373,13 +383,6 @@ var TSOS;
                 if (data.join("") == dataCheck) {
                     return tsb;
                 }
-            }
-        };
-        DeviceDriverFS.prototype.logHardDrive = function () {
-            for (var i = 0; i < _HDD.tsbArray.length; i++) {
-                var tsb = _HDD.tsbArray[i];
-                var output = _HDD.readFromHDD(tsb);
-                // console.log( tsb + "  " + output);
             }
         };
         DeviceDriverFS.prototype.initHDDdisplay = function () {
