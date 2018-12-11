@@ -238,6 +238,7 @@ var TSOS;
                 var row = table.rows[i].cells;
                 if (parseInt(row[0].innerHTML) == pcb.pid) {
                     table.deleteRow(i);
+                    break;
                 }
             }
         };
