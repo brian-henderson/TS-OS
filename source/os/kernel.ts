@@ -101,6 +101,10 @@ module TSOS {
                This is NOT the same as a TIMER, which causes an interrupt and is handled like other interrupts.
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
                that it has to look for interrupts and process them if it finds any.                           */
+            
+            if (_ProcessManager.readyQueue.getSize() == 0) {
+               _CPU.isExecuting = false;
+            }
 
           
             if (! _ProcessManager.readyQueue.isEmpty() && !_SingleStep) {
@@ -114,6 +118,7 @@ module TSOS {
                   _ProcessManager.currPCB = pcb;
                }
                _CPU.isExecuting = true;
+               console.log("...");
             }
 
             // Check for an interrupt, are any. Page 560

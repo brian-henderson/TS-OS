@@ -549,7 +549,7 @@ var TSOS;
                 var responseCode = _krnFileSystemDriver.krnFSCreateFile(args.toString());
                 switch (responseCode) {
                     case -1:
-                        _StdOut.putResponseText("ERROR CODE -1: NO SPACE IN FILE SYSTEM");
+                        _StdOut.putResponseText("ERR 0003: NO SPACE IN FILE SYSTEM");
                         break;
                     case 0:
                         _StdOut.putResponseText("File is already in file system");
@@ -558,7 +558,7 @@ var TSOS;
                         _StdOut.putResponseText("File " + args + " successfully created");
                         break;
                     default:
-                        console.log("something went terribly wrong");
+                        console.log("ERR 0001: What did you do! This should never happen.");
                 }
             }
         };

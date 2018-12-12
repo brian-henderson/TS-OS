@@ -115,7 +115,7 @@ var TSOS;
                     break;
                 default:
                     // invalid op code
-                    console.log("Invalid OP: " + currentInstruction);
+                    console.log("ERR 4729: Invalid OP: " + currentInstruction);
                     _StdOut.putResponseText("Invalid OP code...terminating");
                     _ProcessManager.terminateProcess(pcb);
             }
@@ -194,11 +194,7 @@ var TSOS;
             // increase program counter
             this.increaseProgramCounter();
             // get and assign y register
-            console.log("Y Before Load: A0 " + this.Yreg);
             this.Yreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, this.PC), 16);
-            console.log("Read: " + _ProcessManager.readInstruction(pcb.partitionIndex, this.PC));
-            console.log("PC: " + this.PC);
-            console.log("Y After Load: A0 " + this.Yreg);
             // update program counter to next program
             this.increaseProgramCounter();
         };
@@ -219,13 +215,9 @@ var TSOS;
             // increase program counter
             this.increaseProgramCounter();
             var memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
-            console.log("memory loc hex:" + memoryLocHex);
             this.increaseProgramCounter();
             var memoryLoc = parseInt(memoryLocHex, 16);
-            console.log("memory loc:" + memoryLoc);
-            console.log("Y Before Load: " + this.Yreg);
             this.Yreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
-            console.log("Y After Load: " + this.Yreg);
             this.increaseProgramCounter();
         };
         // OP CODE  - EC
@@ -243,15 +235,6 @@ var TSOS;
         // OP CODE  - 6D
         // Purpsoe: Add contents of the address to acc and save results in acc
         Cpu.prototype.addWithCarry = function (pcb) {
-            /*   this.increaseProgramCounter();
-               let hexStr = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
-               this.increaseProgramCounter();
-               hexStr = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC) + hexStr;
-               let memoryLoc = parseInt(hexStr, 16);
-               let val = _ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc);
-               this.Acc += parseInt(val);
-               this.increaseProgramCounter();
-               */
             this.increaseProgramCounter();
             var memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
             this.increaseProgramCounter();
@@ -294,7 +277,6 @@ var TSOS;
         // Purpose: print integer stored in Y reg 
         Cpu.prototype.systemCall = function (pcb) {
             if (this.Xreg === 1) {
-                console.log("System Call Y: " + this.Yreg);
                 _StdOut.putText(this.Yreg.toString());
                 pcb.stdOutput += this.Yreg.toString();
             }
@@ -309,7 +291,6 @@ var TSOS;
                 }
                 _StdOut.putText(output);
                 pcb.stdOutput += output;
-                console.log("System Call Output: " + output);
             }
             this.increaseProgramCounter();
         };
@@ -323,11 +304,7 @@ var TSOS;
             var value = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
             value++;
             var hexValue = value.toString(16).toUpperCase();
-            //hexValue = hexValue.length < 2 ? ("0" + hexValue) : hexValue;
-            if (hexValue.length < 2) {
-                hexValue = "0" + hexValue;
-            }
-            console.log("Writin hex value: " + hexValue);
+            hexValue = hexValue.length < 2 ? ("0" + hexValue) : hexValue;
             _Memory.writeMemoryByte(pcb.partitionIndex, memoryLoc, hexValue);
             this.increaseProgramCounter();
         };

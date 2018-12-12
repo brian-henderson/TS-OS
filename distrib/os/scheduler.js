@@ -32,7 +32,7 @@ var TSOS;
                     this.schedulerPRIORITY();
                     break;
                 default:
-                    console.log("Broken scheduler");
+                    console.log("ERR 2748: Scheduling algorthim not provided");
             }
             this.counter++;
         };
@@ -40,20 +40,16 @@ var TSOS;
         Scheduler.prototype.unloadProcessFromReadyQueue = function () {
             if (_ProcessManager.readyQueue.getSize() > 0) {
                 _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
-                //console.log("Next process to run: " + _ProcessManager.currPCB.pid )
                 _ProcessManager.currPCB.state = "Running";
                 if (_ProcessManager.currPCB.location == "HDD") {
                     _krnFileSystemDriver.krnRollIn(_ProcessManager.currPCB);
                     this.rolledOutAlready = false;
-                    //console.log("roll tide");
                 }
                 if (this.rolledOutAlready) {
                     var hddPCB = _ProcessManager.getPCBfromHDD();
-                    console.log("hdd PCB: " + hddPCB);
                     _krnFileSystemDriver.krnRollIn(hddPCB);
                     _Control.updatePcbDisplay(hddPCB);
                     this.rolledOutAlready = false;
-                    //  console.log("rolled out")
                 }
                 var log = "Switching context to PID " + _ProcessManager.currPCB.pid;
                 _Kernel.krnTrace(log);

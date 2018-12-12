@@ -439,12 +439,9 @@
          public krnRollOut(pcb: ProcessControlBlock, program) {
             let programData = program.join("");
             let programDataArray = programData.split("");
-            console.log("Program to write: " + program );
-
             if (pcb.location === "MEMORY") {
                _MemoryManager.freePartition(pcb.partitionIndex);
             }
-
             let tsb = this.krnGetNextFreeBlock();
             pcb.hddTSB = tsb;
             pcb.location = "HDD";
@@ -469,7 +466,6 @@
                _HDD.writeToHDD(tsb, inputData);
                tsb = this.krnGetNextFreeBlock();
             }
-            console.log("writing data to tsb: " + pcb.hddTSB);
             _Control.updatePcbDisplay(pcb);
             this.updateHDDdisplay();
             
@@ -495,7 +491,6 @@
                let instruction = program.charAt(i) + program.charAt(i+1);
                programArray.push(instruction);
             }
-            console.log(programArray)
          
             pcb.location = "MEMORY";
             pcb.hddTSB = null;

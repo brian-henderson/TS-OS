@@ -118,7 +118,7 @@ module TSOS {
                break;
             default:
                // invalid op code
-               console.log("Invalid OP: " + currentInstruction);
+               console.log("ERR 4729: Invalid OP: " + currentInstruction);
                _StdOut.putResponseText("Invalid OP code...terminating");
                _ProcessManager.terminateProcess(pcb);
          }
@@ -209,11 +209,7 @@ module TSOS {
          // increase program counter
          this.increaseProgramCounter();
          // get and assign y register
-         console.log("Y Before Load: A0 " + this.Yreg)
          this.Yreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, this.PC), 16);
-         console.log("Read: " + _ProcessManager.readInstruction(pcb.partitionIndex, this.PC))
-         console.log("PC: " + this.PC);
-         console.log("Y After Load: A0 " + this.Yreg)
          // update program counter to next program
          this.increaseProgramCounter();
       }
@@ -235,13 +231,9 @@ module TSOS {
          // increase program counter
          this.increaseProgramCounter();
          let memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
-         console.log("memory loc hex:" + memoryLocHex)
          this.increaseProgramCounter();
          let memoryLoc = parseInt(memoryLocHex, 16);
-         console.log("memory loc:" + memoryLoc)
-         console.log("Y Before Load: " + this.Yreg)
          this.Yreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
-         console.log("Y After Load: " + this.Yreg)
          this.increaseProgramCounter();
       }
 
@@ -306,7 +298,6 @@ module TSOS {
       // Purpose: print integer stored in Y reg 
       public systemCall(pcb: ProcessControlBlock): void {
          if (this.Xreg === 1) {
-            console.log("System Call Y: " + this.Yreg);
             _StdOut.putText(this.Yreg.toString());
             pcb.stdOutput += this.Yreg.toString();
          }
@@ -321,7 +312,6 @@ module TSOS {
             }
             _StdOut.putText(output);
             pcb.stdOutput += output;
-            console.log("System Call Output: " + output);
          }
          this.increaseProgramCounter();
 
@@ -338,7 +328,6 @@ module TSOS {
          value++;
          let hexValue = value.toString(16).toUpperCase();
          hexValue = hexValue.length < 2 ? ("0" + hexValue) : hexValue;
-         console.log("Writin hex value: " + hexValue);
          _Memory.writeMemoryByte(pcb.partitionIndex, memoryLoc, hexValue);
          this.increaseProgramCounter();
       }

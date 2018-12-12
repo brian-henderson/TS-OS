@@ -52,7 +52,6 @@ var TSOS;
             if (partition === 2) {
                 loc += 512;
             }
-            console.log("Writing byte: " + byteData);
             this.memoryStorage[loc] = byteData;
         };
         Memory.prototype.clearMemory = function () {
@@ -82,7 +81,7 @@ var TSOS;
                     }
                     break;
                 default:
-                    console.log("Failed to clear memory partition");
+                    console.log("ERR 5323: Invalid partition entry");
             }
             _MemoryManager.partitions[partition].available = true;
         };

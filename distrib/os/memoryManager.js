@@ -63,7 +63,7 @@ var TSOS;
                 _Control.updatePcbDisplay(pcb);
             }
             else {
-                console.log('uh oh');
+                console.log('ERR 3849: Failed to load valid partition from hdd');
             }
         };
         MemoryManager.prototype.getPcbFromPartition = function (partitionIndex) {
