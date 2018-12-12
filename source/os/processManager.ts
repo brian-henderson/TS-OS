@@ -106,9 +106,9 @@ module TSOS {
 
       public terminateProcess(pcb: ProcessControlBlock): void {
          _CPU.isExecuting = false;
-         this.removeProcessFromReadyQueue(pcb.pid);
          pcb.state = "Terminated";
          pcb.location = "Black Hole";
+         this.removeProcessFromReadyQueue(pcb.pid);
          _Memory.clearMemoryPartition(pcb.partitionIndex);
          _CPU.resetCpu();
          _Control.updatePcbDisplay(pcb);
@@ -117,6 +117,7 @@ module TSOS {
          _Console.advanceLine();
          _OsShell.putPrompt();
          Utils.setStatus("Still a little hungry...");
+         console.log("PCB OUTPUT: " + pcb.pid + "   "+ pcb.stdOutput);
          
       }
 
@@ -179,6 +180,8 @@ module TSOS {
          _StdOut.advanceLine();
          _StdOut.putResponseText("Turnaround Time: " + pcb.turnAroundTime);
          _StdOut.advanceLine();
+         _StdOut.putResponseText("Final Output: " + pcb.stdOutput);
+
       }
 
       public getPCBfromHDD(): ProcessControlBlock {

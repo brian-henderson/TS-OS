@@ -16,6 +16,7 @@
             public waitTime: number = 0;
             public turnAroundTime: number = 0;
             public hddTSB: string = null;
+            public stdOutput: string = "";
             
             constructor(p) {
                 this.pid = p;

@@ -16,6 +16,7 @@ var TSOS;
             this.waitTime = 0;
             this.turnAroundTime = 0;
             this.hddTSB = null;
+            this.stdOutput = "";
             this.pid = p;
         }
         ;

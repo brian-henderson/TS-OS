@@ -43,14 +43,13 @@ var TSOS;
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
-            // TODO: Accumulate CPU usage and profiling statistics here.
-            // Do the real work here. Be sure to set this.isExecuting appropriately.
-            if (_ProcessManager.currPCB != undefined) {
+            if (_ProcessManager.currPCB != undefined && _ProcessManager.currPCB.state != "Terminated") {
                 this.executeProgram(_ProcessManager.currPCB);
                 _ProcessManager.updateTurnAroundTime();
                 _ProcessManager.updateWaitTime();
                 _Control.updateCpuDisplay();
                 _Control.updatePcbDisplay(_ProcessManager.currPCB);
+                this.isExecuting = true;
             }
         };
         Cpu.prototype.executeProgram = function (pcb) {
@@ -124,18 +123,6 @@ var TSOS;
             if (_SingleStep) {
                 this.isExecuting = false;
             }
-            /*
-            if (isNaN(this.Acc))
-               console.log("NaN Acc: " + this.IR);
-            if (isNaN(this.PC))
-               console.log("NaN PC: " + this.IR);
-            if (isNaN(this.Xreg))
-               console.log("NaN X: " + this.IR);
-            if (isNaN(this.Yreg))
-               console.log("NaN Y: " + this.IR);
-            if (isNaN(this.Zflag))
-               console.log("NaN Z: " + this.IR);
-               */
         };
         Cpu.prototype.updateCurrentPCB = function () {
             _ProcessManager.currPCB.accumulator = this.Acc;
@@ -292,9 +279,11 @@ var TSOS;
         Cpu.prototype.systemCall = function (pcb) {
             if (this.Xreg === 1) {
                 _StdOut.putText(this.Yreg.toString());
+                pcb.stdOutput += this.Yreg.toString();
             }
             else if (this.Xreg === 2) {
                 var memoryLoc = this.Yreg;
+                console.log("Meomry Location: " + memoryLoc);
                 var output = '';
                 var ascii = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
                 while (ascii != 0) {
@@ -303,6 +292,7 @@ var TSOS;
                     ascii = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
                 }
                 _StdOut.putText(output);
+                pcb.stdOutput += output;
             }
             this.increaseProgramCounter();
         };
@@ -330,6 +320,7 @@ var TSOS;
         // Purpose: make the program stop/break/terminate/end/die
         Cpu.prototype.breakProgram = function (pcb) {
             this.increaseProgramCounter();
+            this.isExecuting = false;
             _ProcessManager.terminateProcess(pcb);
         };
         return Cpu;

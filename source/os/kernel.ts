@@ -107,7 +107,6 @@ module TSOS {
                // run all processes
                if ( _ProcessManager.runningAll ) {
                   // eventually re organize based off of priortiy
-                  
                } 
                // process is executed via a run cmd indicating PID
                else {
@@ -123,7 +122,8 @@ module TSOS {
                 // TODO: Implement a priority queue based on the IRQ number/id to enforce interrupt priority.
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
-            } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed. {
+            } 
+            else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed. 
                
                if (_ProcessManager.runningAll) {
                   _Scheduler.validateScheduler();

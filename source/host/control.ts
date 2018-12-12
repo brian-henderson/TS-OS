@@ -244,10 +244,7 @@ module TSOS {
       }
 
       public updatePcbDisplay(pcb: ProcessControlBlock): void {
-         /**
-          * if (pcb.state != "Terminated")
-          */
-         if (pcb.state != "") {
+         if (pcb) {
             let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
             let tableLength = table.rows.length;
             for (let i = 0; i < tableLength; i++) {
@@ -269,7 +266,7 @@ module TSOS {
       }
 
       public removePcbDisplay(pcb: ProcessControlBlock): void {
-         let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
+         /*let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
          let tableLength = table.rows.length;
          for (let i = 0; i < tableLength; i++) {
             let row = table.rows[i].cells;
@@ -277,7 +274,7 @@ module TSOS {
                table.deleteRow(i);
                break;
             }
-         }
+         }*/
       }
       
 

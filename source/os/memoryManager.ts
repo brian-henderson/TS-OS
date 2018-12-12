@@ -34,7 +34,7 @@
                _Memory.writeMemory(partition, program);
             }
 
-         
+
             public getAvailablePartition(): number {
 
                if (this.partitions[0].available == true) {
@@ -88,9 +88,6 @@
             public checkForFreePartitions(): boolean {
                return this.partitions[0].available || this.partitions[1].available || this.partitions[2].available;
             }
-
-
-
 
         }
 

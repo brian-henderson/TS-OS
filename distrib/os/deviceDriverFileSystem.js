@@ -430,7 +430,6 @@ var TSOS;
             }
             pcb.location = "MEMORY";
             pcb.hddTSB = null;
-            //console.log("Part")
             _MemoryManager.loadProgramFromHDD(pcb, programArray);
             _Control.updatePcbDisplay(pcb);
         };

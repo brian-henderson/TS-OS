@@ -39,55 +39,56 @@ module TSOS {
 
       // Grab the next process in the ready queue and set it to the curr PCB
       public unloadProcessFromReadyQueue(): void {
-         _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
-         _ProcessManager.currPCB.state = "Running";
-         console.log("Curr PCB: " + _ProcessManager.currPCB.pid );
+         if (_ProcessManager.readyQueue.getSize() > 0) {
 
-         if (_ProcessManager.currPCB.location == "HDD") {
-            //c/onsole.log("in hddd");
-            //console.log(_ProcessManager.currPCB.pid)
-            //console.log(_ProcessManager.currPCB.location)
-            //console.log(_ProcessManager.currPCB.hddTSB)
-            _krnFileSystemDriver.krnRollIn(_ProcessManager.currPCB);
-            this.rolledOutAlready = false;
+            _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
+            _ProcessManager.currPCB.state = "Running";
+
+            if (_ProcessManager.currPCB.location == "HDD") {
+               _krnFileSystemDriver.krnRollIn(_ProcessManager.currPCB);
+               this.rolledOutAlready = false;
+            }
+
+            if (this.rolledOutAlready) {
+               let hddPCB: ProcessControlBlock = _ProcessManager.getPCBfromHDD();
+               _krnFileSystemDriver.krnRollIn(hddPCB);
+               _Control.updatePcbDisplay(hddPCB);
+               this.rolledOutAlready = false;
+            }
+
+            let log: string = "Switching context to PID "+_ProcessManager.currPCB.pid;
+            _Kernel.krnTrace(log)
          }
-
-         if (this.rolledOutAlready) {
-            let hddPCB: ProcessControlBlock = _ProcessManager.getPCBfromHDD();
-            _krnFileSystemDriver.krnRollIn(hddPCB);
-            _Control.updatePcbDisplay(hddPCB);
-            this.rolledOutAlready = false;
-         }
-
-         let log: string = "Switching context to PID "+_ProcessManager.currPCB.pid;
-         _Kernel.krnTrace(log)
       }
 
       // set the curr PCB to ready and throw it in the back
       public loadProcessToReadyQueue(): void {
-         let log: string = "Switching context out of PID"+_ProcessManager.currPCB.pid;
-         _ProcessManager.currPCB.state = "Ready";
+         if (_ProcessManager.currPCB.state != "Terminated") {
+
+            let log: string = "Switching context out of PID" + _ProcessManager.currPCB.pid;
+            _ProcessManager.currPCB.state = "Ready";
 
 
-        if ( _ProcessManager.readyQueue.q[0].location === "HDD" && (! _MemoryManager.checkForFreePartitions()) && _ProcessManager.readyQueue.getSize() > 2  ) {
-            _krnFileSystemDriver.krnRollOut(_ProcessManager.currPCB, _Memory.getProgramFromMemory(_ProcessManager.currPCB.partitionIndex, _ProcessManager.currPCB.programCounter));
-            this.rolledOutAlready = true;
-         } 
+            if (_ProcessManager.readyQueue.q[0].location === "HDD" && (!_MemoryManager.checkForFreePartitions()) && _ProcessManager.readyQueue.getSize() > 2) {
+               _krnFileSystemDriver.krnRollOut(_ProcessManager.currPCB, _Memory.getProgramFromMemory(_ProcessManager.currPCB.partitionIndex, _ProcessManager.currPCB.programCounter));
+               this.rolledOutAlready = true;
+            }
 
-         _Control.updatePcbDisplay(_ProcessManager.currPCB);
-         _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
-         _Kernel.krnTrace(log)
+            _Control.updatePcbDisplay(_ProcessManager.currPCB);
+            _ProcessManager.readyQueue.enqueue(_ProcessManager.currPCB);
+            _Kernel.krnTrace(log)
+         }
       }
 
       public isVaildScheduler(arg: string): boolean {
-         for (let i=0; i< this.schedulingAlgos.length; i++) {
+         for (let i = 0; i < this.schedulingAlgos.length; i++) {
             if (this.schedulingAlgos[i] === arg) {
                return true;
             }
          }
       }
 
-      public schedulerRR() {
+      public schedulerRR() {4
          if (this.counter === 0) {
             _KernelInterruptQueue.enqueue(new Interrupt(UNLOAD_PROCESS_SWITCH_IRQ, 0));
          }
