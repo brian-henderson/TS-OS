@@ -104,4 +104,3 @@ var _SchedulerAlgoDefault: string = "rr";
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };
-
