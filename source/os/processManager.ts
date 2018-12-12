@@ -117,8 +117,6 @@ module TSOS {
          _Console.advanceLine();
          _OsShell.putPrompt();
          Utils.setStatus("Still a little hungry...");
-         console.log("PCB OUTPUT: " + pcb.pid + "   "+ pcb.stdOutput);
-         
       }
 
       public runAllProccesses() {
@@ -181,6 +179,7 @@ module TSOS {
          _StdOut.putResponseText("Turnaround Time: " + pcb.turnAroundTime);
          _StdOut.advanceLine();
          _StdOut.putResponseText("Final Output: " + pcb.stdOutput);
+         _StdOut.advanceLine();
 
       }
 

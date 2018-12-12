@@ -15,10 +15,12 @@
             this.status = "loaded";
          }
 
+         // return the combmined string of track sector and block
          public concatTSB(t, s, b): string {
             return t.toString() + s.toString() + b.toString();
          }
 
+         // get an empty track sector block "file"
          public getEmptyTSB(): string {
             let emptyTSB: string = '';
 
@@ -34,6 +36,7 @@
 
          }
 
+         // format the filesystem with initializing MSB and other TSBs
          public krnFSFormat(): void {
             let inititalTSB: string = "1---MASTER_BOOT_RECORD";
             let track: number = 0;
@@ -51,17 +54,17 @@
                }
             }
 
+            // check if the fs is formatted already
             if (this.formatted) {
                _HDD.writeToHDD("000", inititalTSB);
                for(let i = 0; i < _HDD.tsbArray.length; i++) {
                   _HDD.writeToHDD(i, emptyTSB);
                }
-               /**
-                * Check processes of ready queue in the resident list
-               */ 
             }
+            // 
             else {
-               for (let i = 0; i <= 999; i++) {
+               // format the fs and initialize tsbs
+               while (true) {
                   // check to make sure not invalid TSB
                   if (track == 3 && sector == 7 && block == 8) {
                      break;
@@ -72,6 +75,7 @@
                      _HDD.tsbArray.push(tsb);
                      block++;
                   }
+                  // increment the locations
                   else {
                      if (block == 8) {
                         block = 0;
@@ -94,45 +98,53 @@
 
          }
 
+         // create a file to the harddrive with a file name
          public krnFSCreateFile(fileName): number {
+            // we are going to convert the filename into a character array to break down the hex conversions
             let fileNameCharArray = fileName.split("");
             let fileNameHexArray = new Array();
             for (let i = 0; i < fileNameCharArray.length; i ++) {
                fileNameHexArray.push(fileNameCharArray[i].charCodeAt(0).toString(16));
             }
 
-            for (let i = 0; i < 999; i++) {
+            for (let i = 0; i < 500; i++) {
                let tsb = _HDD.tsbArray[i];
                let validBitStatus = _HDD.readFromHDD(tsb).split("")[0];
                
+               // files full on the system
                if (tsb == "100") {
-                  // files full --- do something 
                   return -1;
                }
-
-               if (validBitStatus == "1" && i > 0) {
+               
+               // check for file already being in the system
+               else if (validBitStatus == "1" && i > 0) {
                   let fileData = _HDD.readFromHDD(tsb).split("").splice(4);
+                  
+                  // file for comparing the data with in the system
                   let dataCheck = '';
-
                   for (let j = 0; j < fileNameHexArray.length; j++) {
                      dataCheck += fileNameHexArray[j];
                   }
-
                   for (let k = dataCheck.length-1; k < 59; k++ ) {
                      dataCheck += '0';
                   }
-
+                  
                   if (fileData.join("") == dataCheck) {
                      return 0;
                   }
                }
+
+               // check if valid for creating a new file
                else if (validBitStatus == "0" && i > 0) {
+                  // grab the next available tsb
                   let newDataTSB = this.krnGetNextFreeBlock();
                   let newData = _HDD.readFromHDD(newDataTSB);
+                  // reserve the space with valud bit
                   let newDataArr = newData.split("");
                   newDataArr[0] = "1";
                   newData = newDataArr.join("");
                   _HDD.writeToHDD(newDataTSB, newData);
+                  // create final data to write to disk
                   let fileData = "1" + newDataTSB;
                   for (let i = 0; i < fileNameHexArray.length; i++) {
                      fileData += fileNameHexArray[i];
@@ -140,6 +152,7 @@
                   for (let i = fileData.length-1; i < 63; i++) {
                      fileData += "0";
                   }
+                  // final write
                   _HDD.writeToHDD(tsb, fileData);
                   this.updateHDDdisplay();
                   return 1;
@@ -147,18 +160,21 @@
             }
           }
 
+         // write file data to the disk file
          public krnFSWriteFile(fileName, fileData): void {
+            // we are going to convert the filename into a character array to break down the hex conversions
             let data = fileData.split("");
             let fileDataHexArray = [];
-
             for (let i = 0; i < fileData.length; i++) {
                fileDataHexArray.push(data[i].charCodeAt(0).toString(16));
             }
-
             let fileDataHexString = fileDataHexArray.join("");
+
+            // find out how many links we need to make to more data blocks 
             let linkCount = fileDataHexString.length > 0 ? Math.ceil(fileDataHexString.length/60) : 1;
             fileDataHexArray = fileDataHexString.split("");
             
+            // get the tsb for the file
             let tsb = this.krnGetFileBlock(fileName);
             let currTSBdata = _HDD.readFromHDD(tsb);
             let currTSBdataArray = currTSBdata.split("");
@@ -170,7 +186,8 @@
             
             let copyOfTsb = tsb;
             let tsbArr = [copyOfTsb];
-
+            
+            // read the tsb data and make a copy
             while(true) {
                let tsbData = _HDD.readFromHDD(copyOfTsb);
                if ( tsbData.split("")[1] != "-") {
@@ -191,10 +208,10 @@
                   this.krnClearTSB(tsbArr[i]);
                }
             }
-            let hexIndex = 2;
             
+            // set the hex index at 2 to remove the first few unneeded values
+            let hexIndex = 2;
             for (let i = 0; i < linkCount; i++) {
-               //console.log("lc:"  + linkCount)
                currTSBdata = _HDD.readFromHDD(tsb);
                let TSBdataArray = currTSBdata.split("");
                TSBdataArray[0] = "1";
@@ -202,7 +219,6 @@
                
                let inputData = "1";
                inputData += (i === linkCount-1) ? "---" : this.krnGetNextFreeBlock();
-               //console.log(inputData);
                for (let j = 0; j < 60; j++) {
                   if (hexIndex >= fileDataHexArray.length) {
                      inputData += "0";
@@ -221,14 +237,10 @@
          public krnFSReadFile(fileName): string {
 
             let dataArray = this.getTSBDataBlock(fileName);
-
             let hexDataArray = [];
             for (let i = 0; i < dataArray.length; i++) {
-               //console.log("data array: " + dataArray[i]);
-               //console.log('to push: ' + _HDD.readFromHDD(dataArray[i]).split("").slice(4));
                hexDataArray.push(_HDD.readFromHDD(dataArray[i]).split("").slice(4));
             }
-            //console.log("hda: " + hexDataArray[0]);
 
             let hexDataString = "";
             for (let i = 0; i < hexDataArray.length; i++) {
@@ -236,7 +248,6 @@
                   hexDataString += hexDataArray[i][j];
                }
             }
-            //console.log("hexDataString: " + hexDataString);
             
             let finalDataString = ""
             for (let i = 0; i < hexDataString.length; i += 2) {
@@ -245,7 +256,6 @@
                }
                finalDataString += String.fromCharCode(parseInt(hexDataString.substring(i, i+2), 16));
             }
-            //console.log("fds: " + finalDataString);
             return finalDataString;
 
          }
@@ -303,7 +313,6 @@
                if (_HDD.readFromHDD(tsbFiles[i]).split("")[0] == "1") {
                   let name = "";
                   let hexString = _HDD.readFromHDD(tsbFiles[i]).split("").slice(4).join("");
-                  //console.log("hex string: " + hexString);
                   for (let j = 0; j < hexString.length; j+= 2) {
                      name += String.fromCharCode(parseInt(hexString.substring(j, j+2), 16))
                   }
@@ -313,7 +322,6 @@
 
             if (activeFileNames.length != 0) {
                for (let i = 1; i < activeFileNames.length; i++) {
-                  //console.log("active file name: " + activeFileNames[i]);
                   _StdOut.putResponseText(activeFileNames[i]);
                   if (i != activeFileNames.length-1) {
                      _StdOut.advanceLine();
@@ -338,7 +346,6 @@
          public krnGetNextFreeBlock() {
             let start = 0;
             for (let i = 0; i < _HDD.tsbArray.length; i ++ ) {
-               //start = _HDD.tsbArray[i] == "100" ? i : 0;
                if (_HDD.tsbArray[i] == "100") {
                   start = i;
                   break;
@@ -346,11 +353,7 @@
             }
 
             for (let i = start; i < _HDD.tsbArray.length; i++) {
-               //console.log("Outside: " + _HDD.tsbArray[i].split("")[0]);
-               //console.log("Outside readding hdd: " + _HDD.readFromHDD(_HDD.tsbArray[i].split("")[0]));
                if (_HDD.readFromHDD(_HDD.tsbArray[i]).split("")[0] == "0") {
-                 // console.log("Inner: " + _HDD.tsbArray[i].split("")[0]);
-                 // console.log("Return: " +_HDD.tsbArray[i]);
                   return _HDD.tsbArray[i];
                }
             }
@@ -364,7 +367,7 @@
             for (let i = 0; i < name.length; i++) {
                fileNameHexArray.push(name[i].charCodeAt(0).toString(16));
             }
-
+            
             for (let i = 0; i < _HDD.tsbArray.length; i++) {
                let tsb = _HDD.tsbArray[i];
                let data = _HDD.readFromHDD(tsb).split("").slice(4);
@@ -386,6 +389,7 @@
 
          }
 
+         // initalize the hdd html dislau
          public initHDDdisplay(): void {
             let table = (<HTMLTableElement>document.getElementById("tableHDD"));
             let t = 0; 
@@ -419,6 +423,7 @@
             }
          }
 
+         // update the html display
          public updateHDDdisplay(): void {
             let table = (<HTMLTableElement>document.getElementById("tableHDD"));
             for (let i = 0; i < _HDD.tsbArray.length; i ++) {

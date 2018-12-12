@@ -28,9 +28,11 @@ var TSOS;
         DeviceDriverFS.prototype.krnFSDriverEntry = function () {
             this.status = "loaded";
         };
+        // return the combmined string of track sector and block
         DeviceDriverFS.prototype.concatTSB = function (t, s, b) {
             return t.toString() + s.toString() + b.toString();
         };
+        // get an empty track sector block "file"
         DeviceDriverFS.prototype.getEmptyTSB = function () {
             var emptyTSB = '';
             for (var i = 0; i < 64; i++) {
@@ -43,6 +45,7 @@ var TSOS;
             }
             return emptyTSB;
         };
+        // format the filesystem with initializing MSB and other TSBs
         DeviceDriverFS.prototype.krnFSFormat = function () {
             var inititalTSB = "1---MASTER_BOOT_RECORD";
             var track = 0;
@@ -58,17 +61,17 @@ var TSOS;
                     emptyTSB += '0';
                 }
             }
+            // check if the fs is formatted already
             if (this.formatted) {
                 _HDD.writeToHDD("000", inititalTSB);
                 for (var i = 0; i < _HDD.tsbArray.length; i++) {
                     _HDD.writeToHDD(i, emptyTSB);
                 }
-                /**
-                 * Check processes of ready queue in the resident list
-                */
             }
+            // 
             else {
-                for (var i = 0; i <= 999; i++) {
+                // format the fs and initialize tsbs
+                while (true) {
                     // check to make sure not invalid TSB
                     if (track == 3 && sector == 7 && block == 8) {
                         break;
@@ -79,6 +82,7 @@ var TSOS;
                         _HDD.tsbArray.push(tsb);
                         block++;
                     }
+                    // increment the locations
                     else {
                         if (block == 8) {
                             block = 0;
@@ -99,21 +103,25 @@ var TSOS;
                 this.formatted = true;
             }
         };
+        // create a file to the harddrive with a file name
         DeviceDriverFS.prototype.krnFSCreateFile = function (fileName) {
+            // we are going to convert the filename into a character array to break down the hex conversions
             var fileNameCharArray = fileName.split("");
             var fileNameHexArray = new Array();
             for (var i = 0; i < fileNameCharArray.length; i++) {
                 fileNameHexArray.push(fileNameCharArray[i].charCodeAt(0).toString(16));
             }
-            for (var i = 0; i < 999; i++) {
+            for (var i = 0; i < 500; i++) {
                 var tsb = _HDD.tsbArray[i];
                 var validBitStatus = _HDD.readFromHDD(tsb).split("")[0];
+                // files full on the system
                 if (tsb == "100") {
-                    // files full --- do something 
                     return -1;
                 }
-                if (validBitStatus == "1" && i > 0) {
+                // check for file already being in the system
+                else if (validBitStatus == "1" && i > 0) {
                     var fileData = _HDD.readFromHDD(tsb).split("").splice(4);
+                    // file for comparing the data with in the system
                     var dataCheck = '';
                     for (var j = 0; j < fileNameHexArray.length; j++) {
                         dataCheck += fileNameHexArray[j];
@@ -125,13 +133,17 @@ var TSOS;
                         return 0;
                     }
                 }
+                // check if valid for creating a new file
                 else if (validBitStatus == "0" && i > 0) {
+                    // grab the next available tsb
                     var newDataTSB = this.krnGetNextFreeBlock();
                     var newData = _HDD.readFromHDD(newDataTSB);
+                    // reserve the space with valud bit
                     var newDataArr = newData.split("");
                     newDataArr[0] = "1";
                     newData = newDataArr.join("");
                     _HDD.writeToHDD(newDataTSB, newData);
+                    // create final data to write to disk
                     var fileData = "1" + newDataTSB;
                     for (var i_1 = 0; i_1 < fileNameHexArray.length; i_1++) {
                         fileData += fileNameHexArray[i_1];
@@ -139,21 +151,26 @@ var TSOS;
                     for (var i_2 = fileData.length - 1; i_2 < 63; i_2++) {
                         fileData += "0";
                     }
+                    // final write
                     _HDD.writeToHDD(tsb, fileData);
                     this.updateHDDdisplay();
                     return 1;
                 }
             }
         };
+        // write file data to the disk file
         DeviceDriverFS.prototype.krnFSWriteFile = function (fileName, fileData) {
+            // we are going to convert the filename into a character array to break down the hex conversions
             var data = fileData.split("");
             var fileDataHexArray = [];
             for (var i = 0; i < fileData.length; i++) {
                 fileDataHexArray.push(data[i].charCodeAt(0).toString(16));
             }
             var fileDataHexString = fileDataHexArray.join("");
+            // find out how many links we need to make to more data blocks 
             var linkCount = fileDataHexString.length > 0 ? Math.ceil(fileDataHexString.length / 60) : 1;
             fileDataHexArray = fileDataHexString.split("");
+            // get the tsb for the file
             var tsb = this.krnGetFileBlock(fileName);
             var currTSBdata = _HDD.readFromHDD(tsb);
             var currTSBdataArray = currTSBdata.split("");
@@ -163,6 +180,7 @@ var TSOS;
             tsb += currTSBdataArray[3];
             var copyOfTsb = tsb;
             var tsbArr = [copyOfTsb];
+            // read the tsb data and make a copy
             while (true) {
                 var tsbData = _HDD.readFromHDD(copyOfTsb);
                 if (tsbData.split("")[1] != "-") {
@@ -182,16 +200,15 @@ var TSOS;
                     this.krnClearTSB(tsbArr[i]);
                 }
             }
+            // set the hex index at 2 to remove the first few unneeded values
             var hexIndex = 2;
             for (var i = 0; i < linkCount; i++) {
-                //console.log("lc:"  + linkCount)
                 currTSBdata = _HDD.readFromHDD(tsb);
                 var TSBdataArray = currTSBdata.split("");
                 TSBdataArray[0] = "1";
                 _HDD.writeToHDD(tsb, TSBdataArray.join(""));
                 var inputData = "1";
                 inputData += (i === linkCount - 1) ? "---" : this.krnGetNextFreeBlock();
-                //console.log(inputData);
                 for (var j = 0; j < 60; j++) {
                     if (hexIndex >= fileDataHexArray.length) {
                         inputData += "0";
@@ -210,18 +227,14 @@ var TSOS;
             var dataArray = this.getTSBDataBlock(fileName);
             var hexDataArray = [];
             for (var i = 0; i < dataArray.length; i++) {
-                //console.log("data array: " + dataArray[i]);
-                //console.log('to push: ' + _HDD.readFromHDD(dataArray[i]).split("").slice(4));
                 hexDataArray.push(_HDD.readFromHDD(dataArray[i]).split("").slice(4));
             }
-            //console.log("hda: " + hexDataArray[0]);
             var hexDataString = "";
             for (var i = 0; i < hexDataArray.length; i++) {
                 for (var j = 0; j < hexDataArray[i].length; j++) {
                     hexDataString += hexDataArray[i][j];
                 }
             }
-            //console.log("hexDataString: " + hexDataString);
             var finalDataString = "";
             for (var i = 0; i < hexDataString.length; i += 2) {
                 if (hexDataString.substring(i, i + 2) == "00") {
@@ -229,7 +242,6 @@ var TSOS;
                 }
                 finalDataString += String.fromCharCode(parseInt(hexDataString.substring(i, i + 2), 16));
             }
-            //console.log("fds: " + finalDataString);
             return finalDataString;
         };
         DeviceDriverFS.prototype.getTSBDataBlock = function (fileName) {
@@ -275,7 +287,6 @@ var TSOS;
                 if (_HDD.readFromHDD(tsbFiles[i]).split("")[0] == "1") {
                     var name_1 = "";
                     var hexString = _HDD.readFromHDD(tsbFiles[i]).split("").slice(4).join("");
-                    //console.log("hex string: " + hexString);
                     for (var j = 0; j < hexString.length; j += 2) {
                         name_1 += String.fromCharCode(parseInt(hexString.substring(j, j + 2), 16));
                     }
@@ -284,7 +295,6 @@ var TSOS;
             }
             if (activeFileNames.length != 0) {
                 for (var i = 1; i < activeFileNames.length; i++) {
-                    //console.log("active file name: " + activeFileNames[i]);
                     _StdOut.putResponseText(activeFileNames[i]);
                     if (i != activeFileNames.length - 1) {
                         _StdOut.advanceLine();
@@ -305,18 +315,13 @@ var TSOS;
         DeviceDriverFS.prototype.krnGetNextFreeBlock = function () {
             var start = 0;
             for (var i = 0; i < _HDD.tsbArray.length; i++) {
-                //start = _HDD.tsbArray[i] == "100" ? i : 0;
                 if (_HDD.tsbArray[i] == "100") {
                     start = i;
                     break;
                 }
             }
             for (var i = start; i < _HDD.tsbArray.length; i++) {
-                //console.log("Outside: " + _HDD.tsbArray[i].split("")[0]);
-                //console.log("Outside readding hdd: " + _HDD.readFromHDD(_HDD.tsbArray[i].split("")[0]));
                 if (_HDD.readFromHDD(_HDD.tsbArray[i]).split("")[0] == "0") {
-                    // console.log("Inner: " + _HDD.tsbArray[i].split("")[0]);
-                    // console.log("Return: " +_HDD.tsbArray[i]);
                     return _HDD.tsbArray[i];
                 }
             }
@@ -343,6 +348,7 @@ var TSOS;
                 }
             }
         };
+        // initalize the hdd html dislau
         DeviceDriverFS.prototype.initHDDdisplay = function () {
             var table = document.getElementById("tableHDD");
             var t = 0;
@@ -370,6 +376,7 @@ var TSOS;
                 index++;
             }
         };
+        // update the html display
         DeviceDriverFS.prototype.updateHDDdisplay = function () {
             var table = document.getElementById("tableHDD");
             for (var i = 0; i < _HDD.tsbArray.length; i++) {

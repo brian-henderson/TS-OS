@@ -423,7 +423,27 @@ module TSOS {
                case "ps":
                   _StdOut.putResponseText("<state?> - Lists all the processes, filter by state (optional)");
                   break;
-
+               case "getschedule":
+                  _StdOut.putResponseText("- returns the current scheduling algorithim");
+                  break;
+               case "format":
+                  _StdOut.putResponseText("- formats the hard drive");
+                  break;
+               case "create":
+                  _StdOut.putResponseText("<filename> - Creates a file with given filename");
+                  break;
+               case "read":
+                  _StdOut.putResponseText("<filename> - Reads a file with given filename");
+                  break;
+               case "delete":
+                  _StdOut.putResponseText("<filename> - Removes the file from the session storage");
+                  break;
+               case "write":
+                  _StdOut.putResponseText("<filename> <'data'> - Writes the data to the file");
+                  break;
+               case "ls":
+                  _StdOut.putResponseText("- lists the files");
+                  break;
                default:
                   _StdOut.putResponseText("No manual entry for " + args[0] + ".");
             }

@@ -110,7 +110,6 @@ var TSOS;
             _Console.advanceLine();
             _OsShell.putPrompt();
             TSOS.Utils.setStatus("Still a little hungry...");
-            console.log("PCB OUTPUT: " + pcb.pid + "   " + pcb.stdOutput);
         };
         ProcessManager.prototype.runAllProccesses = function () {
             this.runningAll = true;
@@ -165,6 +164,7 @@ var TSOS;
             _StdOut.putResponseText("Turnaround Time: " + pcb.turnAroundTime);
             _StdOut.advanceLine();
             _StdOut.putResponseText("Final Output: " + pcb.stdOutput);
+            _StdOut.advanceLine();
         };
         ProcessManager.prototype.getPCBfromHDD = function () {
             var pcb = null;

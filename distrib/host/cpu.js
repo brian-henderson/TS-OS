@@ -115,6 +115,7 @@ var TSOS;
                     break;
                 default:
                     // invalid op code
+                    console.log("Invalid OP: " + currentInstruction);
                     _StdOut.putResponseText("Invalid OP code...terminating");
                     _ProcessManager.terminateProcess(pcb);
             }
@@ -283,7 +284,6 @@ var TSOS;
             }
             else if (this.Xreg === 2) {
                 var memoryLoc = this.Yreg;
-                console.log("Meomry Location: " + memoryLoc);
                 var output = '';
                 var ascii = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
                 while (ascii != 0) {

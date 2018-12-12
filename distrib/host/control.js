@@ -229,15 +229,15 @@ var TSOS;
             }
         };
         Control.prototype.removePcbDisplay = function (pcb) {
-            /*let table = <HTMLTableElement>document.getElementById("tablePcbDisplay");
-            let tableLength = table.rows.length;
-            for (let i = 0; i < tableLength; i++) {
-               let row = table.rows[i].cells;
-               if (parseInt(row[0].innerHTML) == pcb.pid) {
-                  table.deleteRow(i);
-                  break;
-               }
-            }*/
+            var table = document.getElementById("tablePcbDisplay");
+            var tableLength = table.rows.length;
+            for (var i = 0; i < tableLength; i++) {
+                var row = table.rows[i].cells;
+                if (parseInt(row[0].innerHTML) == pcb.pid) {
+                    table.deleteRow(i);
+                    break;
+                }
+            }
         };
         return Control;
     }());
