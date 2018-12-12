@@ -170,12 +170,12 @@ var TSOS;
             this.increaseProgramCounter();
             // Fetch the memory location where we want to load the Accumulator with
             var memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
-            // Pass over current Op Code
+            // Increase program counter
             this.increaseProgramCounter();
             // convert to decimal address for partition index
             var memoryloc = parseInt(memoryLocHex, 16);
             // load into the accumulator reading 
-            this.Acc = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryloc));
+            this.Acc = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryloc), 16);
             this.increaseProgramCounter();
         };
         // OP CODE  - A2
@@ -193,8 +193,12 @@ var TSOS;
         Cpu.prototype.loadYRegister = function (pcb) {
             // increase program counter
             this.increaseProgramCounter();
-            // get and assign x register
+            // get and assign y register
+            console.log("Y Before Load: A0 " + this.Yreg);
             this.Yreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, this.PC), 16);
+            console.log("Read: " + _ProcessManager.readInstruction(pcb.partitionIndex, this.PC));
+            console.log("PC: " + this.PC);
+            console.log("Y After Load: A0 " + this.Yreg);
             // update program counter to next program
             this.increaseProgramCounter();
         };
@@ -215,9 +219,13 @@ var TSOS;
             // increase program counter
             this.increaseProgramCounter();
             var memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
+            console.log("memory loc hex:" + memoryLocHex);
             this.increaseProgramCounter();
             var memoryLoc = parseInt(memoryLocHex, 16);
+            console.log("memory loc:" + memoryLoc);
+            console.log("Y Before Load: " + this.Yreg);
             this.Yreg = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
+            console.log("Y After Load: " + this.Yreg);
             this.increaseProgramCounter();
         };
         // OP CODE  - EC
@@ -235,13 +243,20 @@ var TSOS;
         // OP CODE  - 6D
         // Purpsoe: Add contents of the address to acc and save results in acc
         Cpu.prototype.addWithCarry = function (pcb) {
+            /*   this.increaseProgramCounter();
+               let hexStr = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
+               this.increaseProgramCounter();
+               hexStr = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC) + hexStr;
+               let memoryLoc = parseInt(hexStr, 16);
+               let val = _ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc);
+               this.Acc += parseInt(val);
+               this.increaseProgramCounter();
+               */
             this.increaseProgramCounter();
-            var hexStr = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
+            var memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
             this.increaseProgramCounter();
-            hexStr = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC) + hexStr;
-            var memoryLoc = parseInt(hexStr, 16);
-            var val = _ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc);
-            this.Acc += parseInt(val);
+            var memoryLoc = parseInt(memoryLocHex, 16);
+            this.Acc += parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
             this.increaseProgramCounter();
         };
         // OP CODE  - 8D
@@ -279,6 +294,7 @@ var TSOS;
         // Purpose: print integer stored in Y reg 
         Cpu.prototype.systemCall = function (pcb) {
             if (this.Xreg === 1) {
+                console.log("System Call Y: " + this.Yreg);
                 _StdOut.putText(this.Yreg.toString());
                 pcb.stdOutput += this.Yreg.toString();
             }
@@ -293,6 +309,7 @@ var TSOS;
                 }
                 _StdOut.putText(output);
                 pcb.stdOutput += output;
+                console.log("System Call Output: " + output);
             }
             this.increaseProgramCounter();
         };
@@ -303,11 +320,14 @@ var TSOS;
             var memoryLocHex = _ProcessManager.readInstruction(pcb.partitionIndex, this.PC);
             this.increaseProgramCounter();
             var memoryLoc = parseInt(memoryLocHex, 16);
-            var byte = _ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc);
-            var value = parseInt(byte, 16);
+            var value = parseInt(_ProcessManager.readInstruction(pcb.partitionIndex, memoryLoc), 16);
             value++;
-            var hexValue = value.toString(16);
-            hexValue = hexValue.length < 2 ? ("0" + hexValue) : hexValue;
+            var hexValue = value.toString(16).toUpperCase();
+            //hexValue = hexValue.length < 2 ? ("0" + hexValue) : hexValue;
+            if (hexValue.length < 2) {
+                hexValue = "0" + hexValue;
+            }
+            console.log("Writin hex value: " + hexValue);
             _Memory.writeMemoryByte(pcb.partitionIndex, memoryLoc, hexValue);
             this.increaseProgramCounter();
         };

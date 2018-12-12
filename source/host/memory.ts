@@ -55,7 +55,7 @@
                if (partition === 2){
                   loc += 512;
                }  
-               
+               console.log("Writing byte: " + byteData);
                this.memoryStorage[loc] = byteData;
             }
 
