@@ -389,6 +389,7 @@ var TSOS;
         DeviceDriverFS.prototype.krnRollOut = function (pcb, program) {
             var programData = program.join("");
             var programDataArray = programData.split("");
+            console.log("Program to write: " + program);
             if (pcb.location === "MEMORY") {
                 _MemoryManager.freePartition(pcb.partitionIndex);
             }
@@ -435,6 +436,7 @@ var TSOS;
                 var instruction = program.charAt(i) + program.charAt(i + 1);
                 programArray.push(instruction);
             }
+            console.log(programArray);
             pcb.location = "MEMORY";
             pcb.hddTSB = null;
             _MemoryManager.loadProgramFromHDD(pcb, programArray);

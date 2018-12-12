@@ -40,20 +40,23 @@ module TSOS {
       // Grab the next process in the ready queue and set it to the curr PCB
       public unloadProcessFromReadyQueue(): void {
          if (_ProcessManager.readyQueue.getSize() > 0) {
-
             _ProcessManager.currPCB = _ProcessManager.readyQueue.dequeue();
+            //console.log("Next process to run: " + _ProcessManager.currPCB.pid )
             _ProcessManager.currPCB.state = "Running";
 
             if (_ProcessManager.currPCB.location == "HDD") {
                _krnFileSystemDriver.krnRollIn(_ProcessManager.currPCB);
                this.rolledOutAlready = false;
+               //console.log("roll tide");
             }
 
             if (this.rolledOutAlready) {
                let hddPCB: ProcessControlBlock = _ProcessManager.getPCBfromHDD();
+               console.log("hdd PCB: " + hddPCB);
                _krnFileSystemDriver.krnRollIn(hddPCB);
                _Control.updatePcbDisplay(hddPCB);
                this.rolledOutAlready = false;
+             //  console.log("rolled out")
             }
 
             let log: string = "Switching context to PID "+_ProcessManager.currPCB.pid;
@@ -70,7 +73,7 @@ module TSOS {
 
 
             if (_ProcessManager.readyQueue.q[0].location === "HDD" && (!_MemoryManager.checkForFreePartitions()) && _ProcessManager.readyQueue.getSize() > 2) {
-               _krnFileSystemDriver.krnRollOut(_ProcessManager.currPCB, _Memory.getProgramFromMemory(_ProcessManager.currPCB.partitionIndex, _ProcessManager.currPCB.programCounter));
+               _krnFileSystemDriver.krnRollOut(_ProcessManager.currPCB, _Memory.getProgramFromMemory(_ProcessManager.currPCB.partitionIndex, 0));
                this.rolledOutAlready = true;
             }
 

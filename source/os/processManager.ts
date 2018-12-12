@@ -74,7 +74,7 @@ module TSOS {
          // check if the OS is running all
          if (! this.runningAll) {
             // check if the location of the pcb is in the hard drive
-            if (pcb.location === "HDD") {
+            if (pcb.location == "HDD") {
                // lets check for available partitiions, if none available then roll out a process to the hdd
                if (! _MemoryManager.checkForFreePartitions()) {
                   let pcbOut = _MemoryManager.getPcbFromPartition(2);
@@ -185,7 +185,7 @@ module TSOS {
 
       public getPCBfromHDD(): ProcessControlBlock {
          let pcb: ProcessControlBlock = null;
-         for (let i =0; i < this.readyQueue.q.length; i++) {
+         for (let i=0; i < this.readyQueue.q.length; i++) {
             if (this.readyQueue.q[i].location == "HDD") {
                pcb = this.readyQueue.q[i];
                break

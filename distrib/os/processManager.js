@@ -70,7 +70,7 @@ var TSOS;
             // check if the OS is running all
             if (!this.runningAll) {
                 // check if the location of the pcb is in the hard drive
-                if (pcb.location === "HDD") {
+                if (pcb.location == "HDD") {
                     // lets check for available partitiions, if none available then roll out a process to the hdd
                     if (!_MemoryManager.checkForFreePartitions()) {
                         var pcbOut = _MemoryManager.getPcbFromPartition(2);
